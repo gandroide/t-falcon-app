@@ -1,47 +1,13 @@
-import { useEffect, useState } from 'react';
+import React, { FC, ReactElement } from 'react'
 
-interface IFormProps {
-  props: object[];
+interface Iprops {
+  content:  ReactElement
 }
 
-type SFP = IFormProps | null;
-
-const dataTest = [
-  {
-    title: 'Local de Serviço',
-    input: 'test',
-  },
-  {
-    title: 'Falcoeiro',
-    input: 'test',
-  },
-];
-
-export const Form = (props: IFormProps) => {
-  const [inputs, setInputs] = useState<SFP>();
-
-  useEffect(() => {
-    if (props) {
-      setInputs(props);
-    }
-  }, [props]);
-  console.log(props?.props);
-
+export const Form: FC<Iprops> = ({content}) => {
   return (
     <>
-      {/* {props?.props.map((value, key) => { */}
-      <form action="">
-        {/* return (
-          <> */}
-        <h3>{}</h3>
-        {/* <input key={Math.random()} type="text">
-              {}
-            </input> */}
-        {/* </>
-          ); */}
-      </form>
-      {/* }, [])} */}
-      {/* <input type="text" /> */}
+        {content}
     </>
-  );
-};
+  )
+}

@@ -6,6 +6,7 @@ export default createGlobalStyle`
    margin: 0;
    padding: 0;
    box-sizing: border-box;
+
   }
 
   .Toastify__toast-theme--colored.Toastify__toast--info {
