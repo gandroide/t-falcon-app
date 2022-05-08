@@ -1,12 +1,12 @@
 import React, { createContext, FC, useState } from 'react';
-import { IMenu } from '../interfaces';
+import { IDataSelect } from '../interfaces';
 
-interface IMenuContext {
-  menu: IMenu[];
-  onSetContext: (onMenu: IMenu[]) => void;
+interface IDataContext {
+  menu: IDataSelect[];
+  onSetContext: (onMenu: IDataSelect[]) => void;
 }
 
-type C = IMenuContext | null;
+type C = IDataContext | null;
 
 const defaultStateValue = [
   {
@@ -23,7 +23,7 @@ export const SelectThemeContext = createContext<C>(null);
 export const SelectThemeProvider: FC = ({ children }) => {
   const [menu, setMenu] = useState(defaultStateValue);
 
-  const onSetContext = (onMenu: IMenu[]) => {
+  const onSetContext = (onMenu: IDataSelect[]) => {
     setMenu(onMenu);
   };
   return (

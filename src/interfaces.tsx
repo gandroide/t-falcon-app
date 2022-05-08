@@ -12,7 +12,7 @@ export interface INavBarExpand {
   expanded: boolean;
 }
 
-export interface IMenu {
+export interface IDataSelect {
   salad: string;
   soup: string;
   meet: string;
