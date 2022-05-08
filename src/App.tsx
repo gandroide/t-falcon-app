@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import GlobalStyles from './styles';
 import { ThemeProvider } from 'styled-components';
 import { lightTheme, darkTheme } from './styles/theme';
@@ -44,7 +44,6 @@ const App = () => {
     console.log(option,"option")
   }
 
-console.log(selectClient)
   return (
     <ThemeProvider theme={selectedTheme === 'light' ? lightTheme : darkTheme}>
       <GlobalStyles />
