@@ -19,8 +19,8 @@ const App = () => {
   const [selectFalcoeiro, setSelectFalcoeiro] = useState({});
   const [selectBird, setSelectBird] = useState({});
   const [startDate, setStartDate] = useState(new Date());
-  const [isloggedIn, setisloggedIn] = useState<boolean>(true);
-  const [admin, setAdmin] = useState<boolean>(true);
+  const [isloggedIn, setisloggedIn] = useState<boolean>(false);
+  const [admin, setAdmin] = useState<boolean>(false);
 
   const onChangeTheme = () => {
     if (selectedTheme === 'light') setSelectedTheme('dark');
