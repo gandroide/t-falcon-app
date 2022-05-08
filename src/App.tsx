@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import GlobalStyles from './styles';
 import { ThemeProvider } from 'styled-components';
 import { lightTheme, darkTheme } from './styles/theme';
@@ -12,6 +12,8 @@ import { clientes, falcoeiros } from './data';
 import  DatePicker  from 'react-datepicker'
 import "react-datepicker/dist/react-datepicker.css";
 import { InputGoup } from './components/inputs/Input';
+
+import { BirdsPage } from './pages/birds/BirdsPage';
 
 const MAX_SIZE = 2;
 
@@ -54,8 +56,12 @@ const App = () => {
     console.log(option,"option")
   }
 
+  if (true) {
+    return (
+      <BirdsPage />
+    )
+  }
 
-console.log(selectClient)
   return (
     <ThemeProvider theme={selectedTheme === 'light' ? lightTheme : darkTheme}>
       <GlobalStyles />
