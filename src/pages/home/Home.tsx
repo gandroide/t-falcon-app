@@ -8,7 +8,10 @@ console.log(selectValue, "selectValue")
   return (
     <Container>
       <h3>Home</h3>
-      <Select selected={selectValue} onChangeHandler={setSelectClient} options={clientes}></Select>
+      <button>Registrar Picagem</button>
+      <Link to="/pesagem">Registrar Ave</Link>
+      <Link to="/relatorio">Relatorio de Serviço</Link>
+      {/* <Select selected={selectValue} onChangeHandler={setSelectClient} options={clientes}></Select> */}
       <Link to="/">Back</Link>
     </Container>
   )

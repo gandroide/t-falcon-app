@@ -8,6 +8,8 @@ import "react-datepicker/dist/react-datepicker.css";
 import { NavLink, Route, Routes } from 'react-router-dom';
 import { Login } from './pages/login';
 import { Admin } from './pages/admin';
+import { Birds } from './pages/birds/Birds';
+import { FormService } from './pages/formService';
 
 const MAX_SIZE = 2;
 
@@ -19,7 +21,7 @@ const App = () => {
   const [selectFalcoeiro, setSelectFalcoeiro] = useState({});
   const [selectBird, setSelectBird] = useState({});
   const [startDate, setStartDate] = useState(new Date());
-  const [isloggedIn, setisloggedIn] = useState<boolean>(false);
+  const [isloggedIn, setisloggedIn] = useState<boolean>(true);
   const [admin, setAdmin] = useState<boolean>(false);
 
   const onChangeTheme = () => {
@@ -53,9 +55,16 @@ const App = () => {
      </div>
     
       <Routes>
-        {!isloggedIn && <Route path='/' element={<Login />}/>}
-        {isloggedIn && !admin && <Route path='/' element={<Home />}/>}
+        {!isloggedIn && <Route path="/" element={<Login />}/>}
+        {isloggedIn && !admin && (
+        <>
+        <Route path="/" element={<Home />} />
+        <Route path="/pesagem" element={<Birds />} />
+        <Route path="/relatorio" element={<FormService />}></Route>
+        </>
+        )}
         {isloggedIn && admin && <Route path='/' element={<Admin />}/>}
+
       </Routes>
         {/* <NavLink to="">Peencher Relatorio</NavLink> */}
     </ThemeProvider>
