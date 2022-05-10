@@ -4,7 +4,6 @@ import { clientes } from '../../data'
 import { Container } from './Home.styles'
 
 export const Home = ({setSelectClient, selectValue}: any) => {
-console.log(selectValue, "selectValue")
   return (
     <Container>
       <h3>Home</h3>

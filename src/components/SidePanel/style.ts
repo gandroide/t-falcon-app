@@ -2,9 +2,9 @@ import styled from "styled-components";
 
 export const Panel = styled.div`
     display: flex;
-    width: 75%;
-    background-color: white;
-    color: black;
+    width: 50%;
+    background-color: ${({theme}) => theme.palette.common.white};
+    color: ${({theme}) => theme.palette.common.black};
     position: fixed;
     top: 0;
     right: 0;
@@ -33,4 +33,9 @@ export const Backdrop = styled.div`
     height: 100%;
     background-color: rgba(0, 0, 0, 0.5);
     
+`
+
+export const CloseButton = styled.button`
+    width: 4rem;
+    height: 2rem;
 `

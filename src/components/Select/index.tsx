@@ -8,7 +8,6 @@ interface ISelectProps {
 }
 
 export const Select: FC<ISelectProps> = ({ options, onChangeHandler, selected }) => {
-    console.log(selected)
     return (
         <CustomSelect 
             onChange={(option)=>onChangeHandler(option)}

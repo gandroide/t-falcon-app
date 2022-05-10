@@ -1,7 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import GlobalStyles from './styles';
 import { ThemeProvider } from 'styled-components';
-import { lightTheme, darkTheme } from './styles/theme';
 import { Home } from './pages/home/Home';
 import { ImContrast, ImBrightnessContrast } from "react-icons/im";
 import "react-datepicker/dist/react-datepicker.css";
@@ -11,6 +10,7 @@ import { Admin } from './pages/admin';
 import { Birds } from './pages/birds/Birds';
 import { FormService } from './pages/formService';
 import { SidePanel } from './components/SidePanel/Index';
+import { defaultTheme } from './styles/theme';
 
 const MAX_SIZE = 2;
 
@@ -54,14 +54,14 @@ const App = () => {
   }
 
   return (
-    <ThemeProvider theme={selectedTheme === 'light' ? lightTheme : darkTheme}>
+    <ThemeProvider theme={defaultTheme} >
       <GlobalStyles />
       <h3 className="test">T-Falcon</h3>
       <button onClick={handleOnChange}>Panel</button>
-     <div style={{display: 'flex', justifyContent: 'flex-end', paddingRight: '30px'}}>
+     {/* <div style={{display: 'flex', justifyContent: 'flex-end', paddingRight: '30px'}}>
       {selectedTheme === 'light' ?  <ImContrast size={20} onClick={onChangeTheme}/> : <ImBrightnessContrast size={20} onClick={onChangeTheme}/> }
-     </div>
-     <SidePanel openPanel={openPanel}/>
+     </div> */}
+     <SidePanel openPanel={openPanel} setOpenPanel={setOpenPanel}/>
     
       <Routes>
         {!isloggedIn && <Route path="/" element={<Login />}/>}

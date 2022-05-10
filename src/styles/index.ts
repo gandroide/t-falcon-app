@@ -24,8 +24,8 @@ export default createGlobalStyle`
   }
 
   body {
-    background: ${({theme}) => theme.palette.background};
-    color: ${({theme}) => theme.palette.text};
+    background: ${({theme}) => theme.palette.common.white};
+    color: ${({theme}) => theme.palette.common.black};
   }
 
   ul {
