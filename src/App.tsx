@@ -10,6 +10,7 @@ import { Login } from './pages/login';
 import { Admin } from './pages/admin';
 import { Birds } from './pages/birds/Birds';
 import { FormService } from './pages/formService';
+import { SidePanel } from './components/SidePanel/Index';
 
 const MAX_SIZE = 2;
 
@@ -23,6 +24,8 @@ const App = () => {
   const [startDate, setStartDate] = useState(new Date());
   const [isloggedIn, setisloggedIn] = useState<boolean>(true);
   const [admin, setAdmin] = useState<boolean>(false);
+  const [openPanel, setOpenPanel] = useState(false)
+
 
   const onChangeTheme = () => {
     if (selectedTheme === 'light') setSelectedTheme('dark');
@@ -46,13 +49,19 @@ const App = () => {
     console.log(option,"option")
   }
 
+  const handleOnChange = () => {
+    setOpenPanel(prev => !prev)
+  }
+
   return (
     <ThemeProvider theme={selectedTheme === 'light' ? lightTheme : darkTheme}>
       <GlobalStyles />
       <h3 className="test">T-Falcon</h3>
+      <button onClick={handleOnChange}>Panel</button>
      <div style={{display: 'flex', justifyContent: 'flex-end', paddingRight: '30px'}}>
       {selectedTheme === 'light' ?  <ImContrast size={20} onClick={onChangeTheme}/> : <ImBrightnessContrast size={20} onClick={onChangeTheme}/> }
      </div>
+     <SidePanel openPanel={openPanel}/>
     
       <Routes>
         {!isloggedIn && <Route path="/" element={<Login />}/>}

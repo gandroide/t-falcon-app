@@ -31,4 +31,42 @@ export default createGlobalStyle`
   ul {
     list-style: none;
   }
+
+  & .sidepanel-enter .sidepanel-panel{
+    right: -100%;
+  }
+
+  & .sidepanel-enter-active .sidepanel-panel{
+    right: 0;
+    transition: right 0.5s;
+  }
+
+  & .sidepanel-exit .sidepanel-panel{
+    right: 0;
+  }
+
+  & .sidepanel-exit-active .sidepanel-panel{
+    right: -100%;
+    transition: right 0.5s;
+  }
+
+
+
+  & .sidepanel-enter .sidepanel-backdrop{
+    opacity: 0;
+  }
+
+  & .sidepanel-enter-active .sidepanel-backdrop{
+    opacity: 1;
+    transition: opacity 0.5s;
+  }
+
+  & .sidepanel-exit .sidepanel-backdrop{
+    opacity: 1;
+  }
+
+  & .sidepanel-exit-active .sidepanel-backdrop{
+    opacity: 0;
+    transition: opacity 0.5s;
+  }
 `;
