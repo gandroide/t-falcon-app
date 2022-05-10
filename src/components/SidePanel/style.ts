@@ -2,7 +2,7 @@ import styled from "styled-components";
 
 export const Panel = styled.div`
     display: flex;
-    width: 50%;
+    width: 100%;
     background-color: ${({theme}) => theme.palette.common.white};
     color: ${({theme}) => theme.palette.common.black};
     position: fixed;
@@ -22,6 +22,7 @@ export const Container = styled.div`
     top: 0;
     right: 0;
     height: 100%;
+    z-index: 1000;
 `
 
 export const Backdrop = styled.div`

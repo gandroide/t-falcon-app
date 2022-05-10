@@ -67,9 +67,9 @@ const App = () => {
         {!isloggedIn && <Route path="/" element={<Login />}/>}
         {isloggedIn && !admin && (
         <>
-        <Route path="/" element={<Home />} />
-        <Route path="/pesagem" element={<Birds />} />
-        <Route path="/relatorio" element={<FormService />}></Route>
+          <Route path="/" element={<Home />} />
+          <Route path="/pesagem" element={<Birds />} />
+          <Route path="/relatorio" element={<FormService />}></Route>
         </>
         )}
         {isloggedIn && admin && <Route path='/' element={<Admin />}/>}
