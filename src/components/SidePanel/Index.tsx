@@ -5,7 +5,7 @@ import { CSSTransition } from 'react-transition-group';
 interface ISidepanel {
   openPanel: boolean;
   setOpenPanel: (state: boolean)=>void;
-  children?: React.ReactNode[] | string;
+  children?: React.ReactNode[];
 }
 
 export const SidePanel: FC<ISidepanel> = ({openPanel, setOpenPanel, children}) => {
