@@ -57,11 +57,11 @@ const App = () => {
     <ThemeProvider theme={defaultTheme} >
       <GlobalStyles />
       <h3 className="test">T-Falcon</h3>
-      <button onClick={handleOnChange}>Panel</button>
+      {/* <button onClick={handleOnChange}>Panel</button> */}
      {/* <div style={{display: 'flex', justifyContent: 'flex-end', paddingRight: '30px'}}>
       {selectedTheme === 'light' ?  <ImContrast size={20} onClick={onChangeTheme}/> : <ImBrightnessContrast size={20} onClick={onChangeTheme}/> }
      </div> */}
-     <SidePanel openPanel={openPanel} setOpenPanel={setOpenPanel}/>
+     {/* <SidePanel openPanel={openPanel} setOpenPanel={setOpenPanel}/> */}
     
       <Routes>
         {!isloggedIn && <Route path="/" element={<Login />}/>}

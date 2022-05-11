@@ -5,11 +5,11 @@ import { CSSTransition } from 'react-transition-group';
 interface ISidepanel {
   openPanel: boolean;
   setOpenPanel: (state: boolean)=>void;
-  children?: JSX.Element[];
+  children?: React.ReactNode[] | string;
 }
 
 export const SidePanel: FC<ISidepanel> = ({openPanel, setOpenPanel, children}) => {
-console.log(children, "children")
+
   const handleClose = () => {
     setOpenPanel(false)
   }

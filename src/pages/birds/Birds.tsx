@@ -10,8 +10,14 @@ export const Birds = ({selectFalcoeiro, selectBird, setInputState}: any) => {
   const handleClose = () => {
     setTest(!test)
   }
+
+  const openPanel = () => {
+    setTest(true)
+  }
   return (
     <>
+      <button onClick={openPanel}>openPanel</button>
+      <SidePanel openPanel={test} setOpenPanel={handleClose}>
         <div>
           <h2>Falcoeiro</h2>
           <Select selected={selectFalcoeiro} onChangeHandler={setInputState} options={falcoeiros}></Select>
@@ -20,9 +26,6 @@ export const Birds = ({selectFalcoeiro, selectBird, setInputState}: any) => {
           <h2>Bird</h2>
           <Select selected={selectBird} onChangeHandler={setInputState} options={aves}></Select>
         </div>
-      <SidePanel openPanel={test} setOpenPanel={handleClose}>
-        <h3>test</h3>
-        <h3>testando</h3>
       </SidePanel>
       <Link to="/">Go Back</Link>
     </>
