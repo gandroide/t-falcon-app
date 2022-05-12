@@ -1,4 +1,4 @@
-import { createGlobalStyle } from 'styled-components';
+import { createGlobalStyle } from "styled-components";
 // import 'react-toastify/dist/ReactToastify.css';
 
 export default createGlobalStyle`
@@ -24,8 +24,8 @@ export default createGlobalStyle`
   }
 
   body {
-    background: ${({theme}) => theme.palette.common.white};
-    color: ${({theme}) => theme.palette.common.black};
+    background: ${({ theme }) => theme.palette.common.white};
+    color: ${({ theme }) => theme.palette.common.black};
   }
 
   ul {
@@ -68,5 +68,24 @@ export default createGlobalStyle`
   & .sidepanel-exit-active .sidepanel-backdrop{
     opacity: 0;
     transition: opacity 0.5s;
+  }
+
+  & .fade-enter {
+    opacity: 0;
+    z-index: 1;
+  }
+
+  & .fade-enter-active {
+    opacity: 1;
+    transition: opacity 250ms;
+  }
+
+  & .fade-exit {
+    opacity: 1;
+  }
+
+  & .fade-exit-active {
+    opacity: 0;
+    transition: opacity 250ms;
   }
 `;
