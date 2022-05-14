@@ -1,4 +1,4 @@
-import React, { createContext, FC, useState } from 'react';
+import { createContext, FC, useState } from 'react';
 
 interface IModal {
   isOpen: boolean;
@@ -11,13 +11,7 @@ interface IModal {
 
 interface IModalContext {
   modal: IModal;
-  onSetModalHandler: ({
-    isOpen,
-    onCloseCallback,
-    onConfirmCallback,
-    title,
-    description,
-  }: IModal) => void;
+  onSetModalHandler: (modalValues: IModal) => void;
   onResetModalHandler: () => void;
 }
 
@@ -27,15 +21,15 @@ const defaultModalState: IModal = {
   onConfirmCallback: null,
   title: '',
   description: '',
-  type: 'info',
+  type: 'info'
 };
 
 const defaultModalContext = {
   modal: {
-    ...defaultModalState,
+    ...defaultModalState
   },
   onSetModalHandler: () => {},
-  onResetModalHandler: () => {},
+  onResetModalHandler: () => {}
 };
 
 export const ModalContext = createContext<IModalContext>(defaultModalContext);
@@ -56,7 +50,7 @@ export const ModalProvider: FC = ({ children }) => {
       value={{
         modal,
         onSetModalHandler,
-        onResetModalHandler,
+        onResetModalHandler
       }}
     >
       {children}
