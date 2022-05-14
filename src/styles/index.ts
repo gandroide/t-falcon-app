@@ -31,4 +31,40 @@ export default createGlobalStyle`
   ul {
     list-style: none;
   }
+
+  & .modal-enter {
+    opacity: 0;
+  }
+
+  & .modal-enter-active {
+    opacity: 1;
+    transition: opacity 0.5s;
+  }
+
+  & .modal-exit {
+    opacity: 1;
+  }
+
+  & .modal-exit-active {
+    opacity: 0;
+    transition: opacity 0.5s;
+  }
+
+  & .modal-enter .modal-container {
+    transform: translateY(-20px);
+  }
+
+  & .modal-enter-active .modal-container {
+    transform: translateY(0);
+    transition: transform 0.5s;
+  }
+
+  & .modal-exit .modal-container {
+    transform: translateY(0);
+  }
+
+  & .modal-exit-active .modal-container {
+    transform: translateY(-20px);
+    transition: transform 0.5s;
+  }
 `;
