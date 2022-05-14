@@ -26,6 +26,7 @@ export default createGlobalStyle`
   body {
     background: ${({ theme }) => theme.palette.common.white};
     color: ${({ theme }) => theme.palette.common.black};
+    font-family: 'Baloo Tamma 2', cursive;
   }
 
   ul {
@@ -66,6 +67,8 @@ export default createGlobalStyle`
   & .modal-exit-active .modal-container {
     transform: translateY(-20px);
     transition: transform 0.5s;
+  }
+  
   & .sidepanel-enter .sidepanel-panel{
     right: -100%;
   }
@@ -84,8 +87,6 @@ export default createGlobalStyle`
     transition: right 0.5s;
   }
 
-
-
   & .sidepanel-enter .sidepanel-backdrop{
     opacity: 0;
   }
@@ -102,5 +103,24 @@ export default createGlobalStyle`
   & .sidepanel-exit-active .sidepanel-backdrop{
     opacity: 0;
     transition: opacity 0.5s;
+  }
+
+  & .fade-enter {
+    opacity: 0;
+    z-index: 1;
+  }
+
+  & .fade-enter-active {
+    opacity: 1;
+    transition: opacity 250ms;
+  }
+
+  & .fade-exit {
+    opacity: 1;
+  }
+
+  & .fade-exit-active {
+    opacity: 0;
+    transition: opacity 250ms;
   }
 `;
