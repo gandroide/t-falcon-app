@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useContext, useState } from "react";
 import GlobalStyles from "./styles";
 import { ThemeProvider } from "styled-components";
 import { Home } from "./pages/home/Home";
@@ -10,6 +10,9 @@ import { Birds } from "./pages/birds/Birds";
 import { FormService } from "./pages/formService";
 import { defaultTheme } from "./styles/theme";
 import { TransitionGroup, CSSTransition } from "react-transition-group";
+
+import { Modal } from "./components/Modal";
+import { ModalContext } from "./context/Modal";
 
 const App = () => {
   const [isloggedIn, setisloggedIn] = useState<boolean>(true);
@@ -28,10 +31,12 @@ const App = () => {
   //   }
   //   console.log(option,"option")
   // }
+  const { modal } = useContext(ModalContext);
 
   return (
     <ThemeProvider theme={defaultTheme}>
       <GlobalStyles />
+      <Modal {...modal} />
       <h3 className="test">T-Falcon</h3>
       <TransitionGroup component={null}>
         <CSSTransition key={location.pathname} classNames="fade" timeout={250}>
