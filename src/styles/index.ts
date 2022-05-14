@@ -1,4 +1,4 @@
-import { createGlobalStyle } from 'styled-components';
+import { createGlobalStyle } from "styled-components";
 // import 'react-toastify/dist/ReactToastify.css';
 
 export default createGlobalStyle`
@@ -24,14 +24,48 @@ export default createGlobalStyle`
   }
 
   body {
-    background: ${({theme}) => theme.palette.common.white};
-    color: ${({theme}) => theme.palette.common.black};
+    background: ${({ theme }) => theme.palette.common.white};
+    color: ${({ theme }) => theme.palette.common.black};
   }
 
   ul {
     list-style: none;
   }
 
+  & .modal-enter {
+    opacity: 0;
+  }
+
+  & .modal-enter-active {
+    opacity: 1;
+    transition: opacity 0.5s;
+  }
+
+  & .modal-exit {
+    opacity: 1;
+  }
+
+  & .modal-exit-active {
+    opacity: 0;
+    transition: opacity 0.5s;
+  }
+
+  & .modal-enter .modal-container {
+    transform: translateY(-20px);
+  }
+
+  & .modal-enter-active .modal-container {
+    transform: translateY(0);
+    transition: transform 0.5s;
+  }
+
+  & .modal-exit .modal-container {
+    transform: translateY(0);
+  }
+
+  & .modal-exit-active .modal-container {
+    transform: translateY(-20px);
+    transition: transform 0.5s;
   & .sidepanel-enter .sidepanel-panel{
     right: -100%;
   }
