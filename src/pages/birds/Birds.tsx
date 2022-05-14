@@ -1,32 +1,50 @@
-import { useState } from 'react';
+import { useContext } from 'react';
 import { Link } from 'react-router-dom';
 import { Select } from '../../components/Select';
-import { SidePanel } from '../../components/SidePanel/Index';
+import { SidepanelContext } from '../../context/Sidepanel';
 import { aves, falcoeiros } from '../../data';
 
-export const Birds = ({selectFalcoeiro, selectBird, setInputState}: any) => {
-  const [test, setTest] = useState(false)
+const BirdsForm = ({ selectFalcoeiro, selectBird, setInputState }: any) => {
+  return (
+    <div>
+      <div>
+        <h2>Falcoeiro</h2>
+        <Select
+          selected={selectFalcoeiro}
+          onChangeHandler={setInputState}
+          options={falcoeiros}
+        ></Select>
+      </div>
+      <div>
+        <h2>Bird</h2>
+        <Select
+          selected={selectBird}
+          onChangeHandler={setInputState}
+          options={aves}
+        ></Select>
+      </div>
+    </div>
+  );
+};
 
-  const handleClose = () => {
-    setTest(!test)
-  }
+export const Birds = ({ selectFalcoeiro, selectBird, setInputState }: any) => {
+  const { onOpenSidepanelHandler } = useContext(SidepanelContext);
 
   const openPanel = () => {
-    setTest(true)
-  }
+    onOpenSidepanelHandler({
+      isOpen: true,
+      SidepanelChildren: (
+        <BirdsForm
+          selectFalcoeiro={selectFalcoeiro}
+          selectBird={selectBird}
+          setInputState={setInputState}
+        />
+      )
+    });
+  };
   return (
     <>
       <button onClick={openPanel}>openPanel</button>
-      <SidePanel openPanel={test} setOpenPanel={handleClose}>
-        <div>
-          <h2>Falcoeiro</h2>
-          <Select selected={selectFalcoeiro} onChangeHandler={setInputState} options={falcoeiros}></Select>
-        </div>
-        <div>
-          <h2>Bird</h2>
-          <Select selected={selectBird} onChangeHandler={setInputState} options={aves}></Select>
-        </div>
-      </SidePanel>
       <Link to="/">Go Back</Link>
     </>
   );

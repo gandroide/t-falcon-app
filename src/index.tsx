@@ -6,14 +6,17 @@ import reportWebVitals from './reportWebVitals';
 import { BrowserRouter } from 'react-router-dom';
 
 import { ModalProvider } from './context/Modal';
+import { SidepanelProvider } from './context/Sidepanel';
 
 ReactDOM.render(
   <React.StrictMode>
-    <ModalProvider>
-      <BrowserRouter>
-        <App />
-      </BrowserRouter>
-    </ModalProvider>
+    <SidepanelProvider>
+      <ModalProvider>
+        <BrowserRouter>
+          <App />
+        </BrowserRouter>
+      </ModalProvider>
+    </SidepanelProvider>
   </React.StrictMode>,
   document.getElementById('root')
 );
