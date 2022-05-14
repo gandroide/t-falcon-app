@@ -26,6 +26,7 @@ export default createGlobalStyle`
   body {
     background: ${({ theme }) => theme.palette.common.white};
     color: ${({ theme }) => theme.palette.common.black};
+    font-family: 'Baloo Tamma 2', cursive;
   }
 
   ul {
