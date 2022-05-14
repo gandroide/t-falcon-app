@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useContext, useState } from "react";
 import GlobalStyles from "./styles";
 import { ThemeProvider } from "styled-components";
 import { Home } from "./pages/home/Home";
@@ -10,26 +10,19 @@ import { Birds } from "./pages/birds/Birds";
 import { FormService } from "./pages/formService";
 import { defaultTheme } from "./styles/theme";
 
+import { Modal } from "./components/Modal";
+import { ModalContext } from "./context/Modal";
+
 const App = () => {
   const [isloggedIn, setisloggedIn] = useState<boolean>(true);
   const [admin, setAdmin] = useState<boolean>(false);
 
-  // const onSelectHandler = (option: {label: string, value: string, name: string}) => {
-  //   if(option.name === 'clients'){
-  //     setSelectClient(option)
-  //   }
-  //   if(option.name === 'falcoeiros'){
-  //     setSelectFalcoeiro(option)
-  //   }
-  //   if(option.name === 'birds'){
-  //     setSelectBird(option)
-  //   }
-  //   console.log(option,"option")
-  // }
+  const { modal } = useContext(ModalContext);
 
   return (
     <ThemeProvider theme={defaultTheme}>
       <GlobalStyles />
+      <Modal {...modal} />
       <h3 className="test">T-Falcon</h3>
       <Routes>
         {!isloggedIn && <Route path="/" element={<Login />} />}
