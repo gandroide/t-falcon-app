@@ -1,21 +1,13 @@
-export interface ICustomButton {
-  text: string;
-  onClick?: () => void;
+export interface IInput {
+  id: string;
+  name: string;
+  label: string;
+  type: string;
+  value: string;
+  data?: 'soasnfabf';
 }
 
-export interface INavBarProps {
-  expanded: boolean;
-  onExpanded: () => void;
-}
-
-export interface INavBarExpand {
-  expanded: boolean;
-}
-
-export interface IDataSelect {
-  salad: string;
-  soup: string;
-  meet: string;
-  fish: string;
-  vegetarian: string;
+export interface IForm {
+  fields: IInput[];
+  onSubmitCallback: (fields: IInput[]) => void;
 }

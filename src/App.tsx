@@ -15,6 +15,8 @@ import { Modal } from './components/Modal';
 import { ModalContext } from './context/Modal';
 import { SidePanel } from './components/SidePanel/Index';
 import { SidepanelContext } from './context/Sidepanel';
+import { TForm } from './components/Form';
+import { IInput } from './interfaces';
 
 const App = () => {
   const [isloggedIn, setisloggedIn] = useState<boolean>(true);
@@ -24,6 +26,29 @@ const App = () => {
 
   const { modal } = useContext(ModalContext);
   const { isSidepanelOpen, SidepanelChildren } = useContext(SidepanelContext);
+  const array: IInput[] = [
+    {
+      id: '1',
+      name: 'alejandro',
+      label: 'testando',
+      type: 'text',
+      value: 'test'
+    },
+    {
+      id: '2',
+      name: 'filipe',
+      label: 'feje programador',
+      type: 'text',
+      value: 'test2'
+    }
+  ];
+
+  const onSubmit = (array: IInput[]) => {
+    console.log(array);
+  };
+  if (true) {
+    return <TForm fields={array} onSubmitCallback={onSubmit} />;
+  }
 
   return (
     <ThemeProvider theme={defaultTheme}>
