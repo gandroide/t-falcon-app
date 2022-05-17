@@ -2,7 +2,6 @@ import { useContext, useState } from 'react';
 import GlobalStyles from './styles';
 import { ThemeProvider } from 'styled-components';
 import { Home } from './pages/home/Home';
-import 'react-datepicker/dist/react-datepicker.css';
 import { Route, Routes, useLocation } from 'react-router-dom';
 import { Login } from './pages/login';
 import { Admin } from './pages/admin';
