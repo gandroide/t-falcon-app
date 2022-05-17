@@ -2,7 +2,6 @@ import { useContext, useState } from 'react';
 import GlobalStyles from './styles';
 import { ThemeProvider } from 'styled-components';
 import { Home } from './pages/home/Home';
-import 'react-datepicker/dist/react-datepicker.css';
 import { Route, Routes, useLocation } from 'react-router-dom';
 import { Login } from './pages/login';
 import { Admin } from './pages/admin';
@@ -10,11 +9,12 @@ import { Birds } from './pages/birds/Birds';
 import { FormService } from './pages/formService';
 import { defaultTheme } from './styles/theme';
 import { TransitionGroup, CSSTransition } from 'react-transition-group';
-
 import { Modal } from './components/Modal';
 import { ModalContext } from './context/Modal';
 import { SidePanel } from './components/SidePanel/Index';
 import { SidepanelContext } from './context/Sidepanel';
+import { TForm } from './components/Form';
+import { IInput } from './interfaces';
 
 const App = () => {
   const [isloggedIn, setisloggedIn] = useState<boolean>(true);
@@ -24,6 +24,36 @@ const App = () => {
 
   const { modal } = useContext(ModalContext);
   const { isSidepanelOpen, SidepanelChildren } = useContext(SidepanelContext);
+  const array: IInput[] = [
+    {
+      id: '1',
+      name: 'alejandro',
+      label: 'testando',
+      type: 'text',
+      value: 'test'
+    },
+    {
+      id: '2',
+      name: 'filipe',
+      label: 'feje programador',
+      type: 'text',
+      value: 'test2'
+    },
+    {
+      id: '3',
+      name: 'falcoeiro',
+      label: 'empregado de T-falcon',
+      type: 'text',
+      value: 'test3'
+    }
+  ];
+
+  const onSubmit = (array: IInput[]) => {
+    console.log(array);
+  };
+  // if (true) {
+  //   return <TForm fields={array} onSubmitCallback={onSubmit} />;
+  // }
 
   return (
     <ThemeProvider theme={defaultTheme}>
