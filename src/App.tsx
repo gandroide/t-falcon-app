@@ -10,7 +10,6 @@ import { Birds } from './pages/birds/Birds';
 import { FormService } from './pages/formService';
 import { defaultTheme } from './styles/theme';
 import { TransitionGroup, CSSTransition } from 'react-transition-group';
-
 import { Modal } from './components/Modal';
 import { ModalContext } from './context/Modal';
 import { SidePanel } from './components/SidePanel/Index';
@@ -40,15 +39,22 @@ const App = () => {
       label: 'feje programador',
       type: 'text',
       value: 'test2'
+    },
+    {
+      id: '3',
+      name: 'falcoeiro',
+      label: 'empregado de T-falcon',
+      type: 'text',
+      value: 'test3'
     }
   ];
 
   const onSubmit = (array: IInput[]) => {
     console.log(array);
   };
-  if (true) {
-    return <TForm fields={array} onSubmitCallback={onSubmit} />;
-  }
+  // if (true) {
+  //   return <TForm fields={array} onSubmitCallback={onSubmit} />;
+  // }
 
   return (
     <ThemeProvider theme={defaultTheme}>

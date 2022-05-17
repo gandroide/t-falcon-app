@@ -1,10 +1,11 @@
 import styled from 'styled-components';
 
 export const StyledButton = styled.button`
-  background-color: #11ee71;
+  background-color: #085e3b;
   border-color: white;
   border-width: 0px;
-
+  color: white;
+  font-family: 'Baloo Tamma 2', cursive;
   position: relative;
 
   border: none;

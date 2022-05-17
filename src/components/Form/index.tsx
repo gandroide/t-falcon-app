@@ -2,7 +2,7 @@ import React, { FC, useState } from 'react';
 import reactSelect from 'react-select';
 import { IForm } from '../../interfaces';
 import { Button } from '../Button';
-import { FormContainer } from './style';
+import { FormContainer, InputsList } from './style';
 
 export const TForm: FC<IForm> = ({ fields, onSubmitCallback }) => {
   const [formInputs, setFormInputs] = useState(fields);
@@ -24,7 +24,7 @@ export const TForm: FC<IForm> = ({ fields, onSubmitCallback }) => {
     <FormContainer>
       {formInputs.map((i) => {
         return (
-          <>
+          <InputsList key={i.id}>
             <label>{i.label}</label>
             <input
               name={i.name}
@@ -32,7 +32,7 @@ export const TForm: FC<IForm> = ({ fields, onSubmitCallback }) => {
               type={i.type}
               value={i.value}
             />
-          </>
+          </InputsList>
         );
       })}
       <div>
