@@ -1,6 +1,7 @@
-import { useContext } from 'react';
+import { useContext, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import { Button } from '../../components/Button';
+import { app } from '../../config/firebase';
 import { ModalContext } from '../../context/Modal';
 import { SidepanelContext } from '../../context/Sidepanel';
 import { Container } from './Home.styles';
@@ -41,11 +42,20 @@ export const Home = ({ setSelectClient, selectValue }: any) => {
     });
   };
 
+  useEffect(() => {
+    app
+      .collection('birds')
+      .get()
+      .then((data) => {
+        console.log(data);
+      });
+  });
+
   return (
     <Container>
       <h3>Home</h3>
       <Button onClick={onConfirmPicagemHandler}>Registrar Picagem</Button>
-      <button onClick={onBirdRegisterHandler}>Registrar Ave</button>
+      <Button onClick={onBirdRegisterHandler}>Registrar Ave</Button>
       <Link to="/pesagem">Registar Peso</Link>
       <Link to="/relatorio">Relatorio de Serviço</Link>
       {/* <Select selected={selectValue} onChangeHandler={setSelectClient} options={clientes}></Select> */}

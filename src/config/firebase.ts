@@ -1,16 +1,13 @@
-import { initializeApp } from 'firebase/app';
-import { getDatabase } from 'firebase/database';
+import firebase from 'firebase';
+import 'firebase/firestore';
 
 const firebaseConfig = {
-    apiKey: "AIzaSyBqJCbzS9tD5KUEXI0hYCmeaYV77LTKbTs",
-    authDomain: "t-falcon.firebaseapp.com",
-    projectId: "t-falcon",
-    storageBucket: "t-falcon.appspot.com",
-    messagingSenderId: "742417808100",
-    appId: "1:742417808100:web:1daa04f3ca689a87d5caf1",
-    measurementId: "G-5CMG2KGNJ6"
+  apiKey: 'AIzaSyDv8WnnUMxrLtDVvotoVKuK7mfqjsQ_Gb4',
+  authDomain: 't-falcon-app.firebaseapp.com',
+  projectId: 't-falcon-app',
+  storageBucket: 't-falcon-app.appspot.com',
+  messagingSenderId: '654924976669',
+  appId: '1:654924976669:web:3348120f2d07ca37c82cf4'
 };
 
-const app = initializeApp(firebaseConfig);
-export const db = getDatabase(app);
-  
+export const app = firebase.initializeApp(firebaseConfig).firestore();
