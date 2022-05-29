@@ -1,17 +1,50 @@
-import { useContext, useEffect } from 'react';
+import { useCallback, useContext, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import { Button } from '../../components/Button';
+import { Form } from '../../components/Form';
 import { app } from '../../config/firebase';
 import { ModalContext } from '../../context/Modal';
 import { SidepanelContext } from '../../context/Sidepanel';
+import { IForm, IInput } from '../../interfaces';
 import { Container } from './Home.styles';
 
+const birdRegisterInputs: IInput[] = [
+  {
+    name: 'name',
+    label: 'Nome',
+    type: 'text',
+    value: '',
+    placeholder: 'Introduza nome da ave'
+  },
+  {
+    name: 'identification',
+    label: 'Anilha',
+    type: 'text',
+    value: '',
+    placeholder: 'Introduza anilha da ave'
+  }
+];
+
 const SidepanelChildren = () => {
+  const { onCloseSidepanelHandler } = useContext(SidepanelContext);
+
+  const onBirdRegisterHandler = useCallback<IForm['onSubmitCallback']>(
+    async (data) => {
+      try {
+        await app.collection('birds').add(data);
+        onCloseSidepanelHandler();
+      } catch (e) {
+        console.log(e);
+      }
+    },
+    [onCloseSidepanelHandler]
+  );
+
   return (
-    <div>
-      <h3>Hello world</h3>
-      <p>Sou o children do sidepanel</p>
-    </div>
+    <Form
+      fields={birdRegisterInputs}
+      onSubmitCallback={onBirdRegisterHandler}
+    />
   );
 };
 
@@ -42,15 +75,6 @@ export const Home = ({ setSelectClient, selectValue }: any) => {
     });
   };
 
-  useEffect(() => {
-    app
-      .collection('birds')
-      .get()
-      .then((data) => {
-        console.log(data);
-      });
-  });
-
   return (
     <Container>
       <h3>Home</h3>
@@ -58,7 +82,6 @@ export const Home = ({ setSelectClient, selectValue }: any) => {
       <Button onClick={onBirdRegisterHandler}>Registrar Ave</Button>
       <Link to="/pesagem">Registar Peso</Link>
       <Link to="/relatorio">Relatorio de Serviço</Link>
-      {/* <Select selected={selectValue} onChangeHandler={setSelectClient} options={clientes}></Select> */}
       <Link to="/">Back</Link>
     </Container>
   );

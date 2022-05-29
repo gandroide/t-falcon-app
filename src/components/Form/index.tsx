@@ -1,10 +1,10 @@
 import React, { FC, useState } from 'react';
 import reactSelect from 'react-select';
-import { IForm } from '../../interfaces';
+import { IForm, ISubmitData } from '../../interfaces';
 import { Button } from '../Button';
 import { FormContainer, InputsList } from './style';
 
-export const TForm: FC<IForm> = ({ fields, onSubmitCallback }) => {
+export const Form: FC<IForm> = ({ fields, onSubmitCallback }) => {
   const [formInputs, setFormInputs] = useState(fields);
 
   const onChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -15,22 +15,29 @@ export const TForm: FC<IForm> = ({ fields, onSubmitCallback }) => {
   };
 
   const onSubmitHandler = (e: React.FormEvent) => {
-    console.log(e);
     e.preventDefault();
-    onSubmitCallback(formInputs);
+
+    const data: ISubmitData = {};
+
+    formInputs.forEach(({ name, value }) => {
+      data[name] = value;
+    });
+
+    onSubmitCallback(data);
   };
 
   return (
     <FormContainer>
       {formInputs.map((i) => {
         return (
-          <InputsList key={i.id}>
+          <InputsList key={i.name}>
             <label>{i.label}</label>
             <input
               name={i.name}
               onChange={onChange}
               type={i.type}
               value={i.value}
+              placeholder={i.placeholder}
             />
           </InputsList>
         );

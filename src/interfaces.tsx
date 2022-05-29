@@ -1,13 +1,17 @@
 export interface IInput {
-  id: string;
   name: string;
   label: string;
   type: string;
   value: string;
+  placeholder?: string;
   data?: 'soasnfabf';
+}
+
+export interface ISubmitData {
+  [key: string]: string;
 }
 
 export interface IForm {
   fields: IInput[];
-  onSubmitCallback: (fields: IInput[]) => void;
+  onSubmitCallback: (fields: ISubmitData) => void;
 }
