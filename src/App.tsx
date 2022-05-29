@@ -52,7 +52,7 @@ const App = () => {
     console.log(array);
   };
   // if (true) {
-  //   return <TForm fields={array} onSubmitCallback={onSubmit} />;
+  //   return <Login />;
   // }
 
   return (

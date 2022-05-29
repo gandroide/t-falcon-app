@@ -1,5 +1,5 @@
 // import { child, onValue, push, ref, update, remove, query, equalTo, limitToFirst, get } from 'firebase/database';
-// import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState } from 'react';
 // import { db } from '../../config/firebase';
 
 // const birdData = {
