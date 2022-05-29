@@ -1,12 +1,19 @@
 import { useCallback, useContext, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import { Button } from '../../components/Button';
+import { FooterBar } from '../../components/Footer';
 import { Form } from '../../components/Form';
 import { app } from '../../config/firebase';
 import { ModalContext } from '../../context/Modal';
 import { SidepanelContext } from '../../context/Sidepanel';
 import { IForm, IInput } from '../../interfaces';
-import { Container } from './Home.styles';
+import {
+  Container,
+  MenuContainer,
+  MenuItem,
+  TopBar,
+  TopBarInfo
+} from './Home.styles';
 
 const birdRegisterInputs: IInput[] = [
   {
@@ -77,12 +84,32 @@ export const Home = ({ setSelectClient, selectValue }: any) => {
 
   return (
     <Container>
-      <h3>Home</h3>
-      <Button onClick={onConfirmPicagemHandler}>Registrar Picagem</Button>
-      <Button onClick={onBirdRegisterHandler}>Registrar Ave</Button>
-      <Link to="/pesagem">Registar Peso</Link>
-      <Link to="/relatorio">Relatorio de Serviço</Link>
-      <Link to="/">Back</Link>
+      <TopBar>
+        <h2>Home</h2>
+        <TopBarInfo>
+          <h2>T-Falcon</h2>
+          <h2>Username</h2>
+        </TopBarInfo>
+      </TopBar>
+      <MenuContainer>
+        <MenuItem>
+          <Button onClick={onConfirmPicagemHandler}>Registrar Picagem</Button>
+        </MenuItem>
+        <MenuItem>
+          <Button onClick={onBirdRegisterHandler}>Adicionar Pesagem</Button>
+        </MenuItem>
+        <MenuItem>
+          <Link to="/pesagem">Registar Peso</Link>
+        </MenuItem>
+        <MenuItem>
+          <Link to="/relatorio">Relatorio de Serviço</Link>
+        </MenuItem>
+        {/* <Select selected={selectValue} onChangeHandler={setSelectClient} options={clientes}></Select> */}
+        <MenuItem>
+          <Link to="/">Back</Link>
+        </MenuItem>
+      </MenuContainer>
+      <FooterBar></FooterBar>
     </Container>
   );
 };
