@@ -5,6 +5,7 @@ import { FooterBar } from '../../components/Footer';
 import { app } from '../../config/firebase';
 import { ModalContext } from '../../context/Modal';
 import { SidepanelContext } from '../../context/Sidepanel';
+import { Pesagem } from '../pesagem';
 import {
   Container,
   MenuContainer,
@@ -14,12 +15,7 @@ import {
 } from './Home.styles';
 
 const SidepanelChildren = () => {
-  return (
-    <div>
-      <h3>Hello world</h3>
-      <p>Sou o children do sidepanel</p>
-    </div>
-  );
+  return <Pesagem />;
 };
 
 export const Home = ({ setSelectClient, selectValue }: any) => {
