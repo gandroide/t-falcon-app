@@ -15,3 +15,9 @@ export interface IForm {
   fields: IInput[];
   onSubmitCallback: (fields: ISubmitData) => void;
 }
+
+export interface IBirdData {
+  id: string;
+  name: string;
+  identification: string;
+}

@@ -1,4 +1,4 @@
-import { useCallback, useContext, useEffect } from 'react';
+import { useCallback, useContext, useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
 import { Button } from '../../components/Button';
 import { FooterBar } from '../../components/Footer';
@@ -6,7 +6,7 @@ import { Form } from '../../components/Form';
 import { app } from '../../config/firebase';
 import { ModalContext } from '../../context/Modal';
 import { SidepanelContext } from '../../context/Sidepanel';
-import { IForm, IInput } from '../../interfaces';
+import { IBirdData, IForm, IInput } from '../../interfaces';
 import {
   Container,
   MenuContainer,
@@ -58,6 +58,7 @@ const SidepanelChildren = () => {
 export const Home = ({ setSelectClient, selectValue }: any) => {
   const { onSetModalHandler } = useContext(ModalContext);
   const { onOpenSidepanelHandler } = useContext(SidepanelContext);
+  const [birds, setBirds] = useState<IBirdData[]>([]);
 
   const onRegisterPicagemHandler = () => {
     // fazer pedido para registar picagem
@@ -81,6 +82,22 @@ export const Home = ({ setSelectClient, selectValue }: any) => {
       SidepanelChildren: <SidepanelChildren />
     });
   };
+
+  useEffect(() => {
+    app.collection('birds').onSnapshot((doc) => {
+      const birds: IBirdData[] = [];
+
+      doc.docs.forEach((doc) => {
+        birds.push({
+          id: doc.id,
+          name: doc.data().name,
+          identification: doc.data().identification
+        });
+      });
+
+      setBirds(birds);
+    });
+  }, []);
 
   return (
     <Container>
@@ -108,6 +125,11 @@ export const Home = ({ setSelectClient, selectValue }: any) => {
         <MenuItem>
           <Link to="/">Back</Link>
         </MenuItem>
+        {birds.map(({ id, name, identification }) => (
+          <div>
+            {id} - {name} - {identification}
+          </div>
+        ))}
       </MenuContainer>
       <FooterBar></FooterBar>
     </Container>
