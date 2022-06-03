@@ -3,7 +3,7 @@ export interface IInput {
   label: string;
   type: string;
   value: string;
-  placeholder?: string;
+  placeholder: string;
   data?: 'soasnfabf';
 }
 
@@ -20,4 +20,10 @@ export interface IBirdData {
   id: string;
   name: string;
   identification: string;
+}
+
+export interface IUserData {
+  id: string;
+  nome: string;
+  email: string;
 }

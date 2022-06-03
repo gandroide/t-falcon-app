@@ -16,8 +16,8 @@ import { SidepanelContext } from './context/Sidepanel';
 import { IInput } from './interfaces';
 
 const App = () => {
-  const [isloggedIn, setisloggedIn] = useState<boolean>(false);
-  const [admin, setAdmin] = useState<boolean>(false);
+  const [isloggedIn, setisloggedIn] = useState<boolean>(true);
+  const [admin, setAdmin] = useState<boolean>(true);
 
   let location = useLocation();
 
