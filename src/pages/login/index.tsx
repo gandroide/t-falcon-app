@@ -1,25 +1,45 @@
-import React from 'react';
+import React, { useCallback } from 'react';
 import { Button } from '../../components/Button';
+import { Form } from '../../components/Form';
+import { appAuth } from '../../config/firebase';
+import { IForm, IInput } from '../../interfaces';
 import { CircularContainer, Container, InitialImage } from './Login.styles';
 
+const loginUserFields: IInput[] = [
+  {
+    label: 'Email',
+    name: 'email',
+    placeholder: 'Introduza o seu email',
+    type: 'text',
+    value: ''
+  },
+  {
+    label: 'Password',
+    name: 'password',
+    placeholder: 'Introduza a sua password',
+    type: 'password',
+    value: ''
+  }
+];
+
 export const Login = () => {
+  const onLoginHandler = useCallback<IForm['onSubmitCallback']>(
+    async (fields) => {
+      const user = await appAuth.signInWithEmailAndPassword(
+        fields['email'],
+        fields['password']
+      );
+      console.log(user);
+    },
+    []
+  );
+
   return (
     <Container>
       <CircularContainer>
         <InitialImage src="./tfalcon.jpg" style={{ width: '100%' }} alt="" />
       </CircularContainer>
-      <h3>Sign In</h3>
-      <Container>
-        <label htmlFor="">Email</label>
-        <input type="text" />
-      </Container>
-      <Container>
-        <label htmlFor="">Password</label>
-        <input type="password" />
-      </Container>
-      <Container>
-        <Button>Sign in</Button>
-      </Container>
+      <Form fields={loginUserFields} onSubmitCallback={onLoginHandler} />
     </Container>
   );
 };

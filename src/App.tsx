@@ -1,28 +1,34 @@
-import { useContext, useState } from 'react';
+import { useContext, useEffect, useState } from 'react';
 import GlobalStyles from './styles';
 import { ThemeProvider } from 'styled-components';
 import { Home } from './pages/home/Home';
-import { Route, Routes, useLocation } from 'react-router-dom';
+import { Route, Routes } from 'react-router-dom';
 import { Login } from './pages/login';
 import { Admin } from './pages/admin';
 import { Birds } from './pages/birds/Birds';
 import { FormService } from './pages/formService';
 import { defaultTheme } from './styles/theme';
-import { TransitionGroup, CSSTransition } from 'react-transition-group';
 import { Modal } from './components/Modal';
 import { ModalContext } from './context/Modal';
 import { SidePanel } from './components/SidePanel/Index';
 import { SidepanelContext } from './context/Sidepanel';
-import { IInput } from './interfaces';
+import { appAuth } from './config/firebase';
 
 const App = () => {
-  const [isloggedIn, setisloggedIn] = useState<boolean>(true);
+  const [isloggedIn, setisloggedIn] = useState<boolean>(false);
   const [admin, setAdmin] = useState<boolean>(true);
-
-  let location = useLocation();
 
   const { modal } = useContext(ModalContext);
   const { isSidepanelOpen, SidepanelChildren } = useContext(SidepanelContext);
+
+  useEffect(() => {
+    const unsub = appAuth.onAuthStateChanged((user) => {
+      if (user) {
+        setisloggedIn(true);
+      }
+      unsub();
+    });
+  }, []);
 
   return (
     <ThemeProvider theme={defaultTheme}>
@@ -30,21 +36,17 @@ const App = () => {
       <Modal {...modal} />
       <SidePanel openPanel={isSidepanelOpen}>{SidepanelChildren}</SidePanel>
       <h3 className="test">T-Falcon</h3>
-      <TransitionGroup component={null}>
-        <CSSTransition key={location.pathname} classNames="fade" timeout={250}>
-          <Routes location={location}>
-            {!isloggedIn && <Route path="/" element={<Login />} />}
-            {isloggedIn && !admin && (
-              <>
-                <Route path="/" element={<Home />} />
-                <Route path="/pesagem" element={<Birds />} />
-                <Route path="/relatorio" element={<FormService />}></Route>
-              </>
-            )}
-            {isloggedIn && admin && <Route path="/" element={<Admin />} />}
-          </Routes>
-        </CSSTransition>
-      </TransitionGroup>
+      <Routes>
+        {!isloggedIn && <Route path="/" element={<Login />} />}
+        {isloggedIn && !admin && (
+          <>
+            <Route path="/" element={<Home />} />
+            <Route path="/pesagem" element={<Birds />} />
+            <Route path="/relatorio" element={<FormService />}></Route>
+          </>
+        )}
+        {isloggedIn && admin && <Route path="/" element={<Admin />} />}
+      </Routes>
     </ThemeProvider>
   );
 };
