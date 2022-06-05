@@ -38,13 +38,13 @@ const AddUserForm = () => {
         data['password']
       );
 
-      if (!res) {
+      if (!res || !res.user) {
         throw new Error('Could not complete signup');
       }
 
-      await res.user?.updateProfile({ displayName: data['displayName'] });
+      await res.user.updateProfile({ displayName: data['displayName'] });
 
-      app.collection('users').add({
+      app.collection('users').doc(res.user.uid).set({
         email: data['email'],
         nome: data['displayName']
       });

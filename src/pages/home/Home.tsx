@@ -59,7 +59,7 @@ const SidepanelChildren = () => {
 export const Home = ({ setSelectClient, selectValue }: any) => {
   const { onSetModalHandler } = useContext(ModalContext);
   const { onOpenSidepanelHandler } = useContext(SidepanelContext);
-  const { onLogoutHandler } = useContext(AuthContext);
+  const { onLogoutHandler, user } = useContext(AuthContext);
   const [birds, setBirds] = useState<IBirdData[]>([]);
 
   const onRegisterPicagemHandler = () => {
@@ -107,7 +107,7 @@ export const Home = ({ setSelectClient, selectValue }: any) => {
         <h2>Home</h2>
         <TopBarInfo>
           <h2>T-Falcon</h2>
-          <h2>Username</h2>
+          <h2>{user.displayName}</h2>
         </TopBarInfo>
       </TopBar>
       <MenuContainer>
