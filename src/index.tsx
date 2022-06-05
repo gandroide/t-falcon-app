@@ -7,16 +7,19 @@ import { BrowserRouter } from 'react-router-dom';
 
 import { ModalProvider } from './context/Modal';
 import { SidepanelProvider } from './context/Sidepanel';
+import { AuthProvider } from './context/Auth';
 
 ReactDOM.render(
   <React.StrictMode>
-    <SidepanelProvider>
-      <ModalProvider>
-        <BrowserRouter>
-          <App />
-        </BrowserRouter>
-      </ModalProvider>
-    </SidepanelProvider>
+    <AuthProvider>
+      <SidepanelProvider>
+        <ModalProvider>
+          <BrowserRouter>
+            <App />
+          </BrowserRouter>
+        </ModalProvider>
+      </SidepanelProvider>
+    </AuthProvider>
   </React.StrictMode>,
   document.getElementById('root')
 );

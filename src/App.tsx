@@ -12,23 +12,31 @@ import { Modal } from './components/Modal';
 import { ModalContext } from './context/Modal';
 import { SidePanel } from './components/SidePanel/Index';
 import { SidepanelContext } from './context/Sidepanel';
-import { appAuth } from './config/firebase';
+import { AuthContext } from './context/Auth';
 
 const App = () => {
-  const [isloggedIn, setisloggedIn] = useState<boolean>(false);
-  const [admin, setAdmin] = useState<boolean>(true);
-
   const { modal } = useContext(ModalContext);
   const { isSidepanelOpen, SidepanelChildren } = useContext(SidepanelContext);
+  const {
+    user: { isLoggedIn, isAdmin, isAuthReady }
+  } = useContext(AuthContext);
 
-  useEffect(() => {
-    const unsub = appAuth.onAuthStateChanged((user) => {
-      if (user) {
-        setisloggedIn(true);
-      }
-      unsub();
-    });
-  }, []);
+  if (!isAuthReady) {
+    return (
+      <div
+        style={{
+          position: 'fixed',
+          top: 0,
+          left: 0,
+          width: '100%',
+          height: '100%',
+          background: 'rgba(0, 0, 0, 0.5)'
+        }}
+      >
+        Loading ...
+      </div>
+    );
+  }
 
   return (
     <ThemeProvider theme={defaultTheme}>
@@ -37,15 +45,15 @@ const App = () => {
       <SidePanel openPanel={isSidepanelOpen}>{SidepanelChildren}</SidePanel>
       <h3 className="test">T-Falcon</h3>
       <Routes>
-        {!isloggedIn && <Route path="/" element={<Login />} />}
-        {isloggedIn && !admin && (
+        {!isLoggedIn && <Route path="/" element={<Login />} />}
+        {isLoggedIn && !isAdmin && (
           <>
             <Route path="/" element={<Home />} />
             <Route path="/pesagem" element={<Birds />} />
             <Route path="/relatorio" element={<FormService />}></Route>
           </>
         )}
-        {isloggedIn && admin && <Route path="/" element={<Admin />} />}
+        {isLoggedIn && isAdmin && <Route path="/" element={<Admin />} />}
       </Routes>
     </ThemeProvider>
   );

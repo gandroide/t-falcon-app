@@ -4,6 +4,7 @@ import { Button } from '../../components/Button';
 import { FooterBar } from '../../components/Footer';
 import { Form } from '../../components/Form';
 import { app } from '../../config/firebase';
+import { AuthContext } from '../../context/Auth';
 import { ModalContext } from '../../context/Modal';
 import { SidepanelContext } from '../../context/Sidepanel';
 import { IBirdData, IForm, IInput } from '../../interfaces';
@@ -58,6 +59,7 @@ const SidepanelChildren = () => {
 export const Home = ({ setSelectClient, selectValue }: any) => {
   const { onSetModalHandler } = useContext(ModalContext);
   const { onOpenSidepanelHandler } = useContext(SidepanelContext);
+  const { onLogoutHandler } = useContext(AuthContext);
   const [birds, setBirds] = useState<IBirdData[]>([]);
 
   const onRegisterPicagemHandler = () => {
@@ -109,6 +111,9 @@ export const Home = ({ setSelectClient, selectValue }: any) => {
         </TopBarInfo>
       </TopBar>
       <MenuContainer>
+        <MenuItem>
+          <Button onClick={onLogoutHandler}>Logout</Button>
+        </MenuItem>
         <MenuItem>
           <Button onClick={onConfirmPicagemHandler}>Registrar Picagem</Button>
         </MenuItem>
