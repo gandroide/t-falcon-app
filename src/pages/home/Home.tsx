@@ -1,9 +1,10 @@
 import { useCallback, useContext, useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
+import moment from 'moment';
 import { Button } from '../../components/Button';
 import { FooterBar } from '../../components/Footer';
 import { Form } from '../../components/Form';
-import { app } from '../../config/firebase';
+import { app, appTimestamp } from '../../config/firebase';
 import { AuthContext } from '../../context/Auth';
 import { ModalContext } from '../../context/Modal';
 import { SidepanelContext } from '../../context/Sidepanel';
@@ -62,20 +63,56 @@ export const Home = ({ setSelectClient, selectValue }: any) => {
   const { onLogoutHandler, user } = useContext(AuthContext);
   const [birds, setBirds] = useState<IBirdData[]>([]);
 
-  const onRegisterPicagemHandler = () => {
-    // fazer pedido para registar picagem
-    console.log('Registar Picagem');
+  const onRegisterPicagemHandler = (id?: string) => {
+    if (id) {
+      app
+        .collection('user_registry')
+        .doc(id)
+        .update({
+          leaveDate: appTimestamp.fromDate(new Date())
+        });
+    } else {
+      app.collection('user_registry').add({
+        userId: user.userId,
+        displayName: user.displayName,
+        entryDate: appTimestamp.fromDate(new Date())
+      });
+    }
   };
 
   const onConfirmPicagemHandler = () => {
-    onSetModalHandler({
-      isOpen: true,
-      type: 'info',
-      title: 'Registar Picagem',
-      description: 'Clique no botão confirmar para registar a sua picagem',
-      onConfirmCallback: onRegisterPicagemHandler,
-      onCloseCallback: null
-    });
+    const currentDate = moment().format('L');
+    const nextDate = moment().add(1, 'days').format('L');
+
+    app
+      .collection('user_registry')
+      .where('userId', '==', user.userId)
+      .where('entryDate', '>', new Date(currentDate))
+      .where('entryDate', '<', new Date(nextDate))
+      .limit(1)
+      .get()
+      .then((value) => {
+        if (value.empty) {
+          onSetModalHandler({
+            isOpen: true,
+            type: 'info',
+            title: 'Registar Entrada',
+            description:
+              'Clique no botão confirmar para registar a sua entrada',
+            onConfirmCallback: onRegisterPicagemHandler,
+            onCloseCallback: null
+          });
+        } else {
+          onSetModalHandler({
+            isOpen: true,
+            type: 'info',
+            title: 'Registar Saída',
+            description: 'Clique no botão confirmar para registar a sua saída',
+            onConfirmCallback: () => onRegisterPicagemHandler(value.docs[0].id),
+            onCloseCallback: null
+          });
+        }
+      });
   };
 
   const onBirdRegisterHandler = () => {

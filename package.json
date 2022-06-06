@@ -10,6 +10,7 @@
     "@types/node": "^12.20.48",
     "firebase": "8.5",
     "install": "^0.13.0",
+    "moment": "^2.29.3",
     "particles-bg": "^2.5.5",
     "react": "^17.0.0",
     "react-dom": "^17.0.0",
