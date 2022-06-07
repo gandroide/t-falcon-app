@@ -13,6 +13,8 @@ import { ModalContext } from './context/Modal';
 import { SidePanel } from './components/SidePanel/Index';
 import { SidepanelContext } from './context/Sidepanel';
 import { AuthContext } from './context/Auth';
+import { Navbar } from './components/Navbar';
+import { UserRegistry } from './pages/UserRegistry';
 
 const App = () => {
   const { modal } = useContext(ModalContext);
@@ -43,14 +45,15 @@ const App = () => {
       <GlobalStyles />
       <Modal {...modal} />
       <SidePanel openPanel={isSidepanelOpen}>{SidepanelChildren}</SidePanel>
-      <h3 className="test">T-Falcon</h3>
+      <Navbar />
       <Routes>
         {!isLoggedIn && <Route path="/" element={<Login />} />}
         {isLoggedIn && !isAdmin && (
           <>
             <Route path="/" element={<Home />} />
             <Route path="/pesagem" element={<Birds />} />
-            <Route path="/relatorio" element={<FormService />}></Route>
+            <Route path="/relatorio" element={<FormService />} />
+            <Route path="/user_registry" element={<UserRegistry />} />
           </>
         )}
         {isLoggedIn && isAdmin && <Route path="/" element={<Admin />} />}
