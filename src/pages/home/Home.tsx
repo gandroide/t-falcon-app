@@ -88,7 +88,7 @@ export const Home = ({ setSelectClient, selectValue }: any) => {
       .collection('user_registry')
       .where('userId', '==', user.userId)
       .where('entryDate', '>', new Date(currentDate))
-      .where('entryDate', '<', new Date(nextDate))
+      .where('entryDate', '<=', new Date(nextDate))
       .limit(1)
       .get()
       .then((value) => {

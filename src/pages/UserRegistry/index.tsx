@@ -1,21 +1,40 @@
 import moment from 'moment';
-import { useCallback, useContext, useEffect, useMemo, useState } from 'react';
+import { useCallback, useContext, useEffect, useState } from 'react';
+import { FaRegTrashAlt } from 'react-icons/fa';
+import { Table } from '../../components/Table';
 import { app } from '../../config/firebase';
 import { AuthContext } from '../../context/Auth';
 import { PageContainer } from './styled';
 
 interface UserRegistryData {
   id: string;
-  date: string;
+  data: string;
   entrada: string;
   saida: string;
 }
 
-const secondsToDate = (seconds: number) => new Date(seconds * 1000);
+interface UserRegistryActions {
+  callback: (id: string) => void;
+  icon: React.ReactNode;
+}
 
-const formattedDate = (date: Date) => moment(date).format('L');
+const secondsToDate = (seconds?: number) => {
+  if (seconds) {
+    return new Date(seconds * 1000);
+  }
+};
 
-const formattedTime = (date: Date) => moment(date).format('LT');
+const formattedDate = (date?: Date) => {
+  if (date) {
+    return moment(date).format('L');
+  }
+};
+
+const formattedTime = (date?: Date) => {
+  if (date) {
+    return moment(date).format('LT');
+  }
+};
 
 export const UserRegistry = () => {
   const { user } = useContext(AuthContext);
@@ -26,23 +45,22 @@ export const UserRegistry = () => {
     app
       .collection('user_registry')
       .where('userId', '==', user.userId)
-      .get()
-      .then((onSnapshot) => {
+      .onSnapshot((onSnapshot) => {
         if (onSnapshot.empty) return;
 
         const userRegistryData: UserRegistryData[] = [];
 
         onSnapshot.forEach((doc) => {
-          const entry = secondsToDate(doc.data().entryDate.seconds);
-          const leave = secondsToDate(doc.data().leaveDate.seconds);
+          const entry = secondsToDate(doc.data().entryDate?.seconds);
+          const leave = secondsToDate(doc.data().leaveDate?.seconds);
           const date = formattedDate(entry);
           const entryTime = formattedTime(entry);
           const leaveTime = formattedTime(leave);
           userRegistryData.push({
             id: doc.id,
-            date,
-            entrada: entryTime,
-            saida: leaveTime
+            data: date ?? '-',
+            entrada: entryTime ?? '-',
+            saida: leaveTime ?? '-'
           });
         });
 
@@ -51,20 +69,40 @@ export const UserRegistry = () => {
       });
   }, [user.userId]);
 
+  const onDeleteRegistryHandler = (rowData: UserRegistryData) => {
+    app
+      .collection('user_registry')
+      .doc(rowData.id)
+      .delete()
+      .then(() => {
+        const stateCopy = [...userRegistry];
+        const itemIndex = stateCopy.findIndex(
+          (registry) => registry.id === rowData.id
+        );
+        stateCopy.splice(itemIndex, 1);
+        console.log(stateCopy);
+        setUserRegistry(stateCopy);
+      })
+      .catch((e) => console.log('Error removind registry'));
+  };
+
   useEffect(() => {
     getUserRegistry();
   }, [getUserRegistry]);
 
-  //   if (userRegistry.length) {
-  //     const tableHeader = Object.keys(userRegistry[0]).map((data) => data);
-
-  //     console.log(tableHeader);
-  //   }
-
   return (
     <PageContainer>
-      <h1>Picagens</h1>
-      {isLoading ? <p>Loading...</p> : <div>Tabela</div>}
+      <h1>Registos de Picagem</h1>
+      {isLoading || !userRegistry.length ? (
+        <p>Loading...</p>
+      ) : (
+        <Table<UserRegistryData>
+          data={userRegistry}
+          tableActions={[
+            { callback: onDeleteRegistryHandler, icon: <FaRegTrashAlt /> }
+          ]}
+        />
+      )}
     </PageContainer>
   );
 };

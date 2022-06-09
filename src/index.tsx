@@ -4,7 +4,7 @@ import App from './App';
 import * as serviceWorkerRegistration from './serviceWorkerRegistration';
 import reportWebVitals from './reportWebVitals';
 import { BrowserRouter } from 'react-router-dom';
-import 'moment/locale/pt';
+// import 'moment/locale/pt';
 
 import { ModalProvider } from './context/Modal';
 import { SidepanelProvider } from './context/Sidepanel';
