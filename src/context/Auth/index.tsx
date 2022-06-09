@@ -51,7 +51,7 @@ type AuthActions = LoginAction | AuthChangeAction | LogoutAction;
 
 const initialState: IAuthState = {
   isLoggedIn: false,
-  isAdmin: false,
+  isAdmin: true,
   isAuthReady: false,
   displayName: '',
   userId: null
@@ -81,7 +81,7 @@ const authReducer = (
       return {
         ...state,
         isLoggedIn: true,
-        isAdmin: false,
+        // isAdmin: false,
         displayName: payload['displayName'],
         userId: payload['userId'],
         isAuthReady: true

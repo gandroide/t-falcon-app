@@ -4,19 +4,8 @@ import { FaRegTrashAlt } from 'react-icons/fa';
 import { Table } from '../../components/Table';
 import { app } from '../../config/firebase';
 import { AuthContext } from '../../context/Auth';
+import { UserRegistryData } from '../../interfaces';
 import { PageContainer } from './styled';
-
-interface UserRegistryData {
-  id: string;
-  data: string;
-  entrada: string;
-  saida: string;
-}
-
-interface UserRegistryActions {
-  callback: (id: string) => void;
-  icon: React.ReactNode;
-}
 
 const secondsToDate = (seconds?: number) => {
   if (seconds) {

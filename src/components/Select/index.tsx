@@ -1,19 +1,19 @@
-import { FC } from "react";
-import { CustomSelect } from "./styled";
+import { FC, useCallback } from 'react';
+import { OnChangeValue } from 'react-select';
+import { CustomSelect } from './styled';
+import { ISelectOption, ISelectProps } from '../../interfaces';
 
-interface ISelectProps {
-    options: {label: string, value: string, name: string}[];
-    onChangeHandler: any;
-    selected: any;
-}
-
-export const Select: FC<ISelectProps> = ({ options, onChangeHandler, selected }) => {
-    return (
-        <CustomSelect 
-            onChange={(option)=>onChangeHandler(option)}
-            options={options}
-            classNamePrefix="Select"
-            defaultValue={selected}
-        />
-    )
-}
+export const Select: FC<ISelectProps> = ({
+  options,
+  onChangeHandler,
+  selected
+}) => {
+  return (
+    <CustomSelect
+      onChange={(option) => onChangeHandler(option as ISelectOption)}
+      options={options}
+      classNamePrefix="Select"
+      defaultValue={selected}
+    />
+  );
+};
