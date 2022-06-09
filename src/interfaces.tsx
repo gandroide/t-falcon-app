@@ -18,8 +18,8 @@ export interface IForm {
 
 export interface IBirdData {
   id: string;
-  name: string;
-  identification: string;
+  nome: string;
+  identificação: string;
 }
 
 export interface IUserData {

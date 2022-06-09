@@ -1,5 +1,4 @@
 import React, { FC, useState } from 'react';
-import reactSelect from 'react-select';
 import { IForm, ISubmitData } from '../../interfaces';
 import { Button } from '../Button';
 import { FormContainer, InputsList } from './style';

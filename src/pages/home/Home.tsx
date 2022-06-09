@@ -17,51 +17,9 @@ import {
   TopBarInfo
 } from './Home.styles';
 
-const birdRegisterInputs: IInput[] = [
-  {
-    name: 'name',
-    label: 'Nome',
-    type: 'text',
-    value: '',
-    placeholder: 'Introduza nome da ave'
-  },
-  {
-    name: 'identification',
-    label: 'Anilha',
-    type: 'text',
-    value: '',
-    placeholder: 'Introduza anilha da ave'
-  }
-];
-
-const SidepanelChildren = () => {
-  const { onCloseSidepanelHandler } = useContext(SidepanelContext);
-
-  const onBirdRegisterHandler = useCallback<IForm['onSubmitCallback']>(
-    async (data) => {
-      try {
-        await app.collection('birds').add(data);
-        onCloseSidepanelHandler();
-      } catch (e) {
-        console.log(e);
-      }
-    },
-    [onCloseSidepanelHandler]
-  );
-
-  return (
-    <Form
-      fields={birdRegisterInputs}
-      onSubmitCallback={onBirdRegisterHandler}
-    />
-  );
-};
-
 export const Home = ({ setSelectClient, selectValue }: any) => {
   const { onSetModalHandler } = useContext(ModalContext);
-  const { onOpenSidepanelHandler } = useContext(SidepanelContext);
   const { onLogoutHandler, user } = useContext(AuthContext);
-  const [birds, setBirds] = useState<IBirdData[]>([]);
 
   const onRegisterPicagemHandler = (id?: string) => {
     if (id) {
@@ -115,29 +73,6 @@ export const Home = ({ setSelectClient, selectValue }: any) => {
       });
   };
 
-  const onBirdRegisterHandler = () => {
-    onOpenSidepanelHandler({
-      isOpen: true,
-      SidepanelChildren: <SidepanelChildren />
-    });
-  };
-
-  useEffect(() => {
-    app.collection('birds').onSnapshot((doc) => {
-      const birds: IBirdData[] = [];
-
-      doc.docs.forEach((doc) => {
-        birds.push({
-          id: doc.id,
-          name: doc.data().name,
-          identification: doc.data().identification
-        });
-      });
-
-      setBirds(birds);
-    });
-  }, []);
-
   return (
     <Container>
       <TopBar>
@@ -155,9 +90,6 @@ export const Home = ({ setSelectClient, selectValue }: any) => {
           <Button onClick={onConfirmPicagemHandler}>Registrar Picagem</Button>
         </MenuItem>
         <MenuItem>
-          <Button onClick={onBirdRegisterHandler}>Adicionar Pesagem</Button>
-        </MenuItem>
-        <MenuItem>
           <Link to="/pesagem">Registar Peso</Link>
         </MenuItem>
         <MenuItem>
@@ -167,11 +99,6 @@ export const Home = ({ setSelectClient, selectValue }: any) => {
         <MenuItem>
           <Link to="/">Back</Link>
         </MenuItem>
-        {birds.map(({ id, name, identification }) => (
-          <div>
-            {id} - {name} - {identification}
-          </div>
-        ))}
       </MenuContainer>
       <FooterBar></FooterBar>
     </Container>
