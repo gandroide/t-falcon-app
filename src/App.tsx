@@ -5,7 +5,7 @@ import { Home } from './pages/home/Home';
 import { Route, Routes } from 'react-router-dom';
 import { Login } from './pages/login';
 import { Admin } from './pages/admin';
-import { Birds } from './pages/birds/Birds';
+import { Birds } from './pages/Birds';
 import { FormService } from './pages/formService';
 import { defaultTheme } from './styles/theme';
 import { Modal } from './components/Modal';
