@@ -1,14 +1,12 @@
-import { useCallback, useContext, useEffect, useState } from 'react';
+import { useContext } from 'react';
 import { Link } from 'react-router-dom';
 import moment from 'moment';
 import { Button } from '../../components/Button';
 import { FooterBar } from '../../components/Footer';
-import { Form } from '../../components/Form';
 import { app, appTimestamp } from '../../config/firebase';
 import { AuthContext } from '../../context/Auth';
 import { ModalContext } from '../../context/Modal';
 import { SidepanelContext } from '../../context/Sidepanel';
-import { IBirdData, IForm, IInput } from '../../interfaces';
 import {
   Container,
   MenuContainer,
@@ -16,8 +14,11 @@ import {
   TopBar,
   TopBarInfo
 } from './Home.styles';
+import { BirdWeightForm } from '../../containers/BirdWeightForm';
+import { IBirdData } from '../../interfaces';
 
-export const Home = ({ setSelectClient, selectValue }: any) => {
+export const Home = () => {
+  const { onOpenSidepanelHandler } = useContext(SidepanelContext);
   const { onSetModalHandler } = useContext(ModalContext);
   const { onLogoutHandler, user } = useContext(AuthContext);
 
@@ -73,6 +74,30 @@ export const Home = ({ setSelectClient, selectValue }: any) => {
       });
   };
 
+  const onWeightRegisterHandler = () => {
+    app
+      .collection('birds')
+      .get()
+      .then((docs) => {
+        if (docs.empty) return;
+
+        const birdsData: IBirdData[] = [];
+
+        docs.forEach((doc) => {
+          birdsData.push({
+            id: doc.id,
+            identificação: doc.data()['identificação'],
+            nome: doc.data().nome
+          });
+        });
+
+        onOpenSidepanelHandler({
+          isOpen: true,
+          SidepanelChildren: <BirdWeightForm birdsData={birdsData} />
+        });
+      });
+  };
+
   return (
     <Container>
       <TopBar>
@@ -90,7 +115,7 @@ export const Home = ({ setSelectClient, selectValue }: any) => {
           <Button onClick={onConfirmPicagemHandler}>Registrar Picagem</Button>
         </MenuItem>
         <MenuItem>
-          <Link to="/pesagem">Registar Peso</Link>
+          <Button onClick={onWeightRegisterHandler}>Registar Pesagem</Button>
         </MenuItem>
         <MenuItem>
           <Link to="/relatorio">Relatorio de Serviço</Link>

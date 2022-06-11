@@ -10,7 +10,7 @@ export const Panel = styled.div`
   right: 0;
   height: 100%;
   @media screen and (min-width: 576px) {
-    width: 50%;
+    /* width: 50%; */
   }
 `;
 

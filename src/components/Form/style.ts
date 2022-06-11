@@ -8,6 +8,8 @@ export const FormContainer = styled.div`
   align-items: center;
 `;
 
+export const FormTitle = styled.h2``;
+
 export const InputsList = styled.div`
   display: flex;
   flex-direction: column;

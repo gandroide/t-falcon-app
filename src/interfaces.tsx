@@ -1,19 +1,30 @@
+import { ChangeEvent } from 'react';
+
 export interface IInput {
   name: string;
   label: string;
   type: string;
   value: string;
   placeholder: string;
-  data?: 'soasnfabf';
+  data?: ISelectOption[];
 }
+
+export type InputChangeHandler = (
+  e: ChangeEvent<HTMLInputElement> | ISelectOption
+) => void;
 
 export interface ISubmitData {
   [key: string]: string;
 }
 
 export interface IForm {
+  title?: string;
   fields: IInput[];
   onSubmitCallback: (fields: ISubmitData) => void;
+}
+
+export interface IBirdWeightForm {
+  birdsData: IBirdData[];
 }
 
 export interface IBirdData {
@@ -54,4 +65,12 @@ export interface ISelectProps {
 export interface ISearchFilter {
   options: ISelectProps['options'];
   onSearchCallback: (filter: string, value: string) => void;
+}
+
+export interface BirdsWeightData {
+  id: string;
+  nome: string;
+  identificação: string;
+  peso: string;
+  data: string;
 }
