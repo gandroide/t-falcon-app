@@ -145,7 +145,9 @@ export const Birds = () => {
       </div>
       <SearchFilter options={[]} onSearchCallback={() => {}} />
       <Table
+        count={0}
         data={birds}
+        onPageChangeCallback={() => {}}
         tableActions={[
           {
             icon: <FaEdit />,

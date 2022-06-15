@@ -92,7 +92,12 @@ export const UsersRegistry = () => {
         ]}
         onSearchCallback={onSearchCallback}
       />
-      <Table data={usersRegistry} tableActions={[]} />
+      <Table
+        count={0}
+        onPageChangeCallback={() => {}}
+        data={usersRegistry}
+        tableActions={[]}
+      />
     </div>
   );
 };

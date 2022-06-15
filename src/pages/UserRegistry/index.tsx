@@ -85,8 +85,10 @@ export const UserRegistry = () => {
       {isLoading || !userRegistry.length ? (
         <p>Loading...</p>
       ) : (
-        <Table<UserRegistryData>
+        <Table
+          count={0}
           data={userRegistry}
+          onPageChangeCallback={() => {}}
           tableActions={[
             { callback: onDeleteRegistryHandler, icon: <FaRegTrashAlt /> }
           ]}

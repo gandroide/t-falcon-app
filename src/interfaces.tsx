@@ -1,4 +1,4 @@
-import { ChangeEvent } from 'react';
+import { ChangeEvent, ReactNode } from 'react';
 
 export interface IInput {
   name: string;
@@ -73,4 +73,16 @@ export interface BirdsWeightData {
   identificação: string;
   peso: string;
   data: string;
+}
+
+export interface ITableAction<T> {
+  icon: ReactNode;
+  callback: (rowData: T) => void;
+}
+
+export interface ITable<T> {
+  data: T[];
+  tableActions: ITableAction<T>[];
+  count: number;
+  onPageChangeCallback: (page: number) => void;
 }

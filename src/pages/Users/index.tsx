@@ -91,7 +91,12 @@ export const Users = () => {
   return (
     <>
       <button onClick={onOpenUserFormHandler}>Adicionar Utilizador</button>
-      <Table data={users} tableActions={[]} />
+      <Table
+        count={0}
+        data={users}
+        onPageChangeCallback={() => {}}
+        tableActions={[]}
+      />
     </>
   );
 };

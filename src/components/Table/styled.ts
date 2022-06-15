@@ -3,6 +3,7 @@ import styled from 'styled-components';
 export const TableContainer = styled.table`
   border: 1px solid #ddd;
   width: 100%;
+  margin-bottom: 1rem;
 `;
 
 export const TableHeaderContainer = styled.thead``;
@@ -28,3 +29,15 @@ export const TableAction = styled.button``;
 export const TableActionIcon = styled.span``;
 
 export const TableNoData = styled.p``;
+
+export const TablePaginationContainer = styled.div`
+  display: flex;
+  justify-content: flex-end;
+`;
+
+export const TablePaginationBtn = styled.button`
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 20px;
+`;

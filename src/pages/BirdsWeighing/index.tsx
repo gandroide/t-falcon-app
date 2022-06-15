@@ -1,9 +1,9 @@
 import moment from 'moment';
-import { useEffect, useState } from 'react';
+import { useCallback, useEffect, useState } from 'react';
 import { SearchFilter } from '../../components/SearchFilter';
 import { Table } from '../../components/Table';
 import { app } from '../../config/firebase';
-import { BirdsWeightData } from '../../interfaces';
+import { BirdsWeightData, ITable } from '../../interfaces';
 
 const secondsToDate = (seconds?: number) => {
   if (seconds) {
@@ -21,10 +21,15 @@ export const BirdsWeighing = () => {
   const [birdsWeightData, setBirdsWeightData] = useState<BirdsWeightData[]>([]);
   const [birdsWeightCounter, setBirdsWeightCounter] = useState(0);
 
+  const onPageChangeHandler = useCallback<
+    ITable<BirdsWeightData>['onPageChangeCallback']
+  >((page) => {}, []);
+
   useEffect(() => {
     app
       .collection('birds_weight')
       .orderBy('data', 'desc')
+      .limit(10)
       .onSnapshot(async (onSnapshot) => {
         if (onSnapshot.empty) return;
 
@@ -53,7 +58,12 @@ export const BirdsWeighing = () => {
   return (
     <div style={{ padding: '2rem' }}>
       <SearchFilter options={[]} onSearchCallback={() => {}} />
-      <Table data={birdsWeightData} tableActions={[]} />
+      <Table
+        count={birdsWeightCounter}
+        data={birdsWeightData}
+        tableActions={[]}
+        onPageChangeCallback={onPageChangeHandler}
+      />
     </div>
   );
 };

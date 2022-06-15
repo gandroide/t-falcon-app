@@ -1,4 +1,4 @@
-import { ReactNode } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import {
   TableAction,
   TableActionIcon,
@@ -9,20 +9,33 @@ import {
   TableHeaderColumn,
   TableHeaderContainer,
   TableHeaderRow,
-  TableNoData
+  TableNoData,
+  TablePaginationBtn,
+  TablePaginationContainer
 } from './styled';
+import { MdKeyboardArrowLeft, MdKeyboardArrowRight } from 'react-icons/md';
+import { ITable } from '../../interfaces';
 
-interface ITableAction<T> {
-  icon: ReactNode;
-  callback: (id: T) => void;
-}
+const PAGE_SIZE = 10;
 
-interface ITable<T> {
-  data: T[];
-  tableActions: ITableAction<T>[];
-}
+export const Table = <T,>({
+  data,
+  tableActions,
+  count,
+  onPageChangeCallback
+}: ITable<T>) => {
+  const firstRender = useRef(true);
+  const [currentPage, setCurrentPage] = useState(1);
 
-export const Table = <T,>({ data, tableActions }: ITable<T>) => {
+  useEffect(() => {
+    if (firstRender.current) {
+      firstRender.current = false;
+      return;
+    }
+
+    onPageChangeCallback(currentPage);
+  }, [currentPage, onPageChangeCallback]);
+
   if (!data.length) {
     return <TableNoData>Não existem registos a apresentar</TableNoData>;
   }
@@ -33,6 +46,10 @@ export const Table = <T,>({ data, tableActions }: ITable<T>) => {
 
     tableHeader.push(key as keyof T);
   });
+
+  const onPageChangeHandler = (page: number) => {
+    setCurrentPage(page);
+  };
 
   const TableHeader = () => {
     return (
@@ -68,10 +85,39 @@ export const Table = <T,>({ data, tableActions }: ITable<T>) => {
     );
   };
 
+  const TablePagination = () => {
+    const paginationArr = [
+      <TablePaginationBtn onClick={() => onPageChangeHandler(currentPage - 1)}>
+        <MdKeyboardArrowLeft />
+      </TablePaginationBtn>
+    ];
+
+    for (let page = 1; page <= Math.ceil(count / PAGE_SIZE); page++) {
+      paginationArr.push(
+        <TablePaginationBtn onClick={() => onPageChangeHandler(page)}>
+          {page}
+        </TablePaginationBtn>
+      );
+    }
+
+    paginationArr.push(
+      <TablePaginationBtn onClick={() => onPageChangeHandler(currentPage + 1)}>
+        <MdKeyboardArrowRight />
+      </TablePaginationBtn>
+    );
+
+    return (
+      <TablePaginationContainer>{[...paginationArr]}</TablePaginationContainer>
+    );
+  };
+
   return (
-    <TableContainer>
-      <TableHeader />
-      <TableBody />
-    </TableContainer>
+    <>
+      <TableContainer>
+        <TableHeader />
+        <TableBody />
+      </TableContainer>
+      <TablePagination />
+    </>
   );
 };
