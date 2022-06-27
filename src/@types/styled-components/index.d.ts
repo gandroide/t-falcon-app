@@ -11,7 +11,6 @@ interface IPalette {
   dark: string;
 }
 
-
 declare module 'styled-components' {
   export interface DefaultTheme {
     // palette: IPalette;
@@ -23,6 +22,7 @@ declare module 'styled-components' {
       common: {
         black: string;
         white: string;
+        gray: string;
       };
       typography: IPalette;
     };
