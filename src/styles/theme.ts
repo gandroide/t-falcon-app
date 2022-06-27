@@ -19,7 +19,8 @@ export const defaultTheme: DefaultTheme = {
   palette: {
     common: {
       black: '#222',
-      white: '#F9FAFB'
+      white: '#F9FAFB',
+      gray: '#b7b7b7'
     },
     blue: {
       light: '#60A5FA',

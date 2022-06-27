@@ -6,7 +6,7 @@ export const Container = styled.div`
   align-items: center;
   flex-direction: column;
   height: 100vh;
-  background-color: gray;
+  background-color: ${({ theme }) => theme.palette.common.white};
 `;
 
 export const MenuContainer = styled.div`

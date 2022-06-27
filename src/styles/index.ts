@@ -1,4 +1,4 @@
-import { createGlobalStyle } from "styled-components";
+import { createGlobalStyle } from 'styled-components';
 // import 'react-toastify/dist/ReactToastify.css';
 
 export default createGlobalStyle`
@@ -24,7 +24,7 @@ export default createGlobalStyle`
   }
 
   body {
-    background: ${({ theme }) => theme.palette.common.white};
+    background: ${({ theme }) => theme.palette.common.gray};
     color: ${({ theme }) => theme.palette.common.black};
     font-family: 'Baloo Tamma 2', cursive;
   }
