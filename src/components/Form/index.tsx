@@ -2,7 +2,13 @@ import React, { FC, useCallback, useMemo, useState } from 'react';
 import { IForm, InputChangeHandler, ISubmitData } from '../../interfaces';
 import { Button } from '../Button';
 import { Select } from '../Select';
-import { FormContainer, FormTitle } from './style';
+import {
+  FormContainer,
+  FormTitle,
+  InputWithSpacement,
+  LabelComponent,
+  SpacementContiner
+} from './style';
 
 export const Form: FC<IForm> = ({ fields, onSubmitCallback, title }) => {
   const [formInputs, setFormInputs] = useState(fields);
@@ -49,16 +55,16 @@ export const Form: FC<IForm> = ({ fields, onSubmitCallback, title }) => {
         );
       } else {
         return (
-          <div>
-            <label>{input.label}</label>
-            <input
+          <SpacementContiner>
+            <LabelComponent>{input.label}</LabelComponent>
+            <InputWithSpacement
               type={input.type}
               name={input.name}
               value={input.value}
               onChange={onChange}
               placeholder={input.placeholder}
             />
-          </div>
+          </SpacementContiner>
         );
       }
     });
@@ -68,9 +74,9 @@ export const Form: FC<IForm> = ({ fields, onSubmitCallback, title }) => {
     <FormContainer>
       {title && <FormTitle>{title}</FormTitle>}
       {inputsList}
-      <div>
+      <SpacementContiner>
         <Button onClick={onSubmitHandler}>Send</Button>
-      </div>
+      </SpacementContiner>
     </FormContainer>
   );
 };
