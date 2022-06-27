@@ -4,11 +4,12 @@ import {
   ChildrenContainer,
   CloseButton,
   Container,
+  ContentComponent,
   Panel
 } from './style';
 import { CSSTransition } from 'react-transition-group';
 import { SidepanelContext } from '../../context/Sidepanel';
-import { Button } from '../Button';
+import { BsFillBackspaceFill } from 'react-icons/bs';
 
 interface ISidepanel {
   openPanel: boolean;
@@ -34,12 +35,10 @@ export const SidePanel: FC<ISidepanel> = ({ openPanel, children }) => {
         <Backdrop className="sidepanel-backdrop" onClick={handleClose} />
         <Panel className="sidepanel-panel">
           <ChildrenContainer>
-            {children}
             <CloseButton>
-              <Button className="close-button" onClick={handleClose}>
-                back
-              </Button>
+              <BsFillBackspaceFill size="2em" onClick={handleClose} />
             </CloseButton>
+            <ContentComponent>{children}</ContentComponent>
           </ChildrenContainer>
         </Panel>
       </Container>

@@ -10,7 +10,7 @@ export const Panel = styled.div`
   right: 0;
   height: 100%;
   @media screen and (min-width: 576px) {
-    /* width: 50%; */
+    width: 50%;
   }
 `;
 
@@ -38,16 +38,24 @@ export const Backdrop = styled.div`
 export const ChildrenContainer = styled.div`
   background-color: ${({ theme }) => theme.palette.common.white};
   display: flex;
-  align-items: flex-start;
+  align-items: center;
   width: 100%;
-  padding-top: 2rem;
+  padding-top: 3rem;
   flex-direction: column;
-  justify-content: space-between;
 `;
 
 export const CloseButton = styled.div`
   display: flex;
-  justify-content: center;
+  justify-content: flex-start;
+  position: absolute;
+  left: 20px;
+  width: 20%;
+  z-index: 1;
+`;
+
+export const ContentComponent = styled.div`
+  padding-top: 4rem;
+  display: flex;
+  align-items: center;
   width: 100%;
-  padding-bottom: 10px;
 `;
