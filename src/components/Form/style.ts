@@ -23,12 +23,16 @@ export const SpacementContiner = styled.div`
   display: flex;
   justify-content: center;
   align-items: center;
-  flex-direction: row;
-  margin: 10px 0 10px 0;
+  flex-direction: column;
+  margin: 10px 1px 10px 0;
+  width: 25rem;
 `;
 
 export const InputWithSpacement = styled.input`
-  margin: 10px 0 10px 0;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  margin: 5px 0 5px 0;
   width: 50%;
 `;
 
