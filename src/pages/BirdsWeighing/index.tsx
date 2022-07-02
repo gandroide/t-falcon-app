@@ -57,7 +57,12 @@ export const BirdsWeighing = () => {
 
   return (
     <div style={{ padding: '2rem' }}>
-      <SearchFilter options={[]} onSearchCallback={() => {}} />
+      <SearchFilter
+        options={[]}
+        onSearchCallback={() => {}}
+        onChangeFilterCallback={() => {}}
+        filterValue=""
+      />
       <Table
         count={birdsWeightCounter}
         data={birdsWeightData}

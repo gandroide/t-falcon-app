@@ -64,7 +64,11 @@ export interface ISelectProps {
 
 export interface ISearchFilter {
   options: ISelectProps['options'];
-  onSearchCallback: (filter: string, value: string) => void;
+  onSearchCallback: () => void;
+  onChangeFilterCallback: (
+    value: ISelectOption | ChangeEvent<HTMLInputElement>
+  ) => void;
+  filterValue: string;
 }
 
 export interface BirdsWeightData {
