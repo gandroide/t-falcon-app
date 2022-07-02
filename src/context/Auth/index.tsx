@@ -51,7 +51,7 @@ type AuthActions = LoginAction | AuthChangeAction | LogoutAction;
 
 const initialState: IAuthState = {
   isLoggedIn: false,
-  isAdmin: false,
+  isAdmin: true,
   isAuthReady: false,
   displayName: '',
   userId: null

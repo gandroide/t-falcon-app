@@ -143,7 +143,12 @@ export const Birds = () => {
         <h1>Registos das aves</h1>
         <button onClick={onBirdRegisterHandler}>Adicionar Ave</button>
       </div>
-      <SearchFilter options={[]} onSearchCallback={() => {}} />
+      <SearchFilter
+        options={[]}
+        onSearchCallback={() => {}}
+        filterValue=""
+        onChangeFilterCallback={() => {}}
+      />
       <Table
         count={0}
         data={birds}

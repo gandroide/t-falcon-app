@@ -3,7 +3,8 @@ import { useState, useCallback, useEffect } from 'react';
 import { SearchFilter } from '../../components/SearchFilter';
 import { Table } from '../../components/Table';
 import { app } from '../../config/firebase';
-import { FullUserRegistryData, ISearchFilter } from '../../interfaces';
+import { useFilter } from '../../hooks/useFilter';
+import { FullUserRegistryData } from '../../interfaces';
 
 const secondsToDate = (seconds?: number) => {
   if (seconds) {
@@ -24,39 +25,39 @@ const formattedTime = (date?: Date) => {
 };
 
 export const UsersRegistry = () => {
+  const { filter, value, onChangeFilterHandler } = useFilter();
   const [usersRegistry, setUsersRegistry] = useState<FullUserRegistryData[]>(
     []
   );
 
-  const onSearchCallback = useCallback<ISearchFilter['onSearchCallback']>(
-    (filter, value) => {
-      app
-        .collection('user_registry')
-        .where(filter, '==', value)
-        .get()
-        .then((docs) => {
-          const userRegistryData: FullUserRegistryData[] = [];
+  const onSearchCallback = useCallback(() => {
+    if (!filter || !value) return;
 
-          docs.forEach((doc) => {
-            const entry = secondsToDate(doc.data().entryDate?.seconds);
-            const leave = secondsToDate(doc.data().leaveDate?.seconds);
-            const date = formattedDate(entry);
-            const entryTime = formattedTime(entry);
-            const leaveTime = formattedTime(leave);
-            userRegistryData.push({
-              id: doc.id,
-              nome: doc.data().displayName,
-              data: date ?? '-',
-              entrada: entryTime ?? '-',
-              saida: leaveTime ?? '-'
-            });
+    app
+      .collection('user_registry')
+      .where(filter, '==', value)
+      .get()
+      .then((docs) => {
+        const userRegistryData: FullUserRegistryData[] = [];
+
+        docs.forEach((doc) => {
+          const entry = secondsToDate(doc.data().entryDate?.seconds);
+          const leave = secondsToDate(doc.data().leaveDate?.seconds);
+          const date = formattedDate(entry);
+          const entryTime = formattedTime(entry);
+          const leaveTime = formattedTime(leave);
+          userRegistryData.push({
+            id: doc.id,
+            nome: doc.data().displayName,
+            data: date ?? '-',
+            entrada: entryTime ?? '-',
+            saida: leaveTime ?? '-'
           });
-
-          setUsersRegistry(userRegistryData);
         });
-    },
-    []
-  );
+
+        setUsersRegistry(userRegistryData);
+      });
+  }, [filter, value]);
 
   useEffect(() => {
     app.collection('user_registry').onSnapshot((onSnapshot) => {
@@ -91,6 +92,8 @@ export const UsersRegistry = () => {
           { label: 'Utilizador', value: 'displayName', name: 'displayName' }
         ]}
         onSearchCallback={onSearchCallback}
+        onChangeFilterCallback={onChangeFilterHandler}
+        filterValue={value}
       />
       <Table
         count={0}
