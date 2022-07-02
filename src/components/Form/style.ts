@@ -32,8 +32,8 @@ export const InputWithSpacement = styled.input`
   display: flex;
   justify-content: center;
   align-items: center;
-  margin: 5px 0 5px 0;
-  width: 50%;
+  margin: 10px 0 10px 0;
+  width: 70%;
 `;
 
 export const LabelComponent = styled.label`
