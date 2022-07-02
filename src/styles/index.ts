@@ -1,4 +1,4 @@
-import { createGlobalStyle } from 'styled-components';
+import styled, { createGlobalStyle } from 'styled-components';
 // import 'react-toastify/dist/ReactToastify.css';
 
 export default createGlobalStyle`
@@ -123,4 +123,10 @@ export default createGlobalStyle`
     opacity: 0;
     transition: opacity 250ms;
   }
+`;
+
+export const AppContainer = styled.main`
+  width: 100%;
+  max-width: 1200px;
+  margin: 0 auto;
 `;

@@ -1,8 +1,34 @@
-import { Birds } from '../Birds';
-import { BirdsWeighing } from '../BirdsWeighing';
-import { UserRegistry } from '../UserRegistry';
+import { Outlet, Route, Routes } from 'react-router-dom';
+import { Users } from '../Users';
 import { UsersRegistry } from '../UsersRegistry';
+import {
+  AdminContainer,
+  AdminContent,
+  AdminItem,
+  AdminLink,
+  AdminList,
+  AdminNav
+} from './styled';
 
 export const Admin = () => {
-  return <UserRegistry />;
+  return (
+    <AdminContainer>
+      <AdminNav>
+        <AdminList>
+          <AdminItem>
+            <AdminLink to="/">Utilizadores</AdminLink>
+          </AdminItem>
+          <AdminItem>
+            <AdminLink to="picagens">Picagens</AdminLink>
+          </AdminItem>
+          <AdminItem>
+            <AdminLink to="aves">Aves</AdminLink>
+          </AdminItem>
+        </AdminList>
+      </AdminNav>
+      <AdminContent>
+        <Outlet />
+      </AdminContent>
+    </AdminContainer>
+  );
 };
