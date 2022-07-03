@@ -1,9 +1,11 @@
 import styled from 'styled-components';
 
 export const TableContainer = styled.table`
-  border: 1px solid #ddd;
+  /* border: 1px solid #ddd; */
   width: 100%;
   margin-bottom: 1rem;
+  border-collapse: collapse;
+  text-align: left;
 `;
 
 export const TableHeaderContainer = styled.thead``;
@@ -11,17 +13,23 @@ export const TableHeaderContainer = styled.thead``;
 export const TableHeaderRow = styled.tr``;
 
 export const TableHeaderColumn = styled.th`
-  border: 1px solid #ddd;
+  padding: 8px;
+  border-bottom: 2px solid #eee;
   text-transform: uppercase;
 `;
 
-export const TableBodyContainer = styled.tbody``;
-
 export const TableBodyRow = styled.tr``;
 
+export const TableBodyContainer = styled.tbody`
+  & ${TableBodyRow} {
+    &:nth-child(odd) {
+      background: #eee;
+    }
+  }
+`;
+
 export const TableBodyColumn = styled.td`
-  border: 1px solid #ddd;
-  text-align: center;
+  padding: 8px;
 `;
 
 export const TableAction = styled.button``;

@@ -24,7 +24,7 @@ export default createGlobalStyle`
   }
 
   body {
-    background: ${({ theme }) => theme.palette.common.white};
+    background: #eee;
     color: ${({ theme }) => theme.palette.common.black};
     font-family: 'Baloo Tamma 2', cursive;
   }
@@ -128,5 +128,9 @@ export default createGlobalStyle`
 export const AppContainer = styled.main`
   width: 100%;
   max-width: 1200px;
-  margin: 0 auto;
+  margin: 50px auto 0;
+  background: #fff;
+  padding: 20px;
+  border-radius: 4px;
+  box-shadow: 0px 2px 5px 5px #ddd;
 `;
