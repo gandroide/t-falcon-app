@@ -98,6 +98,19 @@ export const Home = () => {
       });
   };
 
+  const LinkComponent = {
+    display: 'inline-block',
+    padding: '0.7em 1.7em',
+    margin: '0 0.3em 0.3em 0',
+    minWidth: '160px',
+    borderStyle: 'hidden',
+    borderRadius: '0.5em',
+    textDecoration: 'none',
+    fontWeight: '400',
+    color: '#ffffff',
+    backgroundColor: '#3369ff'
+  };
+
   return (
     <Container>
       <TopBar>
@@ -118,12 +131,11 @@ export const Home = () => {
           <Button onClick={onWeightRegisterHandler}>Registar Pesagem</Button>
         </MenuItem>
         <MenuItem>
-          <Link to="/relatorio">Relatorio de Serviço</Link>
+          <Link style={LinkComponent} to="/relatorio">
+            Relatorio de Serviço
+          </Link>
         </MenuItem>
         {/* <Select selected={selectValue} onChangeHandler={setSelectClient} options={clientes}></Select> */}
-        <MenuItem>
-          <Link to="/">Back</Link>
-        </MenuItem>
       </MenuContainer>
       <FooterBar></FooterBar>
     </Container>
