@@ -1,10 +1,13 @@
 import moment from 'moment';
 import { useCallback, useContext, useEffect, useState } from 'react';
 import { FaRegTrashAlt } from 'react-icons/fa';
+import { Link } from 'react-router-dom';
+import { Button } from '../../components/Button';
 import { Table } from '../../components/Table';
 import { app } from '../../config/firebase';
 import { AuthContext } from '../../context/Auth';
 import { UserRegistryData } from '../../interfaces';
+import { MenuItem } from '../home/Home.styles';
 import { PageContainer } from './styled';
 
 const secondsToDate = (seconds?: number) => {
@@ -23,6 +26,19 @@ const formattedTime = (date?: Date) => {
   if (date) {
     return moment(date).format('LT');
   }
+};
+
+const LinkComponent = {
+  display: 'inline-block',
+  padding: '0.7em 1.7em',
+  margin: '0 0.3em 0.3em 0',
+  minWidth: '60px',
+  borderStyle: 'hidden',
+  borderRadius: '0.5em',
+  textDecoration: 'none',
+  fontWeight: '400',
+  color: '#ffffff',
+  backgroundColor: '#3369ff'
 };
 
 export const UserRegistry = () => {
@@ -80,20 +96,27 @@ export const UserRegistry = () => {
   }, [getUserRegistry]);
 
   return (
-    <PageContainer>
-      <h1>Registos de Picagem</h1>
-      {isLoading || !userRegistry.length ? (
-        <p>Loading...</p>
-      ) : (
-        <Table
-          count={0}
-          data={userRegistry}
-          onPageChangeCallback={() => {}}
-          tableActions={[
-            { callback: onDeleteRegistryHandler, icon: <FaRegTrashAlt /> }
-          ]}
-        />
-      )}
-    </PageContainer>
+    <>
+      <MenuItem>
+        <Link style={LinkComponent} to="/">
+          Go Back
+        </Link>
+      </MenuItem>
+      <PageContainer>
+        <h1>Registos de Picagem</h1>
+        {isLoading || !userRegistry.length ? (
+          <p>Loading...</p>
+        ) : (
+          <Table
+            count={0}
+            data={userRegistry}
+            onPageChangeCallback={() => {}}
+            tableActions={[
+              { callback: onDeleteRegistryHandler, icon: <FaRegTrashAlt /> }
+            ]}
+          />
+        )}
+      </PageContainer>
+    </>
   );
 };

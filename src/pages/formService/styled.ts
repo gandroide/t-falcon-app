@@ -10,3 +10,12 @@ export const Container = styled.div`
 export const MenuItem = styled.div`
   margin: 20px;
 `;
+
+export const CheckboxContainer = styled.div`
+  display: flex;
+`;
+
+export const CheckboxItem = styled.div`
+  display: flex;
+  margin: 5px;
+`;

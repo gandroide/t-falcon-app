@@ -1,5 +1,4 @@
-import { FC, useCallback } from 'react';
-import { OnChangeValue } from 'react-select';
+import { FC } from 'react';
 import { CustomSelect } from './styled';
 import { ISelectOption, ISelectProps } from '../../interfaces';
 
