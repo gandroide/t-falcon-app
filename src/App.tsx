@@ -17,6 +17,7 @@ import { Navbar } from './components/Navbar';
 import { UserRegistry } from './pages/UserRegistry';
 import { UsersRegistry } from './pages/UsersRegistry';
 import { Users } from './pages/Users';
+import { Map } from './components/Map/index';
 
 const App = () => {
   const { modal } = useContext(ModalContext);
@@ -57,6 +58,7 @@ const App = () => {
               <Route path="/pesagem" element={<Birds />} />
               <Route path="/relatorio" element={<FormService />} />
               <Route path="/user_registry" element={<UserRegistry />} />
+              {/* <Route path="/map" element={<Map  />} /> */}
             </>
           )}
           {isLoggedIn && isAdmin && (
