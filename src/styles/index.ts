@@ -1,4 +1,5 @@
 import styled, { createGlobalStyle } from 'styled-components';
+
 // import 'react-toastify/dist/ReactToastify.css';
 
 export default createGlobalStyle`
@@ -122,6 +123,11 @@ export default createGlobalStyle`
   & .fade-exit-active {
     opacity: 0;
     transition: opacity 250ms;
+  }
+
+  .leaflet-container{
+    width: 500px;
+    height: 300px;
   }
 `;
 

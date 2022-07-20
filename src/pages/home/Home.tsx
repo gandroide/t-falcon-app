@@ -40,13 +40,6 @@ export const Home = () => {
   };
 
   const onConfirmPicagemHandler = () => {
-    const success = (pos: any) => {
-      const crd = pos.coords;
-      console.log(crd, 'coords');
-      return crd;
-    };
-    navigator.geolocation.getCurrentPosition(success);
-
     const currentDate = moment().format('L');
     const nextDate = moment().add(1, 'days').format('L');
 
@@ -140,6 +133,11 @@ export const Home = () => {
         <MenuItem>
           <Link style={LinkComponent} to="/relatorio">
             Relatorio de Serviço
+          </Link>
+        </MenuItem>
+        <MenuItem>
+          <Link style={LinkComponent} to="/map">
+            Map
           </Link>
         </MenuItem>
         {/* <Select selected={selectValue} onChangeHandler={setSelectClient} options={clientes}></Select> */}

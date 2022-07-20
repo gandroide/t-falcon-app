@@ -1,5 +1,9 @@
 import styled from 'styled-components';
 
+export const Map = styled.div`
+  height: 180px;
+`;
+
 export const Container = styled.div`
   display: flex;
   justify-content: space-between;

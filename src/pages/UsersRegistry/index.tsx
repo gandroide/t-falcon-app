@@ -4,7 +4,9 @@ import { SearchFilter } from '../../components/SearchFilter';
 import { Table } from '../../components/Table';
 import { app } from '../../config/firebase';
 import { useFilter } from '../../hooks/useFilter';
-import { FullUserRegistryData } from '../../interfaces';
+import { FullUserRegistryData, ITableAction } from '../../interfaces';
+import { RiMapPinUserFill, RiMapPinUserLine } from 'react-icons/ri';
+import { Map } from '../../components/Map';
 
 const secondsToDate = (seconds?: number) => {
   if (seconds) {
@@ -84,6 +86,10 @@ export const UsersRegistry = () => {
     });
   }, []);
 
+  const openMap = useCallback(() => {
+    <Map position={{ latitude: 32.6743899, longitude: -17.0636638 }} />;
+  }, []);
+
   return (
     <div style={{ padding: '2rem' }}>
       <h1>Registo picagens dos utilizadores</h1>
@@ -99,7 +105,7 @@ export const UsersRegistry = () => {
         count={0}
         onPageChangeCallback={() => {}}
         data={usersRegistry}
-        tableActions={[]}
+        tableActions={[{ icon: <RiMapPinUserFill />, callback: openMap }]}
       />
     </div>
   );
