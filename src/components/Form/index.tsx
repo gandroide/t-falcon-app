@@ -64,7 +64,7 @@ export const Form: FC<IForm> = ({ fields, onSubmitCallback, title }) => {
   };
 
   const inputsList = useMemo(() => {
-    formInputs.map((input, index) => {
+    return formInputs.map((input, index) => {
       if (isInputSelect(input)) {
         return (
           <Select

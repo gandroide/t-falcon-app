@@ -140,3 +140,13 @@ export const AppContainer = styled.main`
   border-radius: 4px;
   box-shadow: 0px 2px 5px 5px #ddd;
 `;
+
+export const AdminContainer = styled.div`
+  padding: 2rem;
+`;
+
+export const AdminHeaderContainer = styled.div`
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+`;

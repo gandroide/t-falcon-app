@@ -3,10 +3,10 @@ import { Form } from '../../components/Form';
 import { Table } from '../../components/Table';
 import { app, appAuth } from '../../config/firebase';
 import { SidepanelContext } from '../../context/Sidepanel';
-import { IForm, IInput, IUserData } from '../../interfaces';
+import { IForm, IDefaultInput, IUserData } from '../../interfaces';
 import { SidePanelContainer, SidePanelTitle } from './styled';
 
-const addUserFields: IInput[] = [
+const addUserFields: IDefaultInput[] = [
   {
     name: 'displayName',
     label: 'Nome',

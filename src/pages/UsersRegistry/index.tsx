@@ -7,6 +7,7 @@ import { useFilter } from '../../hooks/useFilter';
 import { FullUserRegistryData, ITableAction } from '../../interfaces';
 import { RiMapPinUserFill, RiMapPinUserLine } from 'react-icons/ri';
 import { Map } from '../../components/Map';
+import { AdminContainer, AdminHeaderContainer } from '../../styles';
 
 const secondsToDate = (seconds?: number) => {
   if (seconds) {
@@ -91,8 +92,10 @@ export const UsersRegistry = () => {
   }, []);
 
   return (
-    <div style={{ padding: '2rem' }}>
-      <h1>Registo picagens dos utilizadores</h1>
+    <AdminContainer>
+      <AdminHeaderContainer>
+        <h1>Registo picagens dos utilizadores</h1>
+      </AdminHeaderContainer>
       <SearchFilter
         options={[
           { label: 'Utilizador', value: 'displayName', name: 'displayName' }
@@ -107,6 +110,6 @@ export const UsersRegistry = () => {
         data={usersRegistry}
         tableActions={[{ icon: <RiMapPinUserFill />, callback: openMap }]}
       />
-    </div>
+    </AdminContainer>
   );
 };
