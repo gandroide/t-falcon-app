@@ -2,13 +2,17 @@ import { FC, useCallback, useContext, useMemo } from 'react';
 import { Form } from '../../components/Form';
 import { app, appTimestamp } from '../../config/firebase';
 import { SidepanelContext } from '../../context/Sidepanel';
-import { IBirdWeightForm, IForm, IInput } from '../../interfaces';
+import {
+  IBirdWeightForm,
+  IDefaultInput,
+  IForm,
+  IInputSelect
+} from '../../interfaces';
 
-const birdWeightData: IInput[] = [
+const birdWeightData: IDefaultInput[] = [
   {
     label: 'Ave',
     name: 'nome',
-    placeholder: 'Selecione uma ave',
     type: 'select',
     value: '',
     data: []
@@ -24,9 +28,10 @@ const birdWeightData: IInput[] = [
 
 export const BirdWeightForm: FC<IBirdWeightForm> = ({ birdsData }) => {
   const { onCloseSidepanelHandler } = useContext(SidepanelContext);
+
   const formInputs = useMemo(() => {
     const inputs = [...birdWeightData];
-    inputs[0].data = birdsData.map((bird) => ({
+    (inputs[0] as IInputSelect).data = birdsData.map((bird) => ({
       label: bird.nome,
       name: 'nome',
       value: bird.nome

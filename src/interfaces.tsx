@@ -3,15 +3,49 @@ import { ChangeEvent, ReactNode } from 'react';
 export interface IInput {
   name: string;
   label: string;
-  type: string;
+  type: 'text' | 'number' | 'password';
   value: string;
   placeholder: string;
-  data?: ISelectOption[];
 }
 
-export type InputChangeHandler = (
-  e: ChangeEvent<HTMLInputElement> | ISelectOption
-) => void;
+export interface IInputSelect {
+  name: string;
+  label: string;
+  type: 'select';
+  data: ISelectOption[];
+  value: string;
+}
+
+export interface IInputCheckbox {
+  name: string;
+  label: string;
+  type: 'checkbox';
+  checked: boolean;
+}
+
+export type IDefaultInput = IInput | IInputCheckbox | IInputSelect;
+
+export type IChangeEvent = ChangeEvent<HTMLInputElement> | ISelectOption;
+
+export type InputChangeHandler = (e: IChangeEvent, index: number) => void;
+
+export function isInputSelect(input: IDefaultInput): input is IInputSelect {
+  return input.type === 'select';
+}
+
+export function isInputCheckbox(input: IDefaultInput): input is IInputCheckbox {
+  return input.type === 'checkbox';
+}
+
+export function isSelectOption(event: IChangeEvent): event is ISelectOption {
+  return ('name' && 'value' && 'label') in event;
+}
+
+export function isInputEvent(
+  event: IChangeEvent
+): event is ChangeEvent<HTMLInputElement> {
+  return 'currentTarget' in event;
+}
 
 export interface ISubmitData {
   [key: string]: string;
@@ -19,7 +53,7 @@ export interface ISubmitData {
 
 export interface IForm {
   title?: string;
-  fields: IInput[];
+  fields: IDefaultInput[];
   onSubmitCallback: (fields: ISubmitData) => void;
 }
 
