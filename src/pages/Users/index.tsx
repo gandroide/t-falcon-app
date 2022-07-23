@@ -82,7 +82,8 @@ export const Users = () => {
         users.push({
           id: doc.id,
           nome: doc.data().nome,
-          email: doc.data().email
+          email: doc.data().email,
+          admistrador: doc.data().admistrador ? 'Sim' : 'Não'
         });
       });
 

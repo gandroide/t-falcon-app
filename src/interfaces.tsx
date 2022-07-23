@@ -37,6 +37,7 @@ export interface IUserData {
   id: string;
   nome: string;
   email: string;
+  admistrador: string;
 }
 
 export interface UserRegistryData {
