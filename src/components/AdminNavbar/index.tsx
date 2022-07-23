@@ -5,13 +5,19 @@ export const AdminNavbar = () => {
     <AdminNav>
       <AdminList>
         <AdminItem>
-          <AdminLink to="/">Utilizadores</AdminLink>
+          <AdminLink end to="">
+            Utilizadores
+          </AdminLink>
         </AdminItem>
         <AdminItem>
-          <AdminLink to="picagens">Picagens</AdminLink>
+          <AdminLink end to="picagens">
+            Picagens
+          </AdminLink>
         </AdminItem>
         <AdminItem>
-          <AdminLink to="aves">Aves</AdminLink>
+          <AdminLink end to="aves">
+            Aves
+          </AdminLink>
         </AdminItem>
       </AdminList>
     </AdminNav>

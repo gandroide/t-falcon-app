@@ -18,6 +18,7 @@ import { UserRegistry } from './pages/UserRegistry';
 import { UsersRegistry } from './pages/UsersRegistry';
 import { Users } from './pages/Users';
 import { Map } from './components/Map/index';
+import { AppRoutes } from './routes';
 
 const App = () => {
   const { modal } = useContext(ModalContext);
@@ -50,24 +51,7 @@ const App = () => {
       <SidePanel openPanel={isSidepanelOpen}>{SidepanelChildren}</SidePanel>
       <Navbar />
       <AppContainer>
-        <Routes>
-          {!isLoggedIn && <Route path="/" element={<Login />} />}
-          {isLoggedIn && !isAdmin && (
-            <>
-              <Route path="/" element={<Home />} />
-              <Route path="/pesagem" element={<Birds />} />
-              <Route path="/relatorio" element={<FormService />} />
-              <Route path="/user_registry" element={<UserRegistry />} />
-              {/* <Route path="/map" element={<Map  />} /> */}
-            </>
-          )}
-          {isLoggedIn && isAdmin && (
-            <Route path="/" element={<Admin />}>
-              <Route path="picagens" element={<UsersRegistry />} />
-              <Route path="/" element={<Users />} />
-            </Route>
-          )}
-        </Routes>
+        <AppRoutes />
       </AppContainer>
     </ThemeProvider>
   );
