@@ -1,4 +1,5 @@
 import { createContext, FC, ReactNode, useState } from 'react';
+import { SidePanelWidth } from '../../interfaces';
 
 interface ISidepanelContext {
   isSidepanelOpen: boolean;
@@ -10,6 +11,7 @@ interface ISidepanelContext {
 interface ISidepanelContextState {
   isOpen: boolean;
   SidepanelChildren: ReactNode;
+  width: SidePanelWidth;
 }
 
 const defaultSidepanelContext: ISidepanelContext = {
@@ -25,7 +27,8 @@ export const SidepanelContext = createContext<ISidepanelContext>(
 
 const defaultSidepanelState: ISidepanelContextState = {
   isOpen: false,
-  SidepanelChildren: () => {}
+  SidepanelChildren: () => {},
+  width: 'large'
 };
 
 export const SidepanelProvider: FC = ({ children }) => {

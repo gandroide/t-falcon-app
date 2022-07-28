@@ -89,14 +89,16 @@ export const Birds = () => {
   const onBirdRegisterHandler = () => {
     onOpenSidepanelHandler({
       isOpen: true,
-      SidepanelChildren: <FormAddBird />
+      SidepanelChildren: <FormAddBird />,
+      width: 'large'
     });
   };
 
   const onBirdEditHandler = (rowData: IBirdData) => {
     onOpenSidepanelHandler({
       isOpen: true,
-      SidepanelChildren: <FormAddBird id={rowData.id} updateData={rowData} />
+      SidepanelChildren: <FormAddBird id={rowData.id} updateData={rowData} />,
+      width: 'large'
     });
   };
 

@@ -70,7 +70,8 @@ export const Users = () => {
   const onOpenUserFormHandler = () => {
     onOpenSidepanelHandler({
       isOpen: true,
-      SidepanelChildren: <AddUserForm />
+      SidepanelChildren: <AddUserForm />,
+      width: 'large'
     });
   };
 
