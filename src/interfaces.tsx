@@ -63,7 +63,7 @@ export function isTextarea(input: IDefaultInput): input is ITextarea {
   return input.type === 'textarea';
 }
 
-export function isInputTime(input: IDefaultInput): input is IInputDate {
+export function isInputTime(input: IDefaultInput): input is IInputTime {
   return input.type === 'time';
 }
 
