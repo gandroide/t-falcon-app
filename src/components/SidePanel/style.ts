@@ -1,8 +1,18 @@
 import styled from 'styled-components';
 
-export const Panel = styled.div`
+const widthValue = {
+  small: '50%',
+  medium: '75%',
+  large: '100%'
+};
+
+type SidePanelWidth = {
+  width: 'small' | 'medium' | 'large';
+};
+
+export const Panel = styled.div<SidePanelWidth>`
   display: flex;
-  width: 100%;
+  width: 100%; //AUN NO FUNCIONA EN PANTALLAS GRANDES
   background-color: ${({ theme }) => theme.palette.common.white};
   color: ${({ theme }) => theme.palette.common.black};
   position: fixed;
@@ -10,7 +20,8 @@ export const Panel = styled.div`
   right: 0;
   height: 100%;
   @media screen and (min-width: 576px) {
-    width: 50%;
+    width: ${({ width }) => widthValue[width]};
+    /* width: 50%; */
   }
 `;
 

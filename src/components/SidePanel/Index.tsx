@@ -10,13 +10,15 @@ import {
 import { CSSTransition } from 'react-transition-group';
 import { SidepanelContext } from '../../context/Sidepanel';
 import { BsFillBackspaceFill } from 'react-icons/bs';
+import { SidePanelWidth } from '../../interfaces';
 
 interface ISidepanel {
   openPanel: boolean;
   children: React.ReactNode[] | React.ReactNode;
+  width: SidePanelWidth;
 }
 
-export const SidePanel: FC<ISidepanel> = ({ openPanel, children }) => {
+export const SidePanel: FC<ISidepanel> = ({ openPanel, children, width }) => {
   const { onCloseSidepanelHandler } = useContext(SidepanelContext);
 
   const handleClose = () => {
@@ -33,7 +35,7 @@ export const SidePanel: FC<ISidepanel> = ({ openPanel, children }) => {
     >
       <Container>
         <Backdrop className="sidepanel-backdrop" onClick={handleClose} />
-        <Panel className="sidepanel-panel">
+        <Panel width={width} className="sidepanel-panel">
           <ChildrenContainer>
             <CloseButton>
               <BsFillBackspaceFill size="2em" onClick={handleClose} />
