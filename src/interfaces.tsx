@@ -23,7 +23,25 @@ export interface IInputCheckbox {
   checked: boolean;
 }
 
-export type IDefaultInput = IInput | IInputCheckbox | IInputSelect;
+export interface ITextarea extends Omit<IInput, 'type'> {
+  type: 'textarea';
+}
+
+export interface IInputTime extends Omit<IInput, 'type'> {
+  type: 'time';
+}
+
+export interface IInputDate extends Omit<IInput, 'type'> {
+  type: 'date';
+}
+
+export type IDefaultInput =
+  | IInput
+  | IInputCheckbox
+  | IInputSelect
+  | ITextarea
+  | IInputTime
+  | IInputDate;
 
 export type IChangeEvent = ChangeEvent<HTMLInputElement> | ISelectOption;
 
@@ -39,6 +57,18 @@ export function isInputCheckbox(input: IDefaultInput): input is IInputCheckbox {
 
 export function isSelectOption(event: IChangeEvent): event is ISelectOption {
   return ('name' && 'value' && 'label') in event;
+}
+
+export function isTextarea(input: IDefaultInput): input is ITextarea {
+  return input.type === 'textarea';
+}
+
+export function isInputTime(input: IDefaultInput): input is IInputDate {
+  return input.type === 'time';
+}
+
+export function isInputDate(input: IDefaultInput): input is IInputDate {
+  return input.type === 'date';
 }
 
 export function isInputEvent(
@@ -125,3 +155,5 @@ export interface ITable<T> {
   count: number;
   onPageChangeCallback: (page: number) => void;
 }
+
+export type SidePanelWidth = 'small' | 'medium' | 'large';
