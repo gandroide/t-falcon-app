@@ -6,7 +6,6 @@ import { Route, Routes } from 'react-router-dom';
 import { Login } from './pages/login';
 import { Admin } from './pages/admin';
 import { Birds } from './pages/Birds';
-import { FormService } from './pages/formService';
 import { defaultTheme } from './styles/theme';
 import { Modal } from './components/Modal';
 import { ModalContext } from './context/Modal';
@@ -48,7 +47,9 @@ const App = () => {
     <ThemeProvider theme={defaultTheme}>
       <GlobalStyles />
       <Modal {...modal} />
-      <SidePanel openPanel={isSidepanelOpen}>{SidepanelChildren}</SidePanel>
+      <SidePanel width="large" openPanel={isSidepanelOpen}>
+        {SidepanelChildren}
+      </SidePanel>
       <Navbar />
       <AppContainer>
         <AppRoutes />

@@ -16,6 +16,7 @@ import {
 } from './Home.styles';
 import { BirdWeightForm } from '../../containers/BirdWeightForm';
 import { IBirdData } from '../../interfaces';
+import { ServicesReport } from '../ServicesReport';
 
 export const Home = () => {
   const { onOpenSidepanelHandler } = useContext(SidepanelContext);
@@ -93,9 +94,18 @@ export const Home = () => {
 
         onOpenSidepanelHandler({
           isOpen: true,
-          SidepanelChildren: <BirdWeightForm birdsData={birdsData} />
+          SidepanelChildren: <BirdWeightForm birdsData={birdsData} />,
+          width: 'small'
         });
       });
+  };
+
+  const onServicesReportHanlder = () => {
+    onOpenSidepanelHandler({
+      isOpen: true,
+      SidepanelChildren: <ServicesReport />,
+      width: 'small'
+    });
   };
 
   const LinkComponent = {
@@ -134,6 +144,9 @@ export const Home = () => {
           <Link style={LinkComponent} to="/relatorio">
             Relatorio de Serviço
           </Link>
+          {/* <Button onClick={onServicesReportHanlder}>
+            Relatorio de Serviço
+          </Button> */}
         </MenuItem>
         <MenuItem>
           <Link style={LinkComponent} to="/map">
