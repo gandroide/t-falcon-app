@@ -22,7 +22,7 @@ const formattedDate = (date?: Date) => {
 
 const formattedTime = (date?: Date) => {
   if (date) {
-    return moment(date).format('LT');
+    return moment(date).format('HH:mm');
   }
 };
 
