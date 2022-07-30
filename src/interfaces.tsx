@@ -33,6 +33,7 @@ export interface IInputTime extends Omit<IInput, 'type'> {
 
 export interface IInputDate extends Omit<IInput, 'type'> {
   type: 'date';
+  required: boolean;
 }
 
 export type IDefaultInput =

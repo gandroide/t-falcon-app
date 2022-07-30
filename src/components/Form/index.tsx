@@ -88,7 +88,12 @@ export const Form: FC<IForm> = ({ fields, onSubmitCallback, title }) => {
       }
 
       if (isTextarea(input)) {
-        return <textarea rows={10} cols={40} />;
+        return (
+          <div>
+            <div>{input.label}</div>
+            <textarea rows={10} cols={40} />
+          </div>
+        );
       }
 
       if (isInputTime(input)) {
@@ -102,10 +107,10 @@ export const Form: FC<IForm> = ({ fields, onSubmitCallback, title }) => {
 
       if (isInputDate(input)) {
         return (
-          <label>
+          <div>
+            <div>{input.label}</div>
             <input type={input.type} />
-            {input.label}
-          </label>
+          </div>
         );
       }
       return (

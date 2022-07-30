@@ -70,23 +70,25 @@ const InputStepper: IDefaultInput[] = [
     label: 'data',
     type: 'date',
     value: '',
-    placeholder: 'data de serviço'
+    placeholder: 'data de serviço',
+    required: true
   },
   {
     name: 'hora inicio',
     label: 'hora inicio',
     type: 'date',
     value: '',
-    placeholder: 'hora de serviço'
+    placeholder: 'hora de serviço',
+    required: true
   },
   {
     name: 'hora fim',
     label: 'hora fim',
     type: 'date',
     value: '',
-    placeholder: 'hora de serviço'
+    placeholder: 'hora de serviço',
+    required: true
   },
-
   {
     name: 'localização',
     label: 'localização',
@@ -120,20 +122,20 @@ const InputStepper: IDefaultInput[] = [
 export const ServicesReport = () => {
   //   const [step, setStep] = useState(0);
 
-  //   const LinkComponent = {
-  //     display: 'inline-block',
-  //     padding: '0.7em 1.7em',
-  //     margin: '0 0.3em 0.3em 0',
-  //     minWidth: '160px',
-  //     borderStyle: 'hidden',
-  //     borderRadius: '0.5em',
-  //     textDecoration: 'none',
-  //     fontWeight: '400',
-  //     color: '#ffffff',
-  //     backgroundColor: '#3369ff',
-  //     justifyContent: 'center',
-  //     alignItems: 'center'
-  //   };
+  const LinkComponent = {
+    display: 'inline-block',
+    padding: '0.7em 1.7em',
+    margin: '0 0.3em 0.3em 0',
+    minWidth: '160px',
+    borderStyle: 'hidden',
+    borderRadius: '0.5em',
+    textDecoration: 'none',
+    fontWeight: '400',
+    color: '#ffffff',
+    backgroundColor: '#3369ff',
+    justifyContent: 'center',
+    alignItems: 'center'
+  };
 
   //   const setpFormHandler = (direction: number) => {
   //     setStep(direction);
@@ -164,12 +166,17 @@ export const ServicesReport = () => {
     //       <Button onClick={() => setpFormHandler(-1)}>Back</Button>
     //     </MenuItem>
     //   )}
-    //   <MenuItem>
-    //     {/* <Link style={LinkComponent} to="/">
-    //       Cancelar
-    //     </Link> */}
-    //   </MenuItem>
-    // </Container>
-    <Form fields={InputStepper} onSubmitCallback={onServicesReportHandler} />
+    <Container>
+      <Form
+        title="Relatorio de Serviço"
+        fields={InputStepper}
+        onSubmitCallback={onServicesReportHandler}
+      />
+      <MenuItem>
+        <Link style={LinkComponent} to="/home">
+          Cancelar
+        </Link>
+      </MenuItem>
+    </Container>
   );
 };
