@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState } from 'react';
+import { useEffect, useMemo, useRef, useState } from 'react';
 import {
   TableAction,
   TableActionIcon,
@@ -36,16 +36,17 @@ export const Table = <T,>({
     onPageChangeCallback(currentPage);
   }, [currentPage, onPageChangeCallback]);
 
-  if (!data.length) {
-    return <TableNoData>Não existem registos a apresentar</TableNoData>;
+  let tableHeader: (keyof T)[] = [];
+
+  if (data.length) {
+    tableHeader.push('id' as keyof T);
+
+    Object.keys(data[0]).forEach((key) => {
+      if (key === 'id') return;
+
+      tableHeader.push(key as keyof T);
+    });
   }
-
-  let tableHeader = ['id' as keyof T];
-  Object.keys(data[0]).forEach((key) => {
-    if (key === 'id') return;
-
-    tableHeader.push(key as keyof T);
-  });
 
   const onPageChangeHandler = (page: number) => {
     setCurrentPage(page);
@@ -65,6 +66,8 @@ export const Table = <T,>({
   };
 
   const TableBody = () => {
+    if (!data.length) return null;
+
     return (
       <TableBodyContainer>
         {data.map((row, rowIndex) => (
@@ -85,7 +88,9 @@ export const Table = <T,>({
     );
   };
 
-  const TablePagination = () => {
+  const tablePagination = useMemo(() => {
+    if (count < PAGE_SIZE) return;
+
     const paginationArr = [
       <TablePaginationBtn onClick={() => onPageChangeHandler(currentPage - 1)}>
         <MdKeyboardArrowLeft />
@@ -94,7 +99,10 @@ export const Table = <T,>({
 
     for (let page = 1; page <= Math.ceil(count / PAGE_SIZE); page++) {
       paginationArr.push(
-        <TablePaginationBtn onClick={() => onPageChangeHandler(page)}>
+        <TablePaginationBtn
+          isSelected={currentPage === page}
+          onClick={() => onPageChangeHandler(page)}
+        >
           {page}
         </TablePaginationBtn>
       );
@@ -109,7 +117,11 @@ export const Table = <T,>({
     return (
       <TablePaginationContainer>{[...paginationArr]}</TablePaginationContainer>
     );
-  };
+  }, [currentPage, count]);
+
+  if (!data.length) {
+    return <TableNoData>Não existem registos a apresentar</TableNoData>;
+  }
 
   return (
     <>
@@ -117,7 +129,7 @@ export const Table = <T,>({
         <TableHeader />
         <TableBody />
       </TableContainer>
-      <TablePagination />
+      {tablePagination && tablePagination}
     </>
   );
 };

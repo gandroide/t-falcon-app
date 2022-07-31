@@ -25,8 +25,9 @@ export const AppRoutes = () => {
         element={<ProtectedRoute isAdminRoute isClosedRoute />}
       >
         <Route path="/admin" element={<Admin />}>
-          <Route path="picagens" element={<UsersRegistry />} />
           <Route path="" element={<Users />} />
+          <Route path="picagens" element={<UsersRegistry />} />
+          <Route path="aves" element={<Birds />} />
           <Route path="clients" element={<Clients />} />
         </Route>
       </Route>

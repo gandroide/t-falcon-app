@@ -23,6 +23,7 @@ const loginUserFields: IInput[] = [
 
 export const Login = () => {
   const { onLoginHandler } = useContext(AuthContext);
+
   const onSubmitLoginHandler = useCallback<IForm['onSubmitCallback']>(
     (fields) => {
       onLoginHandler({ email: fields['email'], password: fields['password'] });

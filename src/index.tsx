@@ -9,18 +9,21 @@ import { BrowserRouter } from 'react-router-dom';
 import { ModalProvider } from './context/Modal';
 import { SidepanelProvider } from './context/Sidepanel';
 import { AuthProvider } from './context/Auth';
+import { LoadingProvider } from './context/Loading';
 
 ReactDOM.render(
   <React.StrictMode>
-    <AuthProvider>
-      <SidepanelProvider>
-        <ModalProvider>
-          <BrowserRouter>
-            <App />
-          </BrowserRouter>
-        </ModalProvider>
-      </SidepanelProvider>
-    </AuthProvider>
+    <BrowserRouter>
+      <LoadingProvider>
+        <AuthProvider>
+          <SidepanelProvider>
+            <ModalProvider>
+              <App />
+            </ModalProvider>
+          </SidepanelProvider>
+        </AuthProvider>
+      </LoadingProvider>
+    </BrowserRouter>
   </React.StrictMode>,
   document.getElementById('root')
 );

@@ -1,5 +1,7 @@
-import { createContext, FC, useEffect, useReducer } from 'react';
-import { appAuth } from '../../config/firebase';
+import { createContext, FC, useContext, useEffect, useReducer } from 'react';
+import { useNavigate } from 'react-router-dom';
+import { app, appAuth } from '../../config/firebase';
+import { LoadingContext } from '../Loading';
 
 interface ILoginData {
   email: string;
@@ -31,6 +33,7 @@ interface LoginAction {
   payload: {
     displayName: IAuthState['displayName'];
     userId: IAuthState['userId'];
+    isAdmin: IAuthState['isAdmin'];
   };
 }
 
@@ -44,6 +47,7 @@ interface AuthChangeAction {
   payload: {
     displayName: IAuthState['displayName'];
     userId: IAuthState['userId'];
+    isAdmin: IAuthState['isAdmin'];
   } | null;
 }
 
@@ -81,7 +85,7 @@ const authReducer = (
       return {
         ...state,
         isLoggedIn: true,
-        // isAdmin: false,
+        isAdmin: payload['isAdmin'],
         displayName: payload['displayName'],
         userId: payload['userId'],
         isAuthReady: true
@@ -93,7 +97,9 @@ const authReducer = (
         ...state,
         displayName: payload.displayName,
         userId: payload.userId,
-        isLoggedIn: true
+        isLoggedIn: true,
+        isAdmin: payload.isAdmin,
+        isAuthReady: true
       };
     default:
       return state;
@@ -101,6 +107,8 @@ const authReducer = (
 };
 
 export const AuthProvider: FC = ({ children }) => {
+  const navigate = useNavigate();
+  const { onLoadingHandler } = useContext(LoadingContext);
   const [userState, dispatch] = useReducer(authReducer, initialState);
 
   const onLogoutHandler = async () => {
@@ -110,26 +118,49 @@ export const AuthProvider: FC = ({ children }) => {
   };
 
   const onLoginHandler = async ({ email, password }: ILoginData) => {
+    onLoadingHandler(true);
     const res = await appAuth.signInWithEmailAndPassword(email, password);
 
     if (!res.user) {
       throw new Error('Impossivel fazer login');
     }
 
+    const userData = (
+      await app.collection('users').doc(res.user.uid).get()
+    ).data();
+
     dispatch({
       type: AuthTypeActions.LOGIN,
-      payload: { displayName: res.user.displayName!, userId: res.user.uid }
+      payload: {
+        displayName: res.user.displayName!,
+        userId: res.user.uid,
+        isAdmin: userData?.admistrador ?? false
+      }
     });
+
+    if (userData?.admistrador) {
+      navigate('/admin', { replace: true });
+    } else {
+      navigate('/home', { replace: true });
+    }
+
+    onLoadingHandler(false);
   };
 
   useEffect(() => {
-    const unsub = appAuth.onAuthStateChanged((user) => {
+    onLoadingHandler(true);
+    const unsub = appAuth.onAuthStateChanged(async (user) => {
       if (user) {
+        const userData = (
+          await app.collection('users').doc(user.uid).get()
+        ).data();
+
         dispatch({
           type: AuthTypeActions.AUTH_CHANGED,
           payload: {
             displayName: user.displayName!,
-            userId: user.uid
+            userId: user.uid,
+            isAdmin: userData?.admistrador
           }
         });
       } else {
@@ -138,9 +169,10 @@ export const AuthProvider: FC = ({ children }) => {
           payload: null
         });
       }
+      onLoadingHandler(false);
       unsub();
     });
-  }, []);
+  }, [onLoadingHandler]);
 
   return (
     <AuthContext.Provider

@@ -1,7 +1,10 @@
 import styled from 'styled-components';
 
+interface ITablePagination {
+  isSelected?: boolean;
+}
+
 export const TableContainer = styled.table`
-  /* border: 1px solid #ddd; */
   width: 100%;
   margin-bottom: 1rem;
   border-collapse: collapse;
@@ -41,11 +44,18 @@ export const TableNoData = styled.p``;
 export const TablePaginationContainer = styled.div`
   display: flex;
   justify-content: flex-end;
+
+  & > *:not(:last-child) {
+    margin-right: 5px;
+  }
 `;
 
-export const TablePaginationBtn = styled.button`
+export const TablePaginationBtn = styled.button<ITablePagination>`
   display: flex;
   align-items: center;
   justify-content: center;
-  width: 20px;
+  width: 30px;
+  height: 30px;
+  background: none;
+  border: 1px solid ${({ isSelected }) => (isSelected ? 'red' : '#eee')};
 `;

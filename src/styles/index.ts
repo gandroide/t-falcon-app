@@ -1,13 +1,11 @@
 import styled, { createGlobalStyle } from 'styled-components';
 
-// import 'react-toastify/dist/ReactToastify.css';
-
-export default createGlobalStyle`
+export default createGlobalStyle<{ isLoading: boolean }>`
  * {
    margin: 0;
    padding: 0;
    box-sizing: border-box;
-
+   overflow: ${({ isLoading }) => (isLoading ? 'hidden' : 'unset')};
   }
 
   .Toastify__toast-theme--colored.Toastify__toast--info {
