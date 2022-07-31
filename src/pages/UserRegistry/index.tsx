@@ -98,7 +98,7 @@ export const UserRegistry = () => {
   return (
     <>
       <MenuItem>
-        <Link style={LinkComponent} to="/">
+        <Link style={LinkComponent} to="/home">
           Go Back
         </Link>
       </MenuItem>

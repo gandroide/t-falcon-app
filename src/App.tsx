@@ -30,7 +30,9 @@ const App = () => {
       <GlobalStyles isLoading={isLoading} />
       {isLoading && <Loading />}
       <Modal {...modal} />
-      <SidePanel openPanel={isSidepanelOpen}>{SidepanelChildren}</SidePanel>
+      <SidePanel width="large" openPanel={isSidepanelOpen}>
+        {SidepanelChildren}
+      </SidePanel>
       <Navbar />
       <AppContainer>
         <AppRoutes />

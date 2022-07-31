@@ -6,9 +6,12 @@ import {
   IInputSelect,
   InputChangeHandler,
   isInputCheckbox,
+  isInputDate,
   isInputEvent,
   isInputSelect,
+  isInputTime,
   isSelectOption,
+  isTextarea,
   ISubmitData
 } from '../../interfaces';
 import { Button } from '../Button';
@@ -84,6 +87,32 @@ export const Form: FC<IForm> = ({ fields, onSubmitCallback, title }) => {
         );
       }
 
+      if (isTextarea(input)) {
+        return (
+          <div>
+            <div>{input.label}</div>
+            <textarea rows={10} cols={40} />
+          </div>
+        );
+      }
+
+      if (isInputTime(input)) {
+        return (
+          <label>
+            <input type={input.type} />
+            {input.label}
+          </label>
+        );
+      }
+
+      if (isInputDate(input)) {
+        return (
+          <div>
+            <div>{input.label}</div>
+            <input type={input.type} />
+          </div>
+        );
+      }
       return (
         <SpacementContiner>
           <LabelComponent>{input.label}</LabelComponent>
