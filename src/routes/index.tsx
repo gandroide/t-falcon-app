@@ -9,6 +9,7 @@ import { UserRegistry } from '../pages/UserRegistry';
 import { Users } from '../pages/Users';
 import { UsersRegistry } from '../pages/UsersRegistry';
 import { Clients } from '../pages/Clients';
+import { Cars } from '../pages/Cars';
 
 export const AppRoutes = () => {
   return (
@@ -28,6 +29,7 @@ export const AppRoutes = () => {
           <Route path="picagens" element={<UsersRegistry />} />
           <Route path="aves" element={<Birds />} />
           <Route path="clients" element={<Clients />} />
+          <Route path="cars" element={<Cars />} />
         </Route>
       </Route>
     </Routes>
