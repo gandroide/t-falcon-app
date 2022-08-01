@@ -158,3 +158,13 @@ export interface ITable<T> {
 }
 
 export type SidePanelWidth = 'small' | 'medium' | 'large';
+
+export interface ClientsData {
+  id: string;
+  nome: string;
+}
+
+export interface IServiceReport {
+  clientsData: ClientsData[];
+  birdsData: IBirdData[];
+}

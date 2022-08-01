@@ -1,70 +1,19 @@
-import React, { useState } from 'react';
+import React, { FC, useEffect, useMemo, useState } from 'react';
 import { Link } from 'react-router-dom';
 import { Button } from '../../components/Button';
 import { Form } from '../../components/Form';
-import { IDefaultInput, ITextarea } from '../../interfaces';
+import { app } from '../../config/firebase';
+import {
+  IBirdData,
+  IDefaultInput,
+  IInputSelect,
+  IServiceReport,
+  ITextarea
+} from '../../interfaces';
 import { CheckboxContainer, CheckboxItem, MenuItem } from './styled';
 import { Container } from './styled';
 
-// const InputStepper: ITextarea = [
-//   [
-//     {
-//       name: 'data',
-//       label: 'data',
-//       type: 'date',
-//       value: '',
-//       placeholder: 'data de serviço'
-//     },
-//     {
-//       name: 'hora inicio',
-//       label: 'hora inicio',
-//       type: 'date',
-//       value: '',
-//       placeholder: 'hora de serviço'
-//     },
-//     {
-//       name: 'hora fim',
-//       label: 'hora fim',
-//       type: 'date',
-//       value: '',
-//       placeholder: 'hora de serviço'
-//     }
-//   ],
-//   [
-//     {
-//       name: 'localização',
-//       label: 'localização',
-//       type: 'text',
-//       value: '',
-//       placeholder: 'localização do trabalho'
-//     },
-//     {
-//       name: 'ave',
-//       label: 'ave',
-//       type: 'text',
-//       value: '',
-//       placeholder: 'introduza ave'
-//     },
-//     {
-//       name: 'carro',
-//       label: 'carro',
-//       type: 'text',
-//       value: '',
-//       placeholder: 'selecione o carro utilizado'
-//     }
-//   ],
-//   [
-//     {
-//       name: 'observações',
-//       label: 'observações',
-//       type: 'text',
-//       value: '',
-//       placeholder: 'eventualidade / observações'
-//     }
-//   ]
-// ];
-
-const InputStepper: IDefaultInput[] = [
+const inputStepper: IDefaultInput[] = [
   {
     name: 'data',
     label: 'data',
@@ -119,64 +68,35 @@ const InputStepper: IDefaultInput[] = [
   }
 ];
 
-export const ServicesReport = () => {
-  //   const [step, setStep] = useState(0);
+export const ServicesReport: FC<IServiceReport> = ({
+  clientsData,
+  birdsData
+}) => {
+  const formInputs = useMemo(() => {
+    const inputs = [...inputStepper];
 
-  const LinkComponent = {
-    display: 'inline-block',
-    padding: '0.7em 1.7em',
-    margin: '0 0.3em 0.3em 0',
-    minWidth: '160px',
-    borderStyle: 'hidden',
-    borderRadius: '0.5em',
-    textDecoration: 'none',
-    fontWeight: '400',
-    color: '#ffffff',
-    backgroundColor: '#3369ff',
-    justifyContent: 'center',
-    alignItems: 'center'
-  };
+    (inputs[3] as IInputSelect).data = clientsData.map((client) => ({
+      label: client.nome,
+      name: 'cliente',
+      value: client.nome
+    }));
 
-  //   const setpFormHandler = (direction: number) => {
-  //     setStep(direction);
-  //   };
+    (inputs[4] as IInputSelect).data = birdsData.map((client) => ({
+      label: client.nome,
+      name: 'passaro',
+      value: client.nome
+    }));
 
-  //   const onStepperHandler = (InpputStepper: [[]]) => {
-  //     InputStepper.map((i) => {
-  //         return i
-  //     })
-  //     return (
-  //         <>
-  //             <span>{}</span>
-  //         </>
-  //     )
-  //   }
+    return inputs;
+  }, [birdsData, clientsData]);
 
   const onServicesReportHandler = () => {};
 
   return (
-    // <Container>
-    //   <MenuItem>FormService</MenuItem>
-    //   <textarea rows={10} cols={40} />
-    //   <MenuItem>
-    //     <Button onClick={() => setpFormHandler(1)}>Next</Button>
-    //   </MenuItem>
-    //   {step === 0 ? undefined : (
-    //     <MenuItem>
-    //       <Button onClick={() => setpFormHandler(-1)}>Back</Button>
-    //     </MenuItem>
-    //   )}
-    <Container>
-      <Form
-        title="Relatorio de Serviço"
-        fields={InputStepper}
-        onSubmitCallback={onServicesReportHandler}
-      />
-      <MenuItem>
-        <Link style={LinkComponent} to="/home">
-          Cancelar
-        </Link>
-      </MenuItem>
-    </Container>
+    <Form
+      title="Relatorio de Serviço"
+      fields={formInputs}
+      onSubmitCallback={onServicesReportHandler}
+    />
   );
 };

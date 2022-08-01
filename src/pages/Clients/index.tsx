@@ -3,16 +3,17 @@ import { Form } from '../../components/Form';
 import { Table } from '../../components/Table';
 import { app } from '../../config/firebase';
 import { SidepanelContext } from '../../context/Sidepanel';
-import { IDefaultInput, IForm, ITable, ITableAction } from '../../interfaces';
+import {
+  IDefaultInput,
+  IForm,
+  ITable,
+  ITableAction,
+  ClientsData
+} from '../../interfaces';
 import { AdminContainer, AdminHeaderContainer } from '../../styles';
 import { SidePanelContainer, SidePanelTitle } from '../Users/styled';
 import { FaRegTrashAlt } from 'react-icons/fa';
 import { LoadingContext } from '../../context/Loading';
-
-interface ClientsData {
-  id: string;
-  nome: string;
-}
 
 const addClientForm: IDefaultInput[] = [
   {
@@ -66,7 +67,8 @@ export const Clients = () => {
   const onOpenClientFormHandler = () => {
     onOpenSidepanelHandler({
       isOpen: true,
-      SidepanelChildren: <AddClientsFrom />
+      SidepanelChildren: AddClientsFrom,
+      width: 'small'
     });
   };
 

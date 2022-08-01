@@ -15,13 +15,15 @@ import {
   TopBarInfo
 } from './Home.styles';
 import { BirdWeightForm } from '../../containers/BirdWeightForm';
-import { IBirdData } from '../../interfaces';
+import { ClientsData, IBirdData } from '../../interfaces';
 import { ServicesReport } from '../ServicesReport';
+import { LoadingContext } from '../../context/Loading';
 
 export const Home = () => {
   const { onOpenSidepanelHandler } = useContext(SidepanelContext);
   const { onSetModalHandler } = useContext(ModalContext);
   const { onLogoutHandler, user } = useContext(AuthContext);
+  const { onLoadingHandler } = useContext(LoadingContext);
 
   const onRegisterPicagemHandler = (id?: string) => {
     if (id) {
@@ -76,10 +78,12 @@ export const Home = () => {
   };
 
   const onWeightRegisterHandler = () => {
+    onLoadingHandler(true);
     app
       .collection('birds')
       .get()
       .then((docs) => {
+        // mensagem de erro
         if (docs.empty) return;
 
         const birdsData: IBirdData[] = [];
@@ -92,6 +96,7 @@ export const Home = () => {
           });
         });
 
+        onLoadingHandler(false);
         onOpenSidepanelHandler({
           isOpen: true,
           SidepanelChildren: <BirdWeightForm birdsData={birdsData} />,
@@ -101,11 +106,52 @@ export const Home = () => {
   };
 
   const onServicesReportHanlder = () => {
-    onOpenSidepanelHandler({
-      isOpen: true,
-      SidepanelChildren: <ServicesReport />,
-      width: 'small'
-    });
+    onLoadingHandler(true);
+    app
+      .collection('birds')
+      .get()
+      .then((docs) => {
+        // mensagem de erro
+        if (docs.empty) return;
+        const birdsData: IBirdData[] = [];
+
+        docs.forEach((doc) => {
+          birdsData.push({
+            id: doc.id,
+            identificação: doc.data()['identificação'],
+            nome: doc.data().nome
+          });
+        });
+
+        app
+          .collection('clients')
+          .get()
+          .then((docs) => {
+            // mensagem de erro
+            if (docs.empty) return;
+
+            const clientsData: ClientsData[] = [];
+
+            docs.forEach((doc) => {
+              clientsData.push({
+                id: doc.id,
+                nome: doc.data().name
+              });
+            });
+
+            onLoadingHandler(false);
+            onOpenSidepanelHandler({
+              isOpen: true,
+              SidepanelChildren: (
+                <ServicesReport
+                  clientsData={clientsData}
+                  birdsData={birdsData}
+                />
+              ),
+              width: 'small'
+            });
+          });
+      });
   };
 
   const LinkComponent = {
@@ -141,9 +187,7 @@ export const Home = () => {
           <Button onClick={onWeightRegisterHandler}>Registar Pesagem</Button>
         </MenuItem>
         <MenuItem>
-          <Link style={LinkComponent} to="/relatorio">
-            Relatorio de Serviço
-          </Link>
+          <Button onClick={onServicesReportHanlder}>Registar Relatorio</Button>
           {/* <Button onClick={onServicesReportHanlder}>
             Relatorio de Serviço
           </Button> */}

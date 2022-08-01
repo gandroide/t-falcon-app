@@ -18,7 +18,6 @@ export const AppRoutes = () => {
         <Route path="/home" element={<Home />} />
       </Route>
       <Route path="/pesagem" element={<Birds />} />
-      <Route path="/relatorio" element={<ServicesReport />} />
       <Route path="/user_registry" element={<UserRegistry />} />
       <Route
         path="/admin"
