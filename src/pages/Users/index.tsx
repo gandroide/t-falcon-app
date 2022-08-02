@@ -97,7 +97,9 @@ export const Users = () => {
       <Table
         count={0}
         data={users}
-        onPageChangeCallback={() => {}}
+        onTableRenderCallback={() => {}}
+        onSearchCallback={() => {}}
+        filterOptions={[]}
         tableActions={[]}
       />
     </>

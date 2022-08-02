@@ -22,8 +22,8 @@ export const BirdsWeighing = () => {
   const [birdsWeightCounter, setBirdsWeightCounter] = useState(0);
 
   const onPageChangeHandler = useCallback<
-    ITable<BirdsWeightData>['onPageChangeCallback']
-  >((page) => {}, []);
+    ITable<BirdsWeightData>['onTableRenderCallback']
+  >(({ page, filter, filterValue }) => {}, []);
 
   useEffect(() => {
     app
@@ -57,17 +57,13 @@ export const BirdsWeighing = () => {
 
   return (
     <div style={{ padding: '2rem' }}>
-      <SearchFilter
-        options={[]}
-        onSearchCallback={() => {}}
-        onChangeFilterCallback={() => {}}
-        filterValue=""
-      />
       <Table
         count={birdsWeightCounter}
         data={birdsWeightData}
         tableActions={[]}
-        onPageChangeCallback={onPageChangeHandler}
+        onTableRenderCallback={onPageChangeHandler}
+        onSearchCallback={onPageChangeHandler}
+        filterOptions={[]}
       />
     </div>
   );

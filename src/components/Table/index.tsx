@@ -1,4 +1,10 @@
 import { useEffect, useMemo, useRef, useState } from 'react';
+import { MdKeyboardArrowLeft, MdKeyboardArrowRight } from 'react-icons/md';
+import { useFilter } from '../../hooks/useFilter';
+
+import { ITable } from '../../interfaces';
+import { SearchFilter } from '../SearchFilter';
+
 import {
   TableAction,
   TableActionIcon,
@@ -13,8 +19,6 @@ import {
   TablePaginationBtn,
   TablePaginationContainer
 } from './styled';
-import { MdKeyboardArrowLeft, MdKeyboardArrowRight } from 'react-icons/md';
-import { ITable } from '../../interfaces';
 
 const PAGE_SIZE = 10;
 
@@ -22,10 +26,13 @@ export const Table = <T,>({
   data,
   tableActions,
   count,
-  onPageChangeCallback
+  onTableRenderCallback,
+  filterOptions,
+  onSearchCallback
 }: ITable<T>) => {
   const firstRender = useRef(true);
   const [currentPage, setCurrentPage] = useState(1);
+  const { filter, onChangeFilterHandler, value } = useFilter();
 
   useEffect(() => {
     if (firstRender.current) {
@@ -33,8 +40,12 @@ export const Table = <T,>({
       return;
     }
 
-    onPageChangeCallback(currentPage);
-  }, [currentPage, onPageChangeCallback]);
+    onTableRenderCallback({
+      page: currentPage,
+      filter,
+      filterValue: value
+    });
+  }, [currentPage, onTableRenderCallback]);
 
   let tableHeader: (keyof T)[] = [];
 
@@ -119,12 +130,22 @@ export const Table = <T,>({
     );
   }, [currentPage, count]);
 
+  const onSearchHandler = () => {
+    onSearchCallback({ page: currentPage, filter, filterValue: value });
+  };
+
   if (!data.length) {
     return <TableNoData>Não existem registos a apresentar</TableNoData>;
   }
 
   return (
     <>
+      <SearchFilter
+        options={filterOptions}
+        onSearchCallback={onSearchHandler}
+        onChangeFilterCallback={onChangeFilterHandler}
+        filterValue={value}
+      />
       <TableContainer>
         <TableHeader />
         <TableBody />

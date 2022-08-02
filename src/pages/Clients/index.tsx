@@ -76,10 +76,10 @@ export const Clients = () => {
     ITableAction<ClientsData>['callback']
   >((rowData) => {}, []);
 
-  const onPageChangehandler = useCallback<
-    ITable<ClientsData>['onPageChangeCallback']
+  const onPageChangeHandler = useCallback<
+    ITable<ClientsData>['onTableRenderCallback']
   >(
-    (page) => {
+    ({ page, filter, filterValue }) => {
       onLoadingHandler(true);
       const clientsData: ClientsData[] = [];
 
@@ -177,7 +177,9 @@ export const Clients = () => {
       </AdminHeaderContainer>
       <Table
         count={clientsCounter}
-        onPageChangeCallback={onPageChangehandler}
+        onTableRenderCallback={onPageChangeHandler}
+        onSearchCallback={onPageChangeHandler}
+        filterOptions={[]}
         data={clients}
         tableActions={[
           { callback: onRemoveClientHandler, icon: <FaRegTrashAlt /> }

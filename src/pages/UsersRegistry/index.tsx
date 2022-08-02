@@ -96,17 +96,13 @@ export const UsersRegistry = () => {
       <AdminHeaderContainer>
         <h1>Registo picagens dos utilizadores</h1>
       </AdminHeaderContainer>
-      <SearchFilter
-        options={[
-          { label: 'Utilizador', value: 'displayName', name: 'displayName' }
-        ]}
-        onSearchCallback={onSearchCallback}
-        onChangeFilterCallback={onChangeFilterHandler}
-        filterValue={value}
-      />
       <Table
         count={0}
-        onPageChangeCallback={() => {}}
+        onTableRenderCallback={() => {}}
+        onSearchCallback={() => {}}
+        filterOptions={[
+          { label: 'Utilizador', value: 'displayName', name: 'displayName' }
+        ]}
         data={usersRegistry}
         tableActions={[{ icon: <RiMapPinUserFill />, callback: openMap }]}
       />

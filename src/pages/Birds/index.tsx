@@ -134,10 +134,10 @@ export const Birds = () => {
       .catch((e) => console.log('Error removind bird'));
   };
 
-  const onPageChangehandler = useCallback<
-    ITable<IBirdData>['onPageChangeCallback']
+  const onPageChangeHandler = useCallback<
+    ITable<IBirdData>['onTableRenderCallback']
   >(
-    (page) => {
+    ({ page, filter, filterValue }) => {
       onLoadingHandler(true);
       const birds: IBirdData[] = [];
 
@@ -235,16 +235,12 @@ export const Birds = () => {
         <h1>Registo das aves</h1>
         <button onClick={onBirdRegisterHandler}>Adicionar ave</button>
       </AdminHeaderContainer>
-      <SearchFilter
-        options={[]}
-        onSearchCallback={() => {}}
-        filterValue=""
-        onChangeFilterCallback={() => {}}
-      />
       <Table
         count={birdsCounter}
         data={birds}
-        onPageChangeCallback={onPageChangehandler}
+        onTableRenderCallback={onPageChangeHandler}
+        filterOptions={[]}
+        onSearchCallback={onPageChangeHandler}
         tableActions={[
           {
             icon: <FaEdit />,

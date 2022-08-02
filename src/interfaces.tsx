@@ -153,11 +153,19 @@ export interface ITableAction<T> {
   callback: (rowData: T) => void;
 }
 
+export interface ITableRender {
+  page: number;
+  filter: string;
+  filterValue: string;
+}
+
 export interface ITable<T> {
   data: T[];
   tableActions: ITableAction<T>[];
   count: number;
-  onPageChangeCallback: (page: number) => void;
+  onTableRenderCallback: ({ page, filter, filterValue }: ITableRender) => void;
+  filterOptions: ISelectOption[];
+  onSearchCallback: ({ page, filter, filterValue }: ITableRender) => void;
 }
 
 export type SidePanelWidth = 'small' | 'medium' | 'large';

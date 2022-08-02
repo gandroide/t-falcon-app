@@ -110,7 +110,9 @@ export const UserRegistry = () => {
           <Table
             count={0}
             data={userRegistry}
-            onPageChangeCallback={() => {}}
+            onTableRenderCallback={() => {}}
+            onSearchCallback={() => {}}
+            filterOptions={[]}
             tableActions={[
               { callback: onDeleteRegistryHandler, icon: <FaRegTrashAlt /> }
             ]}
