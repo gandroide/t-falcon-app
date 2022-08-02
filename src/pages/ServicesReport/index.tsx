@@ -1,11 +1,20 @@
-import React, { FC, useEffect, useMemo, useState } from 'react';
+import React, {
+  FC,
+  useCallback,
+  useContext,
+  useEffect,
+  useMemo,
+  useState
+} from 'react';
 import { Link } from 'react-router-dom';
 import { Button } from '../../components/Button';
 import { Form } from '../../components/Form';
 import { app } from '../../config/firebase';
+import { SidepanelContext } from '../../context/Sidepanel';
 import {
   IBirdData,
   IDefaultInput,
+  IForm,
   IInputSelect,
   IServiceReport,
   ITextarea
@@ -23,7 +32,7 @@ const inputStepper: IDefaultInput[] = [
     required: true
   },
   {
-    name: 'hora inicio',
+    name: 'hora-inicio',
     label: 'hora inicio',
     type: 'date',
     value: '',
@@ -31,7 +40,7 @@ const inputStepper: IDefaultInput[] = [
     required: true
   },
   {
-    name: 'hora fim',
+    name: 'hora-fim',
     label: 'hora fim',
     type: 'date',
     value: '',
@@ -72,6 +81,8 @@ export const ServicesReport: FC<IServiceReport> = ({
   clientsData,
   birdsData
 }) => {
+  const { onCloseSidepanelHandler } = useContext(SidepanelContext);
+
   const formInputs = useMemo(() => {
     const inputs = [...inputStepper];
 
@@ -90,7 +101,28 @@ export const ServicesReport: FC<IServiceReport> = ({
     return inputs;
   }, [birdsData, clientsData]);
 
-  const onServicesReportHandler = () => {};
+  const onServicesReportHandler = useCallback<IForm['onSubmitCallback']>(
+    async (data) => {
+      try {
+        app
+          .collection('reports')
+          .add(data)
+          .then(() => {
+            app
+              .collection('counters')
+              .doc('reports')
+              .get()
+              .then(async (doc) => {
+                let count = (doc?.data()?.count || 0) + 1;
+
+                await app.collection('counters').doc('birds').set({ count });
+                onCloseSidepanelHandler();
+              });
+          });
+      } catch (e) {}
+    },
+    [onCloseSidepanelHandler]
+  );
 
   return (
     <Form

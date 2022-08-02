@@ -44,7 +44,10 @@ export type IDefaultInput =
   | IInputTime
   | IInputDate;
 
-export type IChangeEvent = ChangeEvent<HTMLInputElement> | ISelectOption;
+export type IChangeEvent =
+  | ChangeEvent<HTMLInputElement>
+  | ISelectOption
+  | ChangeEvent<HTMLTextAreaElement>;
 
 export type InputChangeHandler = (e: IChangeEvent, index: number) => void;
 

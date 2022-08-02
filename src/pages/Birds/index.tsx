@@ -192,7 +192,8 @@ export const Birds = () => {
                 setBirds(birds);
                 onLoadingHandler(false);
               });
-          });
+          })
+          .catch((e) => {});
       }
     },
     [onLoadingHandler]

@@ -91,7 +91,12 @@ export const Form: FC<IForm> = ({ fields, onSubmitCallback, title }) => {
         return (
           <div>
             <div>{input.label}</div>
-            <textarea rows={10} cols={40} />
+            <textarea
+              rows={10}
+              cols={40}
+              onChange={(e) => onChange(e, index)}
+              value={input.value}
+            />
           </div>
         );
       }
@@ -99,7 +104,11 @@ export const Form: FC<IForm> = ({ fields, onSubmitCallback, title }) => {
       if (isInputTime(input)) {
         return (
           <label>
-            <input type={input.type} />
+            <input
+              type={input.type}
+              onChange={(e) => onChange(e, index)}
+              value={input.value}
+            />
             {input.label}
           </label>
         );
@@ -109,7 +118,11 @@ export const Form: FC<IForm> = ({ fields, onSubmitCallback, title }) => {
         return (
           <div>
             <div>{input.label}</div>
-            <input type={input.type} />
+            <input
+              type={input.type}
+              onChange={(e) => onChange(e, index)}
+              value={input.value}
+            />
           </div>
         );
       }
