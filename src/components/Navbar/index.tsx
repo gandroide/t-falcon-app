@@ -1,6 +1,7 @@
 import { useContext, useState } from 'react';
 import { RiArrowDropDownLine } from 'react-icons/ri';
 import { AuthContext } from '../../context/Auth';
+import { Button } from '../Button';
 import {
   NavbarContainer,
   NavbarDropdownButton,
@@ -14,7 +15,7 @@ import {
 
 export const Navbar = () => {
   const [isOpen, setIsOpen] = useState(false);
-  const { user } = useContext(AuthContext);
+  const { user, onLogoutHandler } = useContext(AuthContext);
 
   const onDropdownOpenHandler = () => {
     setIsOpen((prevState) => !prevState);
@@ -29,7 +30,7 @@ export const Navbar = () => {
           <NavbarDropdownButtonIcon isOpen={isOpen}>
             <RiArrowDropDownLine />
           </NavbarDropdownButtonIcon>
-          {isOpen && (
+          {isOpen && !user.isAdmin ? (
             <NavbarDropdownMenu>
               <NavbarDropdownItem>
                 <NavbarDropdownLink to="/user_registry">
@@ -42,6 +43,14 @@ export const Navbar = () => {
                 </NavbarDropdownLink>
               </NavbarDropdownItem>
             </NavbarDropdownMenu>
+          ) : (
+            isOpen && (
+              <NavbarDropdownMenu>
+                <NavbarDropdownItem>
+                  <Button onClick={onLogoutHandler}>Logout</Button>
+                </NavbarDropdownItem>
+              </NavbarDropdownMenu>
+            )
           )}
         </NavbarDropdownButton>
       </NavbarDropdownContainer>

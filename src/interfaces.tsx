@@ -175,6 +175,12 @@ export interface ClientsData {
   nome: string;
 }
 
+export interface CarsData {
+  id: string;
+  matricula: string;
+  viatura: string;
+}
+
 export interface IServiceReport {
   clientsData: ClientsData[];
   birdsData: IBirdData[];

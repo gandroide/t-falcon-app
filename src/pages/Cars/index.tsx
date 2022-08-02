@@ -1,47 +1,54 @@
-import { useCallback, useContext, useEffect, useState } from 'react';
+import React, { FC, useCallback, useContext, useEffect, useState } from 'react';
+import { FaRegTrashAlt } from 'react-icons/fa';
 import { Form } from '../../components/Form';
 import { Table } from '../../components/Table';
 import { app } from '../../config/firebase';
+import { LoadingContext } from '../../context/Loading';
 import { SidepanelContext } from '../../context/Sidepanel';
 import {
-  IDefaultInput,
+  CarsData,
   IForm,
+  IInput,
   ITable,
-  ITableAction,
-  ClientsData
+  ITableAction
 } from '../../interfaces';
 import { AdminContainer, AdminHeaderContainer } from '../../styles';
 import { SidePanelContainer, SidePanelTitle } from '../Users/styled';
-import { FaRegTrashAlt } from 'react-icons/fa';
-import { LoadingContext } from '../../context/Loading';
 
-const addClientForm: IDefaultInput[] = [
+const addCarsForm: IInput[] = [
   {
-    name: 'name',
+    name: 'matricula',
     type: 'text',
-    label: 'Cliente',
-    placeholder: 'Introduza o nome do client',
+    label: 'Matricula',
+    placeholder: 'Introduza matricula',
+    value: ''
+  },
+  {
+    name: 'viatura',
+    type: 'text',
+    label: 'Viatura',
+    placeholder: 'Introduza o nome da viatura',
     value: ''
   }
 ];
 
-const AddClientsFrom = () => {
+const AddCarsFrom = () => {
   const { onCloseSidepanelHandler } = useContext(SidepanelContext);
 
-  const onAddClientHandler = useCallback<IForm['onSubmitCallback']>(
+  const onAddCartHandler = useCallback<IForm['onSubmitCallback']>(
     async (data) => {
       await app
-        .collection('clients')
+        .collection('cars')
         .add(data)
         .then(() => {
           app
             .collection('counters')
-            .doc('clients')
+            .doc('cars')
             .get()
             .then(async (doc) => {
               let count = (doc?.data()?.count || 0) + 1;
 
-              await app.collection('counters').doc('clients').set({ count });
+              await app.collection('counters').doc('cars').set({ count });
             });
         });
 
@@ -52,60 +59,63 @@ const AddClientsFrom = () => {
 
   return (
     <SidePanelContainer>
-      <SidePanelTitle>Adicionar cliente</SidePanelTitle>
-      <Form fields={addClientForm} onSubmitCallback={onAddClientHandler} />
+      <SidePanelTitle>Adicionar carro</SidePanelTitle>
+      <Form fields={addCarsForm} onSubmitCallback={onAddCartHandler} />
     </SidePanelContainer>
   );
 };
 
-export const Clients = () => {
-  const [clients, setClients] = useState<ClientsData[]>([]);
-  const [clientsCounter, setClientsCounter] = useState(0);
+export const Cars: FC = () => {
+  const [cars, setCars] = useState<CarsData[]>([]);
+  const [carsCounter, setCarsCounter] = useState(0);
   const { onOpenSidepanelHandler } = useContext(SidepanelContext);
   const { onLoadingHandler } = useContext(LoadingContext);
 
-  const onOpenClientFormHandler = () => {
+  const onOpenCarsFormHandler = () => {
     onOpenSidepanelHandler({
       isOpen: true,
-      SidepanelChildren: <AddClientsFrom />,
+      SidepanelChildren: <AddCarsFrom />,
       width: 'small'
     });
   };
 
-  const onRemoveClientHandler = useCallback<
-    ITableAction<ClientsData>['callback']
-  >((rowData) => {}, []);
+  const onRemoveCarsHandler = useCallback<ITableAction<CarsData>['callback']>(
+    (rowData) => {},
+    []
+  );
 
-  const onPageChangeHandler = useCallback<
-    ITable<ClientsData>['onTableRenderCallback']
+  const onPageChangehandler = useCallback<
+    ITable<CarsData>['onPageChangeCallback']
   >(
-    ({ page, filter, filterValue }) => {
+    (page) => {
       onLoadingHandler(true);
-      const clientsData: ClientsData[] = [];
+      const carsData: CarsData[] = [];
 
       if (page === 1) {
         app
-          .collection('clients')
+          .collection('carros')
           .orderBy('name')
           .limit(10)
           .onSnapshot((onSnapshot) => {
+            onLoadingHandler(false);
+
             if (onSnapshot.empty) return;
 
             onSnapshot.forEach((doc) => {
-              clientsData.push({
+              carsData.push({
                 id: doc.id,
-                nome: doc.data().name
+                matricula: doc.data().matricula,
+                viatura: doc.data().viatura
               });
             });
 
-            setClients(clientsData);
-            onLoadingHandler(false);
+            setCars(carsData);
           });
       } else {
         const currentLimit = (page - 1) * 10;
 
         app
-          .collection('clients')
+          .collection('cars')
           .orderBy('name')
           .limit(currentLimit)
           .get()
@@ -114,7 +124,7 @@ export const Clients = () => {
               documentSnapshots.docs[documentSnapshots.docs.length - 1];
 
             app
-              .collection('clients')
+              .collection('cars')
               .orderBy('name')
               .startAfter(lastVisible)
               .limit(10)
@@ -123,13 +133,14 @@ export const Clients = () => {
                 if (data.empty) return;
 
                 data.forEach((doc) => {
-                  clientsData.push({
+                  carsData.push({
                     id: doc.id,
-                    nome: doc.data().name
+                    matricula: doc.data().matricula,
+                    viatura: doc.data().viatura
                   });
                 });
 
-                setClients(clientsData);
+                setCars(carsData);
                 onLoadingHandler(false);
               });
           });
@@ -140,30 +151,37 @@ export const Clients = () => {
 
   useEffect(() => {
     onLoadingHandler(true);
-    const clientsData: ClientsData[] = [];
+    const carsData: CarsData[] = [];
 
     app
-      .collection('clients')
-      .orderBy('name')
+      .collection('cars')
+      .orderBy('matricula')
       .limit(10)
       .onSnapshot((onSnapshot) => {
-        if (onSnapshot.empty) return;
+        if (onSnapshot.empty) {
+          onLoadingHandler(false);
+          return;
+        }
 
         onSnapshot.forEach((doc) => {
-          clientsData.push({
+          carsData.push({
             id: doc.id,
-            nome: doc.data().name
+            matricula: doc.data().matricula,
+            viatura: doc.data().viatura
           });
         });
 
         app
           .collection('counters')
-          .doc('clients')
+          .doc('cars')
           .onSnapshot((onSnapshot) => {
-            if (!onSnapshot.exists) return;
+            if (!onSnapshot.exists) {
+              onLoadingHandler(false);
+              return;
+            }
 
-            setClientsCounter(onSnapshot.data()?.count);
-            setClients(clientsData);
+            setCarsCounter(onSnapshot.data()?.count);
+            setCars(carsData);
             onLoadingHandler(false);
           });
       });
@@ -172,17 +190,15 @@ export const Clients = () => {
   return (
     <AdminContainer>
       <AdminHeaderContainer>
-        <h1>Registo dos clientes</h1>
-        <button onClick={onOpenClientFormHandler}>Adicionar cliente</button>
+        <h1>Registo dos carros</h1>
+        <button onClick={onOpenCarsFormHandler}>Adicionar carro</button>
       </AdminHeaderContainer>
       <Table
-        count={clientsCounter}
-        onTableRenderCallback={onPageChangeHandler}
-        onSearchCallback={onPageChangeHandler}
-        filterOptions={[]}
-        data={clients}
+        count={carsCounter}
+        onPageChangeCallback={onPageChangehandler}
+        data={cars}
         tableActions={[
-          { callback: onRemoveClientHandler, icon: <FaRegTrashAlt /> }
+          { callback: onRemoveCarsHandler, icon: <FaRegTrashAlt /> }
         ]}
       />
     </AdminContainer>
