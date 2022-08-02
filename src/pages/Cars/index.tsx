@@ -84,10 +84,10 @@ export const Cars: FC = () => {
     []
   );
 
-  const onPageChangehandler = useCallback<
-    ITable<CarsData>['onPageChangeCallback']
+  const onPageChangeHandler = useCallback<
+    ITable<CarsData>['onTableRenderCallback']
   >(
-    (page) => {
+    ({ page, filter, filterValue }) => {
       onLoadingHandler(true);
       const carsData: CarsData[] = [];
 
@@ -195,8 +195,10 @@ export const Cars: FC = () => {
       </AdminHeaderContainer>
       <Table
         count={carsCounter}
-        onPageChangeCallback={onPageChangehandler}
+        onTableRenderCallback={onPageChangeHandler}
+        onSearchCallback={onPageChangeHandler}
         data={cars}
+        filterOptions={[]}
         tableActions={[
           { callback: onRemoveCarsHandler, icon: <FaRegTrashAlt /> }
         ]}
