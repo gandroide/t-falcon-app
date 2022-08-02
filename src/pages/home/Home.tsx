@@ -18,6 +18,7 @@ import { BirdWeightForm } from '../../containers/BirdWeightForm';
 import { ClientsData, IBirdData } from '../../interfaces';
 import { ServicesReport } from '../ServicesReport';
 import { LoadingContext } from '../../context/Loading';
+import { ServicesReportDetail } from '../ServicesReportDetails';
 
 export const Home = () => {
   const { onOpenSidepanelHandler } = useContext(SidepanelContext);
@@ -166,7 +167,11 @@ export const Home = () => {
     color: '#ffffff',
     backgroundColor: '#3369ff'
   };
-
+  // return (
+  //   <>
+  //     <ServicesReportDetail />
+  //   </>
+  // );
   return (
     <Container>
       <TopBar>

@@ -185,3 +185,22 @@ export interface IServiceReport {
   clientsData: ClientsData[];
   birdsData: IBirdData[];
 }
+
+export interface IServiceReportData {
+  id: string;
+  colaborador: string;
+  cliente: string;
+  data: string;
+}
+
+export interface IServiceReportFull extends IServiceReportData {
+  ave: string;
+  viatura: string;
+  observacoes: string;
+  'hora-inicio': string;
+  'hora-fim': string;
+}
+
+export interface IServiceReportDataFull {
+  report: IServiceReportFull;
+}
