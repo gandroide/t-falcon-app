@@ -1,5 +1,5 @@
 import moment from 'moment';
-import { useState, useCallback, useEffect } from 'react';
+import { useState, useCallback, useEffect, useContext } from 'react';
 import { SearchFilter } from '../../components/SearchFilter';
 import { Table } from '../../components/Table';
 import { app } from '../../config/firebase';
@@ -8,6 +8,7 @@ import { FullUserRegistryData, ITableAction } from '../../interfaces';
 import { RiMapPinUserFill, RiMapPinUserLine } from 'react-icons/ri';
 import { Map } from '../../components/Map';
 import { AdminContainer, AdminHeaderContainer } from '../../styles';
+import { SidepanelContext } from '../../context/Sidepanel';
 
 const secondsToDate = (seconds?: number) => {
   if (seconds) {
@@ -32,7 +33,7 @@ export const UsersRegistry = () => {
   const [usersRegistry, setUsersRegistry] = useState<FullUserRegistryData[]>(
     []
   );
-
+  const { onOpenSidepanelHandler } = useContext(SidepanelContext);
   const onSearchCallback = useCallback(() => {
     if (!filter || !value) return;
 
@@ -54,7 +55,11 @@ export const UsersRegistry = () => {
             nome: doc.data().displayName,
             data: date ?? '-',
             entrada: entryTime ?? '-',
-            saida: leaveTime ?? '-'
+            saida: leaveTime ?? '-',
+            latitude_entry: doc.data().latitude_entry,
+            longitude_entry: doc.data().longitude_entry,
+            latitude_out: doc.data().latitude_out,
+            longitude_out: doc.data().longitude_out
           });
         });
 
@@ -79,7 +84,11 @@ export const UsersRegistry = () => {
           nome: doc.data().displayName,
           data: date ?? '-',
           entrada: entryTime ?? '-',
-          saida: leaveTime ?? '-'
+          saida: leaveTime ?? '-',
+          latitude_entry: doc.data().latitude_entry,
+          longitude_entry: doc.data().longitude_entry,
+          latitude_out: doc.data().latitude_out,
+          longitude_out: doc.data().longitude_out
         });
       });
 
@@ -87,9 +96,23 @@ export const UsersRegistry = () => {
     });
   }, []);
 
-  const openMap = useCallback(() => {
-    <Map position={{ latitude: 32.6743899, longitude: -17.0636638 }} />;
-  }, []);
+  const openMap = useCallback<ITableAction<FullUserRegistryData>['callback']>(
+    (rowData) => {
+      onOpenSidepanelHandler({
+        isOpen: true,
+        SidepanelChildren: (
+          <Map
+            position={{
+              latitude: rowData.latitude_entry,
+              longitude: rowData.longitude_entry
+            }}
+          />
+        ),
+        width: 'small'
+      });
+    },
+    [onOpenSidepanelHandler]
+  );
 
   return (
     <AdminContainer>

@@ -19,6 +19,7 @@ import { ClientsData, IBirdData } from '../../interfaces';
 import { ServicesReport } from '../ServicesReport';
 import { LoadingContext } from '../../context/Loading';
 import { ServicesReportDetail } from '../ServicesReportDetails';
+import { currentPosition } from '../../components/Map';
 
 export const Home = () => {
   const { onOpenSidepanelHandler } = useContext(SidepanelContext);
@@ -26,27 +27,42 @@ export const Home = () => {
   const { onLogoutHandler, user } = useContext(AuthContext);
   const { onLoadingHandler } = useContext(LoadingContext);
 
-  const onRegisterPicagemHandler = (id?: string) => {
+  const onRegisterPicagemHandler = (coords: currentPosition, id?: string) => {
     if (id) {
       app
         .collection('user_registry')
         .doc(id)
         .update({
-          leaveDate: appTimestamp.fromDate(new Date())
+          leaveDate: appTimestamp.fromDate(new Date()),
+          latitude_out: coords.latitude,
+          longitude_out: coords.longitude
         });
     } else {
       app.collection('user_registry').add({
         userId: user.userId,
         displayName: user.displayName,
-        entryDate: appTimestamp.fromDate(new Date())
+        entryDate: appTimestamp.fromDate(new Date()),
+        latitude_entry: coords.latitude,
+        longitude_entry: coords.longitude
       });
     }
   };
 
-  const onConfirmPicagemHandler = () => {
+  const onConfirmPicagemHandler = async () => {
     const currentDate = moment().format('L');
     const nextDate = moment().add(1, 'days').format('L');
 
+    const getCoords = async () => {
+      const pos: any = await new Promise((resolve, rejects) => {
+        navigator.geolocation.getCurrentPosition(resolve);
+      });
+      return {
+        longitude: pos.coords.longitude,
+        latitude: pos.coords.latitude
+      };
+    };
+    const coords = await getCoords();
+    console.log(coords);
     app
       .collection('user_registry')
       .where('userId', '==', user.userId)
@@ -62,7 +78,7 @@ export const Home = () => {
             title: 'Registar Entrada',
             description:
               'Clique no botão confirmar para registar a sua entrada',
-            onConfirmCallback: onRegisterPicagemHandler,
+            onConfirmCallback: () => onRegisterPicagemHandler(coords, ''),
             onCloseCallback: null
           });
         } else {
@@ -71,7 +87,8 @@ export const Home = () => {
             type: 'info',
             title: 'Registar Saída',
             description: 'Clique no botão confirmar para registar a sua saída',
-            onConfirmCallback: () => onRegisterPicagemHandler(value.docs[0].id),
+            onConfirmCallback: () =>
+              onRegisterPicagemHandler(coords, value.docs[0].id),
             onCloseCallback: null
           });
         }

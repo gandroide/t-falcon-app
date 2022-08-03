@@ -117,6 +117,10 @@ export interface UserRegistryData {
 
 export interface FullUserRegistryData extends UserRegistryData {
   nome: string;
+  latitude_entry: number;
+  longitude_entry: number;
+  latitude_out: number;
+  longitude_out: number;
 }
 
 export interface ISelectOption {

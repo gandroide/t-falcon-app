@@ -2,7 +2,7 @@ import { FC, useState } from 'react';
 import { MapContainer, Marker, Popup, TileLayer } from 'react-leaflet';
 import { Container } from './styles';
 
-type currentPosition = {
+export type currentPosition = {
   latitude: number;
   longitude: number;
 };
