@@ -19,7 +19,7 @@ export default createGlobalStyle<{ isLoading: boolean }>`
   }
 
   html {
-    font-size: 100%;
+    font-size: 75%;
   }
 
   body {
