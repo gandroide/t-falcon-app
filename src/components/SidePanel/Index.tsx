@@ -10,7 +10,6 @@ import {
 import { CSSTransition } from 'react-transition-group';
 import { SidepanelContext } from '../../context/Sidepanel';
 import { BsFillBackspaceFill } from 'react-icons/bs';
-import { SidePanelWidth } from '../../interfaces';
 
 interface ISidepanel {
   openPanel: boolean;

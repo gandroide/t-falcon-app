@@ -1,10 +1,10 @@
 import styled from 'styled-components';
 
-const widthValue = {
-  small: '50%',
-  medium: '75%',
-  large: '100%'
-};
+// const widthValue = {
+//   small: '50%',
+//   medium: '75%',
+//   large: '100%'
+// };
 
 type SidePanelWidth = {
   sidepanelWidth: string;

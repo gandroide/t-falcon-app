@@ -2,7 +2,6 @@ import moment from 'moment';
 import { useState, useCallback, useEffect, useContext } from 'react';
 import { Table } from '../../components/Table';
 import { app } from '../../config/firebase';
-import { useFilter } from '../../hooks/useFilter';
 // import { useFilter } from '../../hooks/useFilter';
 import { FullUserRegistryData, ITableAction } from '../../interfaces';
 import { RiMapPinUserFill } from 'react-icons/ri';

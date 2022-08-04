@@ -1,4 +1,4 @@
-import React, { useCallback, useContext, useEffect, useState } from 'react';
+import { useCallback, useContext, useEffect, useState } from 'react';
 import { RiArticleLine } from 'react-icons/ri';
 import { Table } from '../../components/Table';
 import { app } from '../../config/firebase';

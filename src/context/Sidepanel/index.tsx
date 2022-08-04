@@ -1,5 +1,4 @@
 import { createContext, FC, ReactNode, useCallback, useState } from 'react';
-import { SidePanelWidth } from '../../interfaces';
 
 interface ISidepanelContext {
   isSidepanelOpen: boolean;
