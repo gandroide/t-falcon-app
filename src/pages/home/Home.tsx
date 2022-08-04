@@ -18,7 +18,6 @@ import { BirdWeightForm } from '../../containers/BirdWeightForm';
 import { ClientsData, IBirdData } from '../../interfaces';
 import { ServicesReport } from '../ServicesReport';
 import { LoadingContext } from '../../context/Loading';
-import { ServicesReportDetail } from '../ServicesReportDetails';
 import { currentPosition } from '../../components/Map';
 
 export const Home = () => {

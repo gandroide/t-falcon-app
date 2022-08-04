@@ -45,6 +45,7 @@ export const Table = <T,>({
       filter,
       filterValue: value
     });
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [currentPage, onTableRenderCallback]);
 
   let tableHeader: (keyof T)[] = [];

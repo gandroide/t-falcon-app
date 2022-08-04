@@ -1,5 +1,5 @@
 import React, { ComponentType } from 'react';
-import { NewButton, StyledButton } from './style';
+import { NewButton } from './style';
 
 interface ButtonProps extends React.HTMLAttributes<HTMLButtonElement> {
   icon?: ComponentType;

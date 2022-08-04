@@ -4,7 +4,6 @@ import { Admin } from '../pages/admin';
 import { Birds } from '../pages/Birds';
 import { Home } from '../pages/home/Home';
 import { Login } from '../pages/login';
-import { ServicesReport } from '../pages/ServicesReport';
 import { UserRegistry } from '../pages/UserRegistry';
 import { Users } from '../pages/Users';
 import { UsersRegistry } from '../pages/UsersRegistry';

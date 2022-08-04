@@ -1,27 +1,14 @@
-import React, {
-  FC,
-  useCallback,
-  useContext,
-  useEffect,
-  useMemo,
-  useState
-} from 'react';
-import { Link } from 'react-router-dom';
-import { Button } from '../../components/Button';
+import React, { FC, useCallback, useContext, useMemo } from 'react';
 import { Form } from '../../components/Form';
 import { app } from '../../config/firebase';
 import { AuthContext } from '../../context/Auth';
 import { SidepanelContext } from '../../context/Sidepanel';
 import {
-  IBirdData,
   IDefaultInput,
   IForm,
   IInputSelect,
-  IServiceReport,
-  ITextarea
+  IServiceReport
 } from '../../interfaces';
-import { CheckboxContainer, CheckboxItem, MenuItem } from './styled';
-import { Container } from './styled';
 
 const inputStepper: IDefaultInput[] = [
   {

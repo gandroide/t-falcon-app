@@ -1,11 +1,10 @@
 import moment from 'moment';
 import { useState, useCallback, useEffect, useContext } from 'react';
-import { SearchFilter } from '../../components/SearchFilter';
 import { Table } from '../../components/Table';
 import { app } from '../../config/firebase';
-import { useFilter } from '../../hooks/useFilter';
+// import { useFilter } from '../../hooks/useFilter';
 import { FullUserRegistryData, ITableAction } from '../../interfaces';
-import { RiMapPinUserFill, RiMapPinUserLine } from 'react-icons/ri';
+import { RiMapPinUserFill } from 'react-icons/ri';
 import { Map } from '../../components/Map';
 import { AdminContainer, AdminHeaderContainer } from '../../styles';
 import { SidepanelContext } from '../../context/Sidepanel';
@@ -29,43 +28,43 @@ const formattedTime = (date?: Date) => {
 };
 
 export const UsersRegistry = () => {
-  const { filter, value, onChangeFilterHandler } = useFilter();
+  // const { filter, value } = useFilter();
   const [usersRegistry, setUsersRegistry] = useState<FullUserRegistryData[]>(
     []
   );
   const { onOpenSidepanelHandler } = useContext(SidepanelContext);
-  const onSearchCallback = useCallback(() => {
-    if (!filter || !value) return;
+  // const onSearchCallback = useCallback(() => {
+  //   if (!filter || !value) return;
 
-    app
-      .collection('user_registry')
-      .where(filter, '==', value)
-      .get()
-      .then((docs) => {
-        const userRegistryData: FullUserRegistryData[] = [];
+  //   app
+  //     .collection('user_registry')
+  //     .where(filter, '==', value)
+  //     .get()
+  //     .then((docs) => {
+  //       const userRegistryData: FullUserRegistryData[] = [];
 
-        docs.forEach((doc) => {
-          const entry = secondsToDate(doc.data().entryDate?.seconds);
-          const leave = secondsToDate(doc.data().leaveDate?.seconds);
-          const date = formattedDate(entry);
-          const entryTime = formattedTime(entry);
-          const leaveTime = formattedTime(leave);
-          userRegistryData.push({
-            id: doc.id,
-            nome: doc.data().displayName,
-            data: date ?? '-',
-            entrada: entryTime ?? '-',
-            saida: leaveTime ?? '-',
-            latitude_entry: doc.data().latitude_entry,
-            longitude_entry: doc.data().longitude_entry,
-            latitude_out: doc.data().latitude_out,
-            longitude_out: doc.data().longitude_out
-          });
-        });
+  //       docs.forEach((doc) => {
+  //         const entry = secondsToDate(doc.data().entryDate?.seconds);
+  //         const leave = secondsToDate(doc.data().leaveDate?.seconds);
+  //         const date = formattedDate(entry);
+  //         const entryTime = formattedTime(entry);
+  //         const leaveTime = formattedTime(leave);
+  //         userRegistryData.push({
+  //           id: doc.id,
+  //           nome: doc.data().displayName,
+  //           data: date ?? '-',
+  //           entrada: entryTime ?? '-',
+  //           saida: leaveTime ?? '-',
+  //           latitude_entry: doc.data().latitude_entry,
+  //           longitude_entry: doc.data().longitude_entry,
+  //           latitude_out: doc.data().latitude_out,
+  //           longitude_out: doc.data().longitude_out
+  //         });
+  //       });
 
-        setUsersRegistry(userRegistryData);
-      });
-  }, [filter, value]);
+  //       setUsersRegistry(userRegistryData);
+  //     });
+  // }, [filter, value]);
 
   useEffect(() => {
     app.collection('user_registry').onSnapshot((onSnapshot) => {
