@@ -1,5 +1,5 @@
 import React, { useCallback, useContext, useEffect, useState } from 'react';
-import { FaRegTrashAlt } from 'react-icons/fa';
+import { RiArticleLine } from 'react-icons/ri';
 import { Table } from '../../components/Table';
 import { app } from '../../config/firebase';
 import { LoadingContext } from '../../context/Loading';
@@ -89,7 +89,7 @@ export const Reports = () => {
         onSearchCallback={() => {}}
         filterOptions={[]}
         data={data}
-        tableActions={[{ callback: onReportHandler, icon: <FaRegTrashAlt /> }]}
+        tableActions={[{ callback: onReportHandler, icon: <RiArticleLine /> }]}
       />
     </AdminContainer>
   );

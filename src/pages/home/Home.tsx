@@ -1,5 +1,4 @@
 import { useContext } from 'react';
-import { Link } from 'react-router-dom';
 import moment from 'moment';
 import { Button } from '../../components/Button';
 import { FooterBar } from '../../components/Footer';
@@ -23,7 +22,7 @@ import { currentPosition } from '../../components/Map';
 export const Home = () => {
   const { onOpenSidepanelHandler } = useContext(SidepanelContext);
   const { onSetModalHandler } = useContext(ModalContext);
-  const { onLogoutHandler, user } = useContext(AuthContext);
+  const { user } = useContext(AuthContext);
   const { onLoadingHandler } = useContext(LoadingContext);
 
   const onRegisterPicagemHandler = (coords: currentPosition, id?: string) => {
@@ -61,7 +60,7 @@ export const Home = () => {
       };
     };
     const coords = await getCoords();
-    console.log(coords);
+    // console.log(coords);
     app
       .collection('user_registry')
       .where('userId', '==', user.userId)
@@ -171,18 +170,6 @@ export const Home = () => {
       });
   };
 
-  const LinkComponent = {
-    display: 'inline-block',
-    padding: '0.7em 1.7em',
-    margin: '0 0.3em 0.3em 0',
-    minWidth: '160px',
-    borderStyle: 'hidden',
-    borderRadius: '0.5em',
-    textDecoration: 'none',
-    fontWeight: '400',
-    color: '#ffffff',
-    backgroundColor: '#3369ff'
-  };
   // return (
   //   <>
   //     <ServicesReportDetail />
@@ -192,15 +179,9 @@ export const Home = () => {
     <Container>
       <TopBar>
         <h2>Home</h2>
-        <TopBarInfo>
-          <h2>T-Falcon</h2>
-          <h2>{user.displayName}</h2>
-        </TopBarInfo>
+        <TopBarInfo>{/* <h2>T-Falcon</h2> */}</TopBarInfo>
       </TopBar>
       <MenuContainer>
-        <MenuItem>
-          <Button onClick={onLogoutHandler}>Logout</Button>
-        </MenuItem>
         <MenuItem>
           <Button onClick={onConfirmPicagemHandler}>Registrar Picagem</Button>
         </MenuItem>
@@ -213,11 +194,7 @@ export const Home = () => {
             Relatorio de Serviço
           </Button> */}
         </MenuItem>
-        <MenuItem>
-          <Link style={LinkComponent} to="/map">
-            Map
-          </Link>
-        </MenuItem>
+
         {/* <Select selected={selectValue} onChangeHandler={setSelectClient} options={clientes}></Select> */}
       </MenuContainer>
       <FooterBar></FooterBar>

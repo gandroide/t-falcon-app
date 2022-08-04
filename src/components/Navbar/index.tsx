@@ -24,36 +24,38 @@ export const Navbar = () => {
   return (
     <NavbarContainer>
       <NavbarLogo>App Logo</NavbarLogo>
-      <NavbarDropdownContainer>
-        <NavbarDropdownButton onClick={onDropdownOpenHandler}>
-          {user.displayName}
-          <NavbarDropdownButtonIcon isOpen={isOpen}>
-            <RiArrowDropDownLine />
-          </NavbarDropdownButtonIcon>
-          {isOpen && !user.isAdmin ? (
-            <NavbarDropdownMenu>
-              <NavbarDropdownItem>
-                <NavbarDropdownLink to="/user_registry">
-                  Minhas picagens
-                </NavbarDropdownLink>
-              </NavbarDropdownItem>
-              <NavbarDropdownItem>
-                <NavbarDropdownLink to="">
-                  Trabalhos submetidos
-                </NavbarDropdownLink>
-              </NavbarDropdownItem>
-            </NavbarDropdownMenu>
-          ) : (
-            isOpen && (
+      {user.isLoggedIn ? (
+        <NavbarDropdownContainer>
+          <NavbarDropdownButton onClick={onDropdownOpenHandler}>
+            {user.displayName}
+            <NavbarDropdownButtonIcon isOpen={isOpen}>
+              <RiArrowDropDownLine />
+            </NavbarDropdownButtonIcon>
+            {isOpen && !user.isAdmin ? (
               <NavbarDropdownMenu>
                 <NavbarDropdownItem>
-                  <Button onClick={onLogoutHandler}>Logout</Button>
+                  <NavbarDropdownLink to="/user_registry">
+                    Minhas picagens
+                  </NavbarDropdownLink>
+                </NavbarDropdownItem>
+                <NavbarDropdownItem>
+                  <NavbarDropdownLink to="">
+                    Trabalhos submetidos
+                  </NavbarDropdownLink>
                 </NavbarDropdownItem>
               </NavbarDropdownMenu>
-            )
-          )}
-        </NavbarDropdownButton>
-      </NavbarDropdownContainer>
+            ) : (
+              isOpen && (
+                <NavbarDropdownMenu>
+                  <NavbarDropdownItem>
+                    <Button onClick={onLogoutHandler}>Logout</Button>
+                  </NavbarDropdownItem>
+                </NavbarDropdownMenu>
+              )
+            )}
+          </NavbarDropdownButton>
+        </NavbarDropdownContainer>
+      ) : null}
     </NavbarContainer>
   );
 };

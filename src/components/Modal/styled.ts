@@ -38,7 +38,6 @@ export const DialogContentWrapper = styled.div`
   display: flex;
   padding: 16px;
   width: 100%;
-  min-width: 450px;
   max-width: 450px;
   border-bottom: 1px solid #ccc;
 `;
