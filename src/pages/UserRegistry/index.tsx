@@ -2,7 +2,6 @@ import moment from 'moment';
 import { useCallback, useContext, useEffect, useState } from 'react';
 import { FaRegTrashAlt } from 'react-icons/fa';
 import { Link } from 'react-router-dom';
-import { Button } from '../../components/Button';
 import { Table } from '../../components/Table';
 import { app } from '../../config/firebase';
 import { AuthContext } from '../../context/Auth';

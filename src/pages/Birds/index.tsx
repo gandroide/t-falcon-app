@@ -1,7 +1,6 @@
 import { FC, useContext, useCallback, useEffect, useState } from 'react';
 import { FaEdit, FaTrash } from 'react-icons/fa';
 import { Form } from '../../components/Form';
-import { SearchFilter } from '../../components/SearchFilter';
 import { Table } from '../../components/Table';
 import { app } from '../../config/firebase';
 import { LoadingContext } from '../../context/Loading';

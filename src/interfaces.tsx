@@ -117,6 +117,10 @@ export interface UserRegistryData {
 
 export interface FullUserRegistryData extends UserRegistryData {
   nome: string;
+  latitude_entry: number;
+  longitude_entry: number;
+  latitude_out: number;
+  longitude_out: number;
 }
 
 export interface ISelectOption {
@@ -184,4 +188,23 @@ export interface CarsData {
 export interface IServiceReport {
   clientsData: ClientsData[];
   birdsData: IBirdData[];
+}
+
+export interface IServiceReportData {
+  id: string;
+  colaborador: string;
+  cliente: string;
+  data: string;
+}
+
+export interface IServiceReportFull extends IServiceReportData {
+  ave: string;
+  viatura: string;
+  observacoes: string;
+  'hora-inicio': string;
+  'hora-fim': string;
+}
+
+export interface IServiceReportDataFull {
+  report: IServiceReportFull;
 }

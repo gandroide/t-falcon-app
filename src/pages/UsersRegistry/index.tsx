@@ -1,13 +1,14 @@
 import moment from 'moment';
-import { useState, useCallback, useEffect } from 'react';
-import { SearchFilter } from '../../components/SearchFilter';
+import { useState, useCallback, useEffect, useContext } from 'react';
 import { Table } from '../../components/Table';
 import { app } from '../../config/firebase';
 import { useFilter } from '../../hooks/useFilter';
-import { FullUserRegistryData, ITable, ITableAction } from '../../interfaces';
-import { RiMapPinUserFill, RiMapPinUserLine } from 'react-icons/ri';
+// import { useFilter } from '../../hooks/useFilter';
+import { FullUserRegistryData, ITableAction } from '../../interfaces';
+import { RiMapPinUserFill } from 'react-icons/ri';
 import { Map } from '../../components/Map';
 import { AdminContainer, AdminHeaderContainer } from '../../styles';
+import { SidepanelContext } from '../../context/Sidepanel';
 
 const secondsToDate = (seconds?: number) => {
   if (seconds) {
@@ -28,53 +29,43 @@ const formattedTime = (date?: Date) => {
 };
 
 export const UsersRegistry = () => {
+  // const { filter, value } = useFilter();
   const [usersRegistry, setUsersRegistry] = useState<FullUserRegistryData[]>(
     []
   );
+  const { onOpenSidepanelHandler } = useContext(SidepanelContext);
+  // const onSearchCallback = useCallback(() => {
+  //   if (!filter || !value) return;
 
-  const onPageChangeCallback = useCallback<
-    ITable<FullUserRegistryData>['onTableRenderCallback']
-  >(({ page, filter, filterValue }) => {
-    const query = app
-      .collection('user_registry')
-      .where(filter, '==', filterValue)
-      .orderBy('entryDate', 'desc');
+  //   app
+  //     .collection('user_registry')
+  //     .where(filter, '==', value)
+  //     .get()
+  //     .then((docs) => {
+  //       const userRegistryData: FullUserRegistryData[] = [];
 
-    if (page === 1) {
-      query
-        .limit(2)
-        .get()
-        .then((onSnapshot) => {
-          if (onSnapshot.empty) return;
+  //       docs.forEach((doc) => {
+  //         const entry = secondsToDate(doc.data().entryDate?.seconds);
+  //         const leave = secondsToDate(doc.data().leaveDate?.seconds);
+  //         const date = formattedDate(entry);
+  //         const entryTime = formattedTime(entry);
+  //         const leaveTime = formattedTime(leave);
+  //         userRegistryData.push({
+  //           id: doc.id,
+  //           nome: doc.data().displayName,
+  //           data: date ?? '-',
+  //           entrada: entryTime ?? '-',
+  //           saida: leaveTime ?? '-',
+  //           latitude_entry: doc.data().latitude_entry,
+  //           longitude_entry: doc.data().longitude_entry,
+  //           latitude_out: doc.data().latitude_out,
+  //           longitude_out: doc.data().longitude_out
+  //         });
+  //       });
 
-          onSnapshot.forEach((doc) => {
-            console.log(doc.data());
-          });
-        });
-    } else {
-      const currentLimit = (page - 1) * 10;
-
-      query
-        .limit(currentLimit)
-        .get()
-        .then((documentSnapshots) => {
-          const lastVisible =
-            documentSnapshots.docs[documentSnapshots.docs.length - 1];
-
-          query
-            .startAfter(lastVisible)
-            .limit(10)
-            .get()
-            .then((data) => {
-              if (data.empty) return;
-
-              data.forEach((doc) => {
-                console.log(doc.data());
-              });
-            });
-        });
-    }
-  }, []);
+  //       setUsersRegistry(userRegistryData);
+  //     });
+  // }, [filter, value]);
 
   useEffect(() => {
     app
@@ -96,7 +87,11 @@ export const UsersRegistry = () => {
             nome: doc.data().displayName,
             data: date ?? '-',
             entrada: entryTime ?? '-',
-            saida: leaveTime ?? '-'
+            saida: leaveTime ?? '-',
+            latitude_entry: doc.data().latitude_entry,
+            longitude_entry: doc.data().longitude_entry,
+            latitude_out: doc.data().latitude_out,
+            longitude_out: doc.data().longitude_out
           });
         });
 
@@ -104,9 +99,23 @@ export const UsersRegistry = () => {
       });
   }, []);
 
-  const openMap = useCallback(() => {
-    <Map position={{ latitude: 32.6743899, longitude: -17.0636638 }} />;
-  }, []);
+  const openMap = useCallback<ITableAction<FullUserRegistryData>['callback']>(
+    (rowData) => {
+      onOpenSidepanelHandler({
+        isOpen: true,
+        SidepanelChildren: (
+          <Map
+            position={{
+              latitude: rowData.latitude_entry,
+              longitude: rowData.longitude_entry
+            }}
+          />
+        ),
+        sidepanelWidth: '1000px'
+      });
+    },
+    [onOpenSidepanelHandler]
+  );
 
   return (
     <AdminContainer>
@@ -115,8 +124,8 @@ export const UsersRegistry = () => {
       </AdminHeaderContainer>
       <Table
         count={0}
-        onTableRenderCallback={onPageChangeCallback}
-        onSearchCallback={onPageChangeCallback}
+        onTableRenderCallback={() => {}}
+        onSearchCallback={() => {}}
         filterOptions={[
           { label: 'Utilizador', value: 'displayName', name: 'displayName' }
         ]}

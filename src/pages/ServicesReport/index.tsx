@@ -1,26 +1,14 @@
-import React, {
-  FC,
-  useCallback,
-  useContext,
-  useEffect,
-  useMemo,
-  useState
-} from 'react';
-import { Link } from 'react-router-dom';
-import { Button } from '../../components/Button';
+import React, { FC, useCallback, useContext, useMemo } from 'react';
 import { Form } from '../../components/Form';
 import { app } from '../../config/firebase';
+import { AuthContext } from '../../context/Auth';
 import { SidepanelContext } from '../../context/Sidepanel';
 import {
-  IBirdData,
   IDefaultInput,
   IForm,
   IInputSelect,
-  IServiceReport,
-  ITextarea
+  IServiceReport
 } from '../../interfaces';
-import { CheckboxContainer, CheckboxItem, MenuItem } from './styled';
-import { Container } from './styled';
 
 const inputStepper: IDefaultInput[] = [
   {
@@ -81,6 +69,9 @@ export const ServicesReport: FC<IServiceReport> = ({
   clientsData,
   birdsData
 }) => {
+  const {
+    user: { displayName }
+  } = useContext(AuthContext);
   const { onCloseSidepanelHandler } = useContext(SidepanelContext);
 
   const formInputs = useMemo(() => {
@@ -106,7 +97,7 @@ export const ServicesReport: FC<IServiceReport> = ({
       try {
         app
           .collection('reports')
-          .add(data)
+          .add({ ...data, utilizador: displayName })
           .then(() => {
             app
               .collection('counters')
@@ -115,13 +106,13 @@ export const ServicesReport: FC<IServiceReport> = ({
               .then(async (doc) => {
                 let count = (doc?.data()?.count || 0) + 1;
 
-                await app.collection('counters').doc('birds').set({ count });
+                await app.collection('counters').doc('reports').set({ count });
                 onCloseSidepanelHandler();
               });
           });
       } catch (e) {}
     },
-    [onCloseSidepanelHandler]
+    [displayName, onCloseSidepanelHandler]
   );
 
   return (

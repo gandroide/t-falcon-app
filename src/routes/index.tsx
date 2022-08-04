@@ -4,12 +4,12 @@ import { Admin } from '../pages/admin';
 import { Birds } from '../pages/Birds';
 import { Home } from '../pages/home/Home';
 import { Login } from '../pages/login';
-import { ServicesReport } from '../pages/ServicesReport';
 import { UserRegistry } from '../pages/UserRegistry';
 import { Users } from '../pages/Users';
 import { UsersRegistry } from '../pages/UsersRegistry';
 import { Clients } from '../pages/Clients';
 import { Cars } from '../pages/Cars';
+import { Reports } from '../pages/Reports';
 
 export const AppRoutes = () => {
   return (
@@ -30,6 +30,7 @@ export const AppRoutes = () => {
           <Route path="aves" element={<Birds />} />
           <Route path="clients" element={<Clients />} />
           <Route path="cars" element={<Cars />} />
+          <Route path="reports" element={<Reports />} />
         </Route>
       </Route>
     </Routes>

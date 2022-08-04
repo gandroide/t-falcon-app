@@ -1,5 +1,4 @@
-import { useCallback, useContext, useEffect, useRef } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useContext } from 'react';
 import GlobalStyles, { AppContainer } from './styles';
 import { ThemeProvider } from 'styled-components';
 import { defaultTheme } from './styles/theme';
@@ -19,7 +18,7 @@ const App = () => {
   const { isSidepanelOpen, SidepanelChildren, sidepanelWidth } =
     useContext(SidepanelContext);
   const {
-    user: { isLoggedIn, isAdmin, isAuthReady }
+    user: { isAuthReady }
   } = useContext(AuthContext);
 
   if (!isAuthReady) {

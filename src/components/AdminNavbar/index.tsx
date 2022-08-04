@@ -29,6 +29,11 @@ export const AdminNavbar = () => {
             Carros
           </AdminLink>
         </AdminItem>
+        <AdminItem>
+          <AdminLink end to="reports">
+            Relatorios
+          </AdminLink>
+        </AdminItem>
       </AdminList>
     </AdminNav>
   );

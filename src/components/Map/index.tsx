@@ -2,7 +2,7 @@ import { FC, useState } from 'react';
 import { MapContainer, Marker, Popup, TileLayer } from 'react-leaflet';
 import { Container } from './styles';
 
-type currentPosition = {
+export type currentPosition = {
   latitude: number;
   longitude: number;
 };
@@ -29,6 +29,7 @@ export const Map: FC<IMap> = ({ position }) => {
           center={[position.latitude, position.longitude]}
           zoom={16}
           scrollWheelZoom={false}
+          style={{ width: '60%' }}
         >
           <TileLayer
             attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
