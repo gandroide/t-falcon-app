@@ -27,7 +27,7 @@ export const Reports = () => {
       onOpenSidepanelHandler({
         isOpen: true,
         SidepanelChildren: <ServicesReportDetail report={reportItem} />,
-        width: 'small'
+        sidepanelWidth: '800px'
       });
     },
     [reports, onOpenSidepanelHandler]
