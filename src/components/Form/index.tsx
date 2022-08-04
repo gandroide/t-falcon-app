@@ -14,14 +14,16 @@ import {
   isTextarea,
   ISubmitData
 } from '../../interfaces';
-import { Button } from '../Button';
 import { Select } from '../Select';
 import {
   FormContainer,
   FormTitle,
-  InputWithSpacement,
-  LabelComponent,
-  SpacementContiner
+  InputContainer,
+  Input,
+  InputLabel,
+  InputContent,
+  FormButton,
+  Textarea
 } from './style';
 
 export const Form: FC<IForm> = ({ fields, onSubmitCallback, title }) => {
@@ -70,11 +72,14 @@ export const Form: FC<IForm> = ({ fields, onSubmitCallback, title }) => {
     return formInputs.map((input, index) => {
       if (isInputSelect(input)) {
         return (
-          <Select
-            options={input.data}
-            onChangeHandler={(e) => onChange(e, index)}
-            selected
-          />
+          <InputContainer>
+            <InputLabel>{input.label}</InputLabel>
+            <Select
+              options={input.data}
+              onChangeHandler={(e) => onChange(e, index)}
+              selected
+            />
+          </InputContainer>
         );
       }
 
@@ -89,15 +94,17 @@ export const Form: FC<IForm> = ({ fields, onSubmitCallback, title }) => {
 
       if (isTextarea(input)) {
         return (
-          <div>
-            <div>{input.label}</div>
-            <textarea
-              rows={10}
-              cols={40}
-              onChange={(e) => onChange(e, index)}
-              value={input.value}
-            />
-          </div>
+          <InputContainer>
+            <InputLabel>{input.label}</InputLabel>
+            <InputContent>
+              <Textarea
+                rows={10}
+                cols={40}
+                onChange={(e) => onChange(e, index)}
+                value={input.value}
+              />
+            </InputContent>
+          </InputContainer>
         );
       }
 
@@ -116,27 +123,31 @@ export const Form: FC<IForm> = ({ fields, onSubmitCallback, title }) => {
 
       if (isInputDate(input)) {
         return (
-          <div>
-            <div>{input.label}</div>
-            <input
-              type={input.type}
-              onChange={(e) => onChange(e, index)}
-              value={input.value}
-            />
-          </div>
+          <InputContainer>
+            <InputLabel>{input.label}</InputLabel>
+            <InputContent>
+              <Input
+                type={input.type}
+                onChange={(e) => onChange(e, index)}
+                value={input.value}
+              />
+            </InputContent>
+          </InputContainer>
         );
       }
       return (
-        <SpacementContiner>
-          <LabelComponent>{input.label}</LabelComponent>
-          <InputWithSpacement
-            type={input.type}
-            name={input.name}
-            value={input.value}
-            onChange={(e) => onChange(e, index)}
-            placeholder={input.placeholder}
-          />
-        </SpacementContiner>
+        <InputContainer>
+          <InputLabel>{input.label}</InputLabel>
+          <InputContent>
+            <Input
+              type={input.type}
+              name={input.name}
+              value={input.value}
+              onChange={(e) => onChange(e, index)}
+              placeholder={input.placeholder}
+            />
+          </InputContent>
+        </InputContainer>
       );
     });
   }, [formInputs, onChange]);
@@ -145,9 +156,7 @@ export const Form: FC<IForm> = ({ fields, onSubmitCallback, title }) => {
     <FormContainer>
       {title && <FormTitle>{title}</FormTitle>}
       {inputsList}
-      <SpacementContiner>
-        <Button onClick={onSubmitHandler}>Send</Button>
-      </SpacementContiner>
+      <FormButton onClick={onSubmitHandler}>Submeter</FormButton>
     </FormContainer>
   );
 };

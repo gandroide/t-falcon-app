@@ -7,12 +7,12 @@ const widthValue = {
 };
 
 type SidePanelWidth = {
-  width: 'small' | 'medium' | 'large';
+  sidepanelWidth: string;
 };
 
 export const Panel = styled.div<SidePanelWidth>`
   display: flex;
-  width: 100%; //AUN NO FUNCIONA EN PANTALLAS GRANDES
+  width: 100%;
   background-color: ${({ theme }) => theme.palette.common.white};
   color: ${({ theme }) => theme.palette.common.black};
   position: fixed;
@@ -20,7 +20,8 @@ export const Panel = styled.div<SidePanelWidth>`
   right: 0;
   height: 100%;
   @media screen and (min-width: 576px) {
-    width: ${({ width }) => widthValue[width]};
+    width: ${({ sidepanelWidth }) =>
+      sidepanelWidth ? sidepanelWidth : '100%'};
     /* width: 50%; */
   }
 `;
@@ -68,5 +69,6 @@ export const ContentComponent = styled.div`
   padding-top: 4rem;
   display: flex;
   align-items: center;
+  justify-content: center;
   width: 100%;
 `;

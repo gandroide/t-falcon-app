@@ -68,7 +68,7 @@ export const Clients = () => {
     onOpenSidepanelHandler({
       isOpen: true,
       SidepanelChildren: <AddClientsFrom />,
-      width: 'small'
+      sidepanelWidth: '500px'
     });
   };
 
@@ -80,6 +80,7 @@ export const Clients = () => {
     ITable<ClientsData>['onTableRenderCallback']
   >(
     ({ page, filter, filterValue }) => {
+      console.log(page, filter, filterValue);
       onLoadingHandler(true);
       const clientsData: ClientsData[] = [];
 

@@ -16,7 +16,8 @@ import { Loading } from './components/Loading';
 const App = () => {
   const { isLoading } = useContext(LoadingContext);
   const { modal } = useContext(ModalContext);
-  const { isSidepanelOpen, SidepanelChildren } = useContext(SidepanelContext);
+  const { isSidepanelOpen, SidepanelChildren, sidepanelWidth } =
+    useContext(SidepanelContext);
   const {
     user: { isLoggedIn, isAdmin, isAuthReady }
   } = useContext(AuthContext);
@@ -30,7 +31,7 @@ const App = () => {
       <GlobalStyles isLoading={isLoading} />
       {isLoading && <Loading />}
       <Modal {...modal} />
-      <SidePanel width="large" openPanel={isSidepanelOpen}>
+      <SidePanel sidepanelWidth={sidepanelWidth} openPanel={isSidepanelOpen}>
         {SidepanelChildren}
       </SidePanel>
       <Navbar />

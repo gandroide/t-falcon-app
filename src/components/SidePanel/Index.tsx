@@ -15,10 +15,14 @@ import { SidePanelWidth } from '../../interfaces';
 interface ISidepanel {
   openPanel: boolean;
   children: React.ReactNode[] | React.ReactNode;
-  width: SidePanelWidth;
+  sidepanelWidth: string;
 }
 
-export const SidePanel: FC<ISidepanel> = ({ openPanel, children, width }) => {
+export const SidePanel: FC<ISidepanel> = ({
+  openPanel,
+  children,
+  sidepanelWidth
+}) => {
   const { onCloseSidepanelHandler } = useContext(SidepanelContext);
 
   const handleClose = () => {
@@ -35,7 +39,10 @@ export const SidePanel: FC<ISidepanel> = ({ openPanel, children, width }) => {
     >
       <Container>
         <Backdrop className="sidepanel-backdrop" onClick={handleClose} />
-        <Panel width={width} className="sidepanel-panel">
+        <Panel
+          sidepanelWidth={sidepanelWidth ?? '100%'}
+          className="sidepanel-panel"
+        >
           <ChildrenContainer>
             <CloseButton>
               <BsFillBackspaceFill size="2em" onClick={handleClose} />

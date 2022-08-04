@@ -75,7 +75,7 @@ export const Cars: FC = () => {
     onOpenSidepanelHandler({
       isOpen: true,
       SidepanelChildren: <AddCarsFrom />,
-      width: 'small'
+      sidepanelWidth: '500px'
     });
   };
 

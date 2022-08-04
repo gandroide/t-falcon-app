@@ -17,7 +17,7 @@ export const LoadingBackground = styled.div`
   width: 100%;
   height: 100%;
   background: rgba(0, 0, 0, 0.7);
-  z-index: 1;
+  z-index: 1001;
 `;
 
 export const LoadingContainer = styled.span`
@@ -30,7 +30,7 @@ export const LoadingContainer = styled.span`
   top: 50%;
   left: 50%;
   transform: translate(-50%, -50%);
-  z-index: 1;
+  z-index: 1001;
 `;
 
 export const LoadingItem = styled.span`

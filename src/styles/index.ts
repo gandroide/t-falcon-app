@@ -19,13 +19,12 @@ export default createGlobalStyle<{ isLoading: boolean }>`
   }
 
   html {
-    font-size: 75%;
+    font-size: 100%;
   }
 
   body {
     background: #eee;
     color: ${({ theme }) => theme.palette.common.black};
-    font-family: 'Baloo Tamma 2', cursive;
   }
 
   ul {

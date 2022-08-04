@@ -126,7 +126,7 @@ export const ServicesReport: FC<IServiceReport> = ({
 
   return (
     <Form
-      title="Relatorio de Serviço"
+      title="Relatório de Serviço"
       fields={formInputs}
       onSubmitCallback={onServicesReportHandler}
     />

@@ -1,4 +1,4 @@
-import { createContext, FC, ReactNode, useState } from 'react';
+import { createContext, FC, ReactNode, useCallback, useState } from 'react';
 import { SidePanelWidth } from '../../interfaces';
 
 interface ISidepanelContext {
@@ -6,19 +6,21 @@ interface ISidepanelContext {
   SidepanelChildren: ReactNode;
   onCloseSidepanelHandler: () => void;
   onOpenSidepanelHandler: (sidepanelValues: ISidepanelContextState) => void;
+  sidepanelWidth: string;
 }
 
 interface ISidepanelContextState {
   isOpen: boolean;
   SidepanelChildren: ReactNode;
-  width: SidePanelWidth;
+  sidepanelWidth: string;
 }
 
 const defaultSidepanelContext: ISidepanelContext = {
   isSidepanelOpen: false,
   SidepanelChildren: () => {},
   onCloseSidepanelHandler: () => {},
-  onOpenSidepanelHandler: () => {}
+  onOpenSidepanelHandler: () => {},
+  sidepanelWidth: ''
 };
 
 export const SidepanelContext = createContext<ISidepanelContext>(
@@ -28,15 +30,18 @@ export const SidepanelContext = createContext<ISidepanelContext>(
 const defaultSidepanelState: ISidepanelContextState = {
   isOpen: false,
   SidepanelChildren: () => {},
-  width: 'large'
+  sidepanelWidth: ''
 };
 
 export const SidepanelProvider: FC = ({ children }) => {
   const [sidepanel, setSidepanel] = useState({ ...defaultSidepanelState });
 
-  const onOpenSidepanelHandler = (sidepanelValues: ISidepanelContextState) => {
-    setSidepanel(sidepanelValues);
-  };
+  const onOpenSidepanelHandler = useCallback(
+    (sidepanelValues: ISidepanelContextState) => {
+      setSidepanel(sidepanelValues);
+    },
+    [setSidepanel]
+  );
 
   const onCloseSidepanelHandler = () => {
     onOpenSidepanelHandler({ ...defaultSidepanelState });
@@ -47,6 +52,7 @@ export const SidepanelProvider: FC = ({ children }) => {
       value={{
         isSidepanelOpen: sidepanel.isOpen,
         SidepanelChildren: sidepanel.SidepanelChildren,
+        sidepanelWidth: sidepanel.sidepanelWidth,
         onCloseSidepanelHandler,
         onOpenSidepanelHandler
       }}

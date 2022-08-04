@@ -1,9 +1,10 @@
 import styled from 'styled-components';
 
-export const FormContainer = styled.div`
+export const FormContainer = styled.form`
   display: flex;
   flex-direction: column;
   width: 100%;
+  max-width: 350px;
   justify-content: center;
   align-items: center;
 `;
@@ -19,23 +20,40 @@ export const InputsList = styled.div`
   margin: 10px 0 10px 0;
 `;
 
-export const SpacementContiner = styled.div`
+export const InputContainer = styled.div`
   display: flex;
-  justify-content: center;
-  align-items: center;
   flex-direction: column;
-  margin: 10px 1px 10px 0;
-  width: 25rem;
+  width: 100%;
+
+  &:not(:last-child) {
+    margin-bottom: 20px;
+  }
 `;
 
-export const InputWithSpacement = styled.input`
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  margin: 10px 0 10px 0;
-  width: 70%;
+export const Input = styled.input`
+  padding: 10px;
+  width: 100%;
+  border: none;
+  background: none;
 `;
 
-export const LabelComponent = styled.label`
-  margin-right: 5px;
+export const Textarea = styled.textarea`
+  padding: 10px;
+  width: 100%;
+  border: none;
+  background: none;
+  resize: none;
+`;
+
+export const InputLabel = styled.label`
+  margin-bottom: 5px;
+`;
+
+export const InputContent = styled.div`
+  border: 1px solid red;
+  border-radius: 4px;
+`;
+
+export const FormButton = styled.button`
+  margin-top: 40px;
 `;

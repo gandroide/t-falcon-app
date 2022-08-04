@@ -168,7 +168,7 @@ export interface ITable<T> {
   onSearchCallback: ({ page, filter, filterValue }: ITableRender) => void;
 }
 
-export type SidePanelWidth = 'small' | 'medium' | 'large';
+export type SidePanelWidth = 'small' | 'medium' | 'large' | null;
 
 export interface ClientsData {
   id: string;

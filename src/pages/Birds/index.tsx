@@ -107,7 +107,7 @@ export const Birds = () => {
     onOpenSidepanelHandler({
       isOpen: true,
       SidepanelChildren: <FormAddBird />,
-      width: 'large'
+      sidepanelWidth: '500px'
     });
   };
 
@@ -115,7 +115,7 @@ export const Birds = () => {
     onOpenSidepanelHandler({
       isOpen: true,
       SidepanelChildren: <FormAddBird id={rowData.id} updateData={rowData} />,
-      width: 'large'
+      sidepanelWidth: '500px'
     });
   };
 

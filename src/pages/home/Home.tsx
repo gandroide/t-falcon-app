@@ -1,4 +1,4 @@
-import { useContext } from 'react';
+import { useCallback, useContext, useMemo } from 'react';
 import { Link } from 'react-router-dom';
 import moment from 'moment';
 import { Button } from '../../components/Button';
@@ -100,12 +100,12 @@ export const Home = () => {
         onOpenSidepanelHandler({
           isOpen: true,
           SidepanelChildren: <BirdWeightForm birdsData={birdsData} />,
-          width: 'small'
+          sidepanelWidth: '700px'
         });
       });
   };
 
-  const onServicesReportHanlder = () => {
+  const onServicesReportHanlder = useCallback(() => {
     onLoadingHandler(true);
     app
       .collection('birds')
@@ -148,11 +148,11 @@ export const Home = () => {
                   birdsData={birdsData}
                 />
               ),
-              width: 'small'
+              sidepanelWidth: '700px'
             });
           });
       });
-  };
+  }, [onLoadingHandler, onOpenSidepanelHandler]);
 
   const LinkComponent = {
     display: 'inline-block',
