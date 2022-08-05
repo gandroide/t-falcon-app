@@ -43,14 +43,20 @@ export const Navbar = () => {
                     Trabalhos submetidos
                   </NavbarDropdownLink>
                 </NavbarDropdownItem>
+
+                <NavbarDropdownItem>
+                  <Button onClick={onLogoutHandler}>Logout</Button>
+                </NavbarDropdownItem>
               </NavbarDropdownMenu>
             ) : (
               isOpen && (
-                <NavbarDropdownMenu>
-                  <NavbarDropdownItem>
-                    <Button onClick={onLogoutHandler}>Logout</Button>
-                  </NavbarDropdownItem>
-                </NavbarDropdownMenu>
+                <NavbarDropdownButton>
+                  <NavbarDropdownMenu>
+                    <NavbarDropdownItem>
+                      <Button onClick={onLogoutHandler}>Logout</Button>
+                    </NavbarDropdownItem>
+                  </NavbarDropdownMenu>
+                </NavbarDropdownButton>
               )
             )}
           </NavbarDropdownButton>
