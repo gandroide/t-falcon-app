@@ -22,17 +22,15 @@ const inputStepper: IDefaultInput[] = [
   {
     name: 'hora-inicio',
     label: 'hora inicio',
-    type: 'date',
+    type: 'time',
     value: '',
-    placeholder: 'hora de serviço',
     required: true
   },
   {
     name: 'hora-fim',
     label: 'hora fim',
-    type: 'date',
+    type: 'time',
     value: '',
-    placeholder: 'hora de serviço',
     required: true
   },
   {

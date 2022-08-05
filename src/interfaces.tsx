@@ -27,8 +27,9 @@ export interface ITextarea extends Omit<IInput, 'type'> {
   type: 'textarea';
 }
 
-export interface IInputTime extends Omit<IInput, 'type'> {
+export interface IInputTime extends Omit<IInput, 'type' | 'placeholder'> {
   type: 'time';
+  required: boolean;
 }
 
 export interface IInputDate extends Omit<IInput, 'type'> {
