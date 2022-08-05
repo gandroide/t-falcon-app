@@ -19,6 +19,7 @@ export const Panel = styled.div<SidePanelWidth>`
   top: 0;
   right: 0;
   height: 100%;
+  overflow: auto;
   @media screen and (min-width: 576px) {
     width: ${({ sidepanelWidth }) =>
       sidepanelWidth ? sidepanelWidth : '100%'};
