@@ -72,7 +72,9 @@ export const Table = <T,>({
           {tableHeader.map((value) => (
             <TableHeaderColumn key={value as string}>{value}</TableHeaderColumn>
           ))}
-          <TableHeaderColumn key="actions">Accões</TableHeaderColumn>
+          {tableActions.length > 0 && (
+            <TableHeaderColumn key="actions">Accões</TableHeaderColumn>
+          )}
         </TableHeaderRow>
       </TableHeaderContainer>
     );

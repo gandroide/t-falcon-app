@@ -105,7 +105,8 @@ export interface IBirdData {
 export interface IBirdWeight {
   id: string;
   nome: string;
-  peso: number;
+  peso: string;
+  data: string;
 }
 
 export interface IUserData {

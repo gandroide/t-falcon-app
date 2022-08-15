@@ -1,6 +1,7 @@
 import { FC, useCallback, useContext, useMemo } from 'react';
 import { Form } from '../../components/Form';
 import { app, appTimestamp } from '../../config/firebase';
+import { LoadingContext } from '../../context/Loading';
 import { SidepanelContext } from '../../context/Sidepanel';
 import {
   IBirdWeightForm,
@@ -18,7 +19,7 @@ const birdWeightData: IDefaultInput[] = [
     data: []
   },
   {
-    label: 'Peso',
+    label: 'Peso (gr)',
     name: 'peso',
     placeholder: 'Insira peso da ave',
     type: 'number',
@@ -28,6 +29,7 @@ const birdWeightData: IDefaultInput[] = [
 
 export const BirdWeightForm: FC<IBirdWeightForm> = ({ birdsData }) => {
   const { onCloseSidepanelHandler } = useContext(SidepanelContext);
+  const { onLoadingHandler } = useContext(LoadingContext);
 
   const formInputs = useMemo(() => {
     const inputs = [...birdWeightData];
@@ -40,7 +42,10 @@ export const BirdWeightForm: FC<IBirdWeightForm> = ({ birdsData }) => {
   }, [birdsData]);
 
   const onRegisterBirdWeightHandler = useCallback<IForm['onSubmitCallback']>(
-    async (fields) => {
+    (fields) => {
+      onLoadingHandler(true);
+      const birdId = birdsData.find((bird) => bird.nome === fields.nome)?.id;
+
       const selectedBird = birdsData.find(
         (bird) => bird.nome === fields['nome']
       );
@@ -52,26 +57,39 @@ export const BirdWeightForm: FC<IBirdWeightForm> = ({ birdsData }) => {
         data: appTimestamp.fromDate(new Date())
       };
 
-      await app
+      app
         .collection('birds_weight')
         .add(data)
         .then(() => {
           app
-            .collection('counters')
-            .doc('birds_weight')
+            .collection('last_weighin')
+            .doc(birdId)
             .get()
-            .then(async (doc) => {
-              let count = (doc?.data()?.count || 0) + 1;
+            .then((doc) => {
+              if (doc.exists) {
+                app.collection('last_weighin').doc(birdId).update(data);
+              } else {
+                app.collection('last_weighin').doc(birdId).set(data);
+              }
 
-              await app
+              app
                 .collection('counters')
                 .doc('birds_weight')
-                .set({ count });
+                .get()
+                .then(async (doc) => {
+                  let count = (doc?.data()?.count || 0) + 1;
+
+                  await app
+                    .collection('counters')
+                    .doc('birds_weight')
+                    .set({ count });
+                });
+              onLoadingHandler(false);
+              onCloseSidepanelHandler();
             });
         });
-      onCloseSidepanelHandler();
     },
-    [birdsData, onCloseSidepanelHandler]
+    [birdsData, onCloseSidepanelHandler, onLoadingHandler]
   );
 
   return (

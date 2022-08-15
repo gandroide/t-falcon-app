@@ -20,6 +20,18 @@ import { LoadingContext } from '../../context/Loading';
 import { currentPosition } from '../../components/Map';
 import { Table } from '../../components/Table';
 
+const secondsToDate = (seconds?: number) => {
+  if (seconds) {
+    return new Date(seconds * 1000);
+  }
+};
+
+const formattedDate = (date?: Date) => {
+  if (date) {
+    return moment(date).format('DD-MM-YYYY');
+  }
+};
+
 export const Home = () => {
   const { onOpenSidepanelHandler } = useContext(SidepanelContext);
   const { onSetModalHandler } = useContext(ModalContext);
@@ -125,22 +137,23 @@ export const Home = () => {
   const onSeeWeightHandler = () => {
     onLoadingHandler(true);
     app
-      .collection('birds')
+      .collection('last_weighin')
       .get()
       .then((docs) => {
         // mensagem de erro
         if (docs.empty) return;
 
         const birdsData: IBirdWeight[] = [];
+
         docs.forEach((doc) => {
+          console.log(secondsToDate(doc.data()?.data));
           birdsData.push({
             id: doc.id,
             nome: doc.data().nome,
-            peso: doc.data().peso
+            peso: doc.data().peso.toString() + ' gr',
+            data: formattedDate(secondsToDate(doc.data()?.data.seconds))!
           });
         });
-        console.log(birdsData);
-        // setBirdsList(birdsData);
 
         onLoadingHandler(false);
         onOpenSidepanelHandler({
