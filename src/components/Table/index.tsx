@@ -28,7 +28,8 @@ export const Table = <T,>({
   count,
   onTableRenderCallback,
   filterOptions,
-  onSearchCallback
+  onSearchCallback,
+  hideSearch
 }: ITable<T>) => {
   const firstRender = useRef(true);
   const [currentPage, setCurrentPage] = useState(1);
@@ -141,12 +142,15 @@ export const Table = <T,>({
 
   return (
     <>
-      <SearchFilter
-        options={filterOptions}
-        onSearchCallback={onSearchHandler}
-        onChangeFilterCallback={onChangeFilterHandler}
-        filterValue={value}
-      />
+      {hideSearch && (
+        <SearchFilter
+          options={filterOptions}
+          onSearchCallback={onSearchHandler}
+          onChangeFilterCallback={onChangeFilterHandler}
+          filterValue={value}
+        />
+      )}
+
       <TableContainer>
         <TableHeader />
         <TableBody />

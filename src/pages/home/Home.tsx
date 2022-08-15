@@ -1,4 +1,4 @@
-import { useCallback, useContext } from 'react';
+import { useCallback, useContext, useState } from 'react';
 import moment from 'moment';
 import { Button } from '../../components/Button';
 import { FooterBar } from '../../components/Footer';
@@ -14,10 +14,11 @@ import {
   TopBarInfo
 } from './Home.styles';
 import { BirdWeightForm } from '../../containers/BirdWeightForm';
-import { ClientsData, IBirdData } from '../../interfaces';
+import { ClientsData, IBirdData, IBirdWeight } from '../../interfaces';
 import { ServicesReport } from '../ServicesReport';
 import { LoadingContext } from '../../context/Loading';
 import { currentPosition } from '../../components/Map';
+import { Table } from '../../components/Table';
 
 export const Home = () => {
   const { onOpenSidepanelHandler } = useContext(SidepanelContext);
@@ -121,6 +122,44 @@ export const Home = () => {
       });
   };
 
+  const onSeeWeightHandler = () => {
+    onLoadingHandler(true);
+    app
+      .collection('birds')
+      .get()
+      .then((docs) => {
+        // mensagem de erro
+        if (docs.empty) return;
+
+        const birdsData: IBirdWeight[] = [];
+        docs.forEach((doc) => {
+          birdsData.push({
+            id: doc.id,
+            nome: doc.data().nome,
+            peso: doc.data().peso
+          });
+        });
+        console.log(birdsData);
+        // setBirdsList(birdsData);
+
+        onLoadingHandler(false);
+        onOpenSidepanelHandler({
+          isOpen: true,
+          SidepanelChildren: (
+            <Table
+              count={0}
+              onTableRenderCallback={() => {}}
+              onSearchCallback={() => {}}
+              filterOptions={[]}
+              data={birdsData}
+              tableActions={[]}
+            />
+          ),
+          sidepanelWidth: '700px'
+        });
+      });
+  };
+
   const onServicesReportHanlder = useCallback(() => {
     onLoadingHandler(true);
     app
@@ -187,6 +226,9 @@ export const Home = () => {
         </MenuItem>
         <MenuItem>
           <Button onClick={onWeightRegisterHandler}>Registar Pesagem</Button>
+        </MenuItem>
+        <MenuItem>
+          <Button onClick={onSeeWeightHandler}>Pesagems</Button>
         </MenuItem>
         <MenuItem>
           <Button onClick={onServicesReportHanlder}>Registar Relatorio</Button>
