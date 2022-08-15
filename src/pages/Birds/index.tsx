@@ -33,6 +33,7 @@ let birdRegisterInputs: IInput[] = [
 const FormAddBird: FC<IFormAddBird> = ({ id, updateData }) => {
   let formData = [...birdRegisterInputs];
 
+  const { onLoadingHandler } = useContext(LoadingContext);
   const { onCloseSidepanelHandler } = useContext(SidepanelContext);
 
   const onBirdRegisterHandler = useCallback<IForm['onSubmitCallback']>(
@@ -62,8 +63,10 @@ const FormAddBird: FC<IFormAddBird> = ({ id, updateData }) => {
 
   const onBirdEditHandler = useCallback<IForm['onSubmitCallback']>(
     async (data) => {
+      onLoadingHandler(true);
       try {
         await app.collection('birds').doc(id).update(data);
+        onLoadingHandler(false);
         onCloseSidepanelHandler();
       } catch (e) {
         console.log(e);
@@ -119,6 +122,7 @@ export const Birds = () => {
   };
 
   const onBirdDeleteHandler = (rowData: IBirdData) => {
+    onLoadingHandler(true);
     app
       .collection('birds')
       .doc(rowData.id)
@@ -127,8 +131,19 @@ export const Birds = () => {
         const stateCopy = [...birds];
         const itemIndex = stateCopy.findIndex((bird) => bird.id === rowData.id);
         stateCopy.splice(itemIndex, 1);
-        console.log(stateCopy);
-        setBirds(stateCopy);
+
+        app
+          .collection('counters')
+          .doc('birds')
+          .get()
+          .then(async (doc) => {
+            let count = doc?.data()?.count - 1;
+
+            await app.collection('counters').doc('birds').set({ count });
+            setBirds(stateCopy);
+            setBirdsCounter(count);
+            onLoadingHandler(false);
+          });
       })
       .catch((e) => console.log('Error removind bird'));
   };
@@ -205,6 +220,9 @@ export const Birds = () => {
       .orderBy('nome')
       .limit(10)
       .onSnapshot((doc) => {
+        onLoadingHandler(false);
+        if (doc.empty) return;
+
         const birds: IBirdData[] = [];
 
         doc.docs.forEach((doc) => {
@@ -219,11 +237,11 @@ export const Birds = () => {
           .collection('counters')
           .doc('birds')
           .onSnapshot((onSnapshot) => {
+            onLoadingHandler(false);
             if (!onSnapshot.exists) return;
 
             setBirdsCounter(onSnapshot.data()?.count);
             setBirds(birds);
-            onLoadingHandler(false);
           });
       });
   }, [onLoadingHandler]);
