@@ -110,14 +110,16 @@ export const Form: FC<IForm> = ({ fields, onSubmitCallback, title }) => {
 
       if (isInputTime(input)) {
         return (
-          <label>
-            <input
-              type={input.type}
-              onChange={(e) => onChange(e, index)}
-              value={input.value}
-            />
-            {input.label}
-          </label>
+          <InputContainer>
+            <InputLabel>{input.label}</InputLabel>
+            <InputContent>
+              <Input
+                type={input.type}
+                onChange={(e) => onChange(e, index)}
+                value={input.value}
+              />
+            </InputContent>
+          </InputContainer>
         );
       }
 
