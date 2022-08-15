@@ -102,6 +102,12 @@ export interface IBirdData {
   identificação: string;
 }
 
+export interface IBirdWeight {
+  id: string;
+  nome: string;
+  peso: number;
+}
+
 export interface IUserData {
   id: string;
   nome: string;
@@ -171,6 +177,7 @@ export interface ITable<T> {
   onTableRenderCallback: ({ page, filter, filterValue }: ITableRender) => void;
   filterOptions: ISelectOption[];
   onSearchCallback: ({ page, filter, filterValue }: ITableRender) => void;
+  hideSearch?: boolean;
 }
 
 export type SidePanelWidth = 'small' | 'medium' | 'large' | null;
