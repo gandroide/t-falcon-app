@@ -90,7 +90,7 @@ export const Table = <T,>({
               </TableBodyColumn>
             ))}
             {tableActions.map(({ icon, callback }) => (
-              <TableAction onClick={() => callback(row)}>
+              <TableAction onClick={() => callback(row, currentPage)}>
                 <TableActionIcon>{icon}</TableActionIcon>
               </TableAction>
             ))}
@@ -101,7 +101,7 @@ export const Table = <T,>({
   };
 
   const tablePagination = useMemo(() => {
-    if (count < PAGE_SIZE) return;
+    if (count <= PAGE_SIZE) return;
 
     const paginationArr = [
       <TablePaginationBtn onClick={() => onPageChangeHandler(currentPage - 1)}>

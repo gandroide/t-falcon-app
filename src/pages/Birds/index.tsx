@@ -72,7 +72,7 @@ const FormAddBird: FC<IFormAddBird> = ({ id, updateData }) => {
         console.log(e);
       }
     },
-    [onCloseSidepanelHandler, id]
+    [onCloseSidepanelHandler, id, onLoadingHandler]
   );
 
   if (id && updateData) {

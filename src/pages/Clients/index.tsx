@@ -1,7 +1,7 @@
 import { useCallback, useContext, useEffect, useState } from 'react';
 import { Form } from '../../components/Form';
 import { Table } from '../../components/Table';
-import { app } from '../../config/firebase';
+import { app, appTimestamp } from '../../config/firebase';
 import { SidepanelContext } from '../../context/Sidepanel';
 import {
   IDefaultInput,
@@ -25,14 +25,20 @@ const addClientForm: IDefaultInput[] = [
   }
 ];
 
-const AddClientsFrom = () => {
+const AddClientsFrom = ({
+  onAddClientsCallback
+}: {
+  onAddClientsCallback: (count: number) => void;
+}) => {
+  const { onLoadingHandler } = useContext(LoadingContext);
   const { onCloseSidepanelHandler } = useContext(SidepanelContext);
 
   const onAddClientHandler = useCallback<IForm['onSubmitCallback']>(
     async (data) => {
-      await app
+      onLoadingHandler(true);
+      app
         .collection('clients')
-        .add(data)
+        .add({ ...data, date: appTimestamp.fromDate(new Date()) })
         .then(() => {
           app
             .collection('counters')
@@ -42,12 +48,12 @@ const AddClientsFrom = () => {
               let count = (doc?.data()?.count || 0) + 1;
 
               await app.collection('counters').doc('clients').set({ count });
+              onAddClientsCallback(count);
+              onCloseSidepanelHandler();
             });
         });
-
-      onCloseSidepanelHandler();
     },
-    [onCloseSidepanelHandler]
+    [onCloseSidepanelHandler, onAddClientsCallback, onLoadingHandler]
   );
 
   return (
@@ -67,27 +73,99 @@ export const Clients = () => {
   const onOpenClientFormHandler = () => {
     onOpenSidepanelHandler({
       isOpen: true,
-      SidepanelChildren: <AddClientsFrom />,
+      SidepanelChildren: (
+        <AddClientsFrom onAddClientsCallback={onAddClientsCallback} />
+      ),
       sidepanelWidth: '500px'
     });
   };
 
+  const onAddClientsCallback = (count: number) => {
+    const clientsData: ClientsData[] = [];
+
+    app
+      .collection('clients')
+      .orderBy('date', 'desc')
+      .limit(10)
+      .get()
+      .then((docs) => {
+        if (docs.empty) {
+          return;
+        }
+
+        docs.forEach((doc) => {
+          clientsData.push({
+            id: doc.id,
+            nome: doc.data().name
+          });
+        });
+
+        setClientsCounter(count);
+        setClients(clientsData);
+        onLoadingHandler(false);
+      });
+  };
+
   const onRemoveClientHandler = useCallback<
     ITableAction<ClientsData>['callback']
-  >((rowData) => {}, []);
+  >(
+    (rowData, currentPage) => {
+      onLoadingHandler(true);
+
+      app
+        .collection('clients')
+        .doc(rowData.id)
+        .delete()
+        .then(() => {
+          app
+            .collection('counters')
+            .doc('clients')
+            .get()
+            .then(async (doc) => {
+              let count = doc?.data()?.count - 1;
+
+              await app.collection('counters').doc('clients').set({ count });
+
+              app
+                .collection('clients')
+                .orderBy('date', 'desc')
+                .limit(10)
+                .get()
+                .then((docs) => {
+                  const clientsData: ClientsData[] = [];
+
+                  if (docs.empty) {
+                    return;
+                  }
+
+                  docs.forEach((doc) => {
+                    clientsData.push({
+                      id: doc.id,
+                      nome: doc.data().name
+                    });
+                  });
+
+                  setClients(clientsData);
+                  setClientsCounter(count);
+                  onLoadingHandler(false);
+                });
+            });
+        });
+    },
+    [onLoadingHandler]
+  );
 
   const onPageChangeHandler = useCallback<
     ITable<ClientsData>['onTableRenderCallback']
   >(
     ({ page, filter, filterValue }) => {
-      console.log(page, filter, filterValue);
       onLoadingHandler(true);
       const clientsData: ClientsData[] = [];
 
       if (page === 1) {
         app
           .collection('clients')
-          .orderBy('name')
+          .orderBy('date', 'desc')
           .limit(10)
           .onSnapshot((onSnapshot) => {
             if (onSnapshot.empty) return;
@@ -107,7 +185,7 @@ export const Clients = () => {
 
         app
           .collection('clients')
-          .orderBy('name')
+          .orderBy('date', 'desc')
           .limit(currentLimit)
           .get()
           .then((documentSnapshots) => {
@@ -145,12 +223,15 @@ export const Clients = () => {
 
     app
       .collection('clients')
-      .orderBy('name')
+      .orderBy('date', 'desc')
       .limit(10)
-      .onSnapshot((onSnapshot) => {
-        if (onSnapshot.empty) return;
+      .get()
+      .then((docs) => {
+        if (docs.empty) {
+          return;
+        }
 
-        onSnapshot.forEach((doc) => {
+        docs.forEach((doc) => {
           clientsData.push({
             id: doc.id,
             nome: doc.data().name
@@ -160,10 +241,11 @@ export const Clients = () => {
         app
           .collection('counters')
           .doc('clients')
-          .onSnapshot((onSnapshot) => {
-            if (!onSnapshot.exists) return;
+          .get()
+          .then((docs) => {
+            if (!docs.exists) return;
 
-            setClientsCounter(onSnapshot.data()?.count);
+            setClientsCounter(docs.data()?.count);
             setClients(clientsData);
             onLoadingHandler(false);
           });

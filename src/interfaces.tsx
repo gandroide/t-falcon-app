@@ -154,7 +154,7 @@ export interface BirdsWeightData {
 
 export interface ITableAction<T> {
   icon: ReactNode;
-  callback: (rowData: T) => void;
+  callback: (rowData: T, currentPage: number) => void;
 }
 
 export interface ITableRender {
