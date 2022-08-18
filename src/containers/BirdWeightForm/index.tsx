@@ -16,14 +16,18 @@ const birdWeightData: IDefaultInput[] = [
     name: 'nome',
     type: 'select',
     value: '',
-    data: []
+    data: [],
+    isRequired: true,
+    hasError: false
   },
   {
     label: 'Peso (gr)',
     name: 'peso',
     placeholder: 'Insira peso da ave',
     type: 'number',
-    value: ''
+    value: '',
+    isRequired: true,
+    hasError: false
   }
 ];
 

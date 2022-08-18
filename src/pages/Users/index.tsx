@@ -1,7 +1,7 @@
 import { useState, useContext, useEffect, useCallback } from 'react';
 import { Form } from '../../components/Form';
 import { Table } from '../../components/Table';
-import { app, appAuth } from '../../config/firebase';
+import { app, app2 } from '../../config/firebase';
 import { SidepanelContext } from '../../context/Sidepanel';
 import { IForm, IDefaultInput, IUserData } from '../../interfaces';
 import { SidePanelContainer, SidePanelTitle } from './styled';
@@ -35,7 +35,7 @@ const AddUserForm = () => {
 
   const onAddUserHandler = useCallback<IForm['onSubmitCallback']>(
     async (data) => {
-      const res = await appAuth.createUserWithEmailAndPassword(
+      const res = await app2.createUserWithEmailAndPassword(
         data['email'],
         data['password']
       );
@@ -51,6 +51,7 @@ const AddUserForm = () => {
         nome: data['displayName']
       });
 
+      app2.signOut();
       onCloseSidepanelHandler();
     },
     [onCloseSidepanelHandler]

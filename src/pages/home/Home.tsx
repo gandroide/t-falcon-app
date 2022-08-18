@@ -14,7 +14,12 @@ import {
   TopBarInfo
 } from './Home.styles';
 import { BirdWeightForm } from '../../containers/BirdWeightForm';
-import { ClientsData, IBirdData, IBirdWeight } from '../../interfaces';
+import {
+  CarsData,
+  ClientsData,
+  IBirdData,
+  IBirdWeight
+} from '../../interfaces';
 import { ServicesReport } from '../ServicesReport';
 import { LoadingContext } from '../../context/Loading';
 import { currentPosition } from '../../components/Map';
@@ -207,26 +212,38 @@ export const Home = () => {
               });
             });
 
-            onLoadingHandler(false);
-            onOpenSidepanelHandler({
-              isOpen: true,
-              SidepanelChildren: (
-                <ServicesReport
-                  clientsData={clientsData}
-                  birdsData={birdsData}
-                />
-              ),
-              sidepanelWidth: '700px'
-            });
+            app
+              .collection('cars')
+              .get()
+              .then((docs) => {
+                if (docs.empty) return;
+
+                const carsData: CarsData[] = [];
+
+                docs.forEach((doc) => {
+                  carsData.push({
+                    id: doc.id,
+                    matricula: doc.data().matricula,
+                    viatura: doc.data().viatura
+                  });
+                });
+                onLoadingHandler(false);
+                onOpenSidepanelHandler({
+                  isOpen: true,
+                  SidepanelChildren: (
+                    <ServicesReport
+                      clientsData={clientsData}
+                      birdsData={birdsData}
+                      carsData={carsData}
+                    />
+                  ),
+                  sidepanelWidth: '700px'
+                });
+              });
           });
       });
   }, [onLoadingHandler, onOpenSidepanelHandler]);
 
-  // return (
-  //   <>
-  //     <ServicesReportDetail />
-  //   </>
-  // );
   return (
     <Container>
       <TopBar>

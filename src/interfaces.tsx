@@ -1,6 +1,10 @@
 import { ChangeEvent, ReactNode } from 'react';
 
-export interface IInput {
+export interface IInputError {
+  hasError?: boolean;
+  isRequired?: boolean;
+}
+export interface IInput extends IInputError {
   name: string;
   label: string;
   type: 'text' | 'number' | 'password';
@@ -8,7 +12,7 @@ export interface IInput {
   placeholder: string;
 }
 
-export interface IInputSelect {
+export interface IInputSelect extends IInputError {
   name: string;
   label: string;
   type: 'select';
@@ -16,23 +20,25 @@ export interface IInputSelect {
   value: string;
 }
 
-export interface IInputCheckbox {
+export interface IInputCheckbox extends IInputError {
   name: string;
   label: string;
   type: 'checkbox';
   checked: boolean;
 }
 
-export interface ITextarea extends Omit<IInput, 'type'> {
+export interface ITextarea extends Omit<IInput, 'type'>, IInputError {
   type: 'textarea';
 }
 
-export interface IInputTime extends Omit<IInput, 'type' | 'placeholder'> {
+export interface IInputTime
+  extends Omit<IInput, 'type' | 'placeholder'>,
+    IInputError {
   type: 'time';
   required: boolean;
 }
 
-export interface IInputDate extends Omit<IInput, 'type'> {
+export interface IInputDate extends Omit<IInput, 'type'>, IInputError {
   type: 'date';
   required: boolean;
 }
@@ -197,6 +203,7 @@ export interface CarsData {
 export interface IServiceReport {
   clientsData: ClientsData[];
   birdsData: IBirdData[];
+  carsData: CarsData[];
 }
 
 export interface IServiceReportData {

@@ -11,6 +11,7 @@ import { Navbar } from './components/Navbar';
 import { AppRoutes } from './routes';
 import { LoadingContext } from './context/Loading';
 import { Loading } from './components/Loading';
+import { ToastContainer, toast } from 'react-toastify';
 
 const App = () => {
   const { isLoading } = useContext(LoadingContext);
@@ -24,7 +25,9 @@ const App = () => {
   if (!isAuthReady) {
     return <Loading />;
   }
-
+  const testToast = () => {
+    toast.success('hoho');
+  };
   return (
     <ThemeProvider theme={defaultTheme}>
       <GlobalStyles isLoading={isLoading} />
@@ -37,6 +40,8 @@ const App = () => {
       <AppContainer>
         <AppRoutes />
       </AppContainer>
+      <button onClick={testToast}>click</button>
+      <ToastContainer />
     </ThemeProvider>
   );
 };

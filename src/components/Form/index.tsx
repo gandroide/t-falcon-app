@@ -23,7 +23,8 @@ import {
   InputLabel,
   InputContent,
   FormButton,
-  Textarea
+  Textarea,
+  InputError
 } from './style';
 
 export const Form: FC<IForm> = ({ fields, onSubmitCallback, title }) => {
@@ -65,6 +66,25 @@ export const Form: FC<IForm> = ({ fields, onSubmitCallback, title }) => {
       }
     });
 
+    let isFormValid = true;
+    const inputs = formInputs.map((input) => {
+      if (input.isRequired) {
+        if (
+          (isInputSelect(input) || !isInputCheckbox(input)) &&
+          !input.value.trim().length
+        ) {
+          input.hasError = true;
+          isFormValid = false;
+        }
+      }
+      return input;
+    });
+
+    if (!isFormValid) {
+      setFormInputs(inputs);
+      return;
+    }
+
     onSubmitCallback(data);
   };
 
@@ -79,16 +99,24 @@ export const Form: FC<IForm> = ({ fields, onSubmitCallback, title }) => {
               onChangeHandler={(e) => onChange(e, index)}
               selected
             />
+            {input.hasError && (
+              <InputError>Este campo é obrigatorio</InputError>
+            )}
           </InputContainer>
         );
       }
 
       if (isInputCheckbox(input)) {
         return (
-          <label>
-            <input type={input.type} checked={input.checked} />
-            {input.label}
-          </label>
+          <>
+            <label>
+              <input type={input.type} checked={input.checked} />
+              {input.label}
+            </label>
+            {input.hasError && (
+              <InputError>Este campo é obrigatorio</InputError>
+            )}
+          </>
         );
       }
 
@@ -96,7 +124,7 @@ export const Form: FC<IForm> = ({ fields, onSubmitCallback, title }) => {
         return (
           <InputContainer>
             <InputLabel>{input.label}</InputLabel>
-            <InputContent>
+            <InputContent hasError={input.hasError}>
               <Textarea
                 rows={10}
                 cols={40}
@@ -104,6 +132,9 @@ export const Form: FC<IForm> = ({ fields, onSubmitCallback, title }) => {
                 value={input.value}
               />
             </InputContent>
+            {input.hasError && (
+              <InputError>Este campo é obrigatorio</InputError>
+            )}
           </InputContainer>
         );
       }
@@ -112,13 +143,16 @@ export const Form: FC<IForm> = ({ fields, onSubmitCallback, title }) => {
         return (
           <InputContainer>
             <InputLabel>{input.label}</InputLabel>
-            <InputContent>
+            <InputContent hasError={input.hasError}>
               <Input
                 type={input.type}
                 onChange={(e) => onChange(e, index)}
                 value={input.value}
               />
             </InputContent>
+            {input.hasError && (
+              <InputError>Este campo é obrigatorio</InputError>
+            )}
           </InputContainer>
         );
       }
@@ -127,20 +161,23 @@ export const Form: FC<IForm> = ({ fields, onSubmitCallback, title }) => {
         return (
           <InputContainer>
             <InputLabel>{input.label}</InputLabel>
-            <InputContent>
+            <InputContent hasError={input.hasError}>
               <Input
                 type={input.type}
                 onChange={(e) => onChange(e, index)}
                 value={input.value}
               />
-            </InputContent>
+            </InputContent>{' '}
+            {input.hasError && (
+              <InputError>Este campo é obrigatorio</InputError>
+            )}
           </InputContainer>
         );
       }
       return (
         <InputContainer>
           <InputLabel>{input.label}</InputLabel>
-          <InputContent>
+          <InputContent hasError={input.hasError}>
             <Input
               type={input.type}
               name={input.name}
@@ -149,6 +186,7 @@ export const Form: FC<IForm> = ({ fields, onSubmitCallback, title }) => {
               placeholder={input.placeholder}
             />
           </InputContent>
+          {input.hasError && <InputError>Este campo é obrigatorio</InputError>}
         </InputContainer>
       );
     });

@@ -50,9 +50,9 @@ const inputStepper: IDefaultInput[] = [
   {
     name: 'carro',
     label: 'carro',
-    type: 'text',
+    type: 'select',
     value: '',
-    placeholder: 'selecione o carro utilizado'
+    data: []
   },
   {
     name: 'observações',
@@ -65,7 +65,8 @@ const inputStepper: IDefaultInput[] = [
 
 export const ServicesReport: FC<IServiceReport> = ({
   clientsData,
-  birdsData
+  birdsData,
+  carsData
 }) => {
   const {
     user: { displayName }
@@ -87,8 +88,14 @@ export const ServicesReport: FC<IServiceReport> = ({
       value: client.nome
     }));
 
+    (inputs[5] as IInputSelect).data = carsData.map((car) => ({
+      label: car.viatura,
+      name: 'carro',
+      value: car.viatura + ' ' + car.matricula
+    }));
+
     return inputs;
-  }, [birdsData, clientsData]);
+  }, [birdsData, carsData, clientsData]);
 
   const onServicesReportHandler = useCallback<IForm['onSubmitCallback']>(
     async (data) => {

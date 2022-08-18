@@ -49,11 +49,15 @@ export const InputLabel = styled.label`
   margin-bottom: 5px;
 `;
 
-export const InputContent = styled.div`
-  border: 1px solid red;
+export const InputContent = styled.div<{ hasError?: boolean }>`
+  border: 1px solid ${({ hasError }) => (hasError ? 'red' : 'black')};
   border-radius: 4px;
 `;
 
 export const FormButton = styled.button`
   margin-top: 40px;
+`;
+
+export const InputError = styled.span`
+  color: red;
 `;

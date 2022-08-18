@@ -14,3 +14,4 @@ const firebaseConfig = {
 export const app = firebase.initializeApp(firebaseConfig).firestore();
 export const appAuth = firebase.auth();
 export const appTimestamp = firebase.firestore.Timestamp;
+export const app2 = firebase.initializeApp(firebaseConfig, 'secondary').auth();

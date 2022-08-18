@@ -27,7 +27,7 @@ export const ItemContainer = styled.div`
   width: 90%;
 `;
 
-export const ItemLabel = styled.h2`
+export const ItemLabel = styled.h3`
   margin: 5px;
 `;
 
@@ -35,9 +35,11 @@ export const ItemDetail = styled.h2``;
 
 export const ObservacoesContainer = styled.div`
   display: flex;
-  justify-content: flex-start;
+  justify-content: center;
   align-items: center;
   flex-direction: column;
+  width: 80%;
+  font-size: 2rem;
 `;
 
 export const Details = styled.span`
