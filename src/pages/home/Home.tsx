@@ -78,16 +78,20 @@ export const Home = () => {
       };
     };
     const coords = await getCoords();
-    // console.log(coords);
+
     app
       .collection('user_registry')
+      .orderBy('entryDate', 'desc')
       .where('userId', '==', user.userId)
       .where('entryDate', '>', new Date(currentDate))
       .where('entryDate', '<=', new Date(nextDate))
       .limit(1)
       .get()
       .then((value) => {
-        if (value.empty) {
+        if (
+          value.empty ||
+          (!value.empty && 'leaveDate' in value.docs[0].data())
+        ) {
           onSetModalHandler({
             isOpen: true,
             type: 'info',
@@ -151,7 +155,6 @@ export const Home = () => {
         const birdsData: IBirdWeight[] = [];
 
         docs.forEach((doc) => {
-          console.log(secondsToDate(doc.data()?.data));
           birdsData.push({
             id: doc.id,
             nome: doc.data().nome,

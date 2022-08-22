@@ -84,7 +84,7 @@ export const UserRegistry = () => {
           (registry) => registry.id === rowData.id
         );
         stateCopy.splice(itemIndex, 1);
-        console.log(stateCopy);
+
         setUserRegistry(stateCopy);
       })
       .catch((e) => console.log('Error removind registry'));

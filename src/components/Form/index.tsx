@@ -37,7 +37,6 @@ export const Form: FC<IForm> = ({ fields, onSubmitCallback, title }) => {
       if (isInputSelect(selectedInput) && isSelectOption(e)) {
         (formInputs[index] as IInputSelect).value = e.value;
       }
-
       if (isInputCheckbox(selectedInput) && isInputEvent(e)) {
         (formInputs[index] as IInputCheckbox).checked = e.currentTarget.checked;
       }
@@ -110,7 +109,11 @@ export const Form: FC<IForm> = ({ fields, onSubmitCallback, title }) => {
         return (
           <>
             <label>
-              <input type={input.type} checked={input.checked} />
+              <input
+                type={input.type}
+                checked={input.checked}
+                onChange={(e) => onChange(e, index)}
+              />
               {input.label}
             </label>
             {input.hasError && (

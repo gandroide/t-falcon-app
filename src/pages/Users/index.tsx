@@ -27,6 +27,12 @@ const addUserFields: IDefaultInput[] = [
     type: 'password',
     value: '',
     placeholder: 'Password do utilizador'
+  },
+  {
+    name: 'admistrador',
+    label: 'admistrador',
+    type: 'checkbox',
+    checked: false
   }
 ];
 
@@ -46,10 +52,14 @@ const AddUserForm = () => {
 
       await res.user.updateProfile({ displayName: data['displayName'] });
 
-      app.collection('users').doc(res.user.uid).set({
-        email: data['email'],
-        nome: data['displayName']
-      });
+      app
+        .collection('users')
+        .doc(res.user.uid)
+        .set({
+          email: data['email'],
+          nome: data['displayName'],
+          admistrador: data['admistrador'] === 'true'
+        });
 
       app2.signOut();
       onCloseSidepanelHandler();
