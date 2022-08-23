@@ -1,4 +1,4 @@
-import { useCallback, useContext, useState } from 'react';
+import { useCallback, useContext } from 'react';
 import moment from 'moment';
 import { Button } from '../../components/Button';
 import { FooterBar } from '../../components/Footer';
@@ -65,6 +65,7 @@ export const Home = () => {
   };
 
   const onConfirmPicagemHandler = async () => {
+    onLoadingHandler(true);
     const currentDate = moment().format('L');
     const nextDate = moment().add(1, 'days').format('L');
 
@@ -88,6 +89,7 @@ export const Home = () => {
       .limit(1)
       .get()
       .then((value) => {
+        onLoadingHandler(false);
         if (
           value.empty ||
           (!value.empty && 'leaveDate' in value.docs[0].data())
