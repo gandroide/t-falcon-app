@@ -263,7 +263,7 @@ export const Home = () => {
           <Button onClick={onWeightRegisterHandler}>Registar Pesagem</Button>
         </MenuItem>
         <MenuItem>
-          <Button onClick={onSeeWeightHandler}>Pesagems</Button>
+          <Button onClick={onSeeWeightHandler}>Pesagens</Button>
         </MenuItem>
         <MenuItem>
           <Button onClick={onServicesReportHanlder}>Registar Relatorio</Button>
