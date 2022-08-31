@@ -26,7 +26,7 @@ const App = () => {
     return <Loading />;
   }
   const testToast = () => {
-    toast.success('hoho');
+    toast.success('hohoho');
   };
   return (
     <ThemeProvider theme={defaultTheme}>
