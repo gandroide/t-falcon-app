@@ -1,12 +1,12 @@
 import moment from 'moment';
 import { useCallback, useContext, useEffect, useState } from 'react';
 import { FaRegTrashAlt } from 'react-icons/fa';
-import { Link } from 'react-router-dom';
+import { toast } from 'react-toastify';
 import { Table } from '../../components/Table';
 import { app } from '../../config/firebase';
 import { AuthContext } from '../../context/Auth';
-import { UserRegistryData } from '../../interfaces';
-import { MenuItem } from '../home/Home.styles';
+import { LoadingContext } from '../../context/Loading';
+import { ITable, ITableAction, UserRegistryData } from '../../interfaces';
 import { PageContainer } from './styled';
 
 const secondsToDate = (seconds?: number) => {
@@ -27,97 +27,173 @@ const formattedTime = (date?: Date) => {
   }
 };
 
-const LinkComponent = {
-  display: 'inline-block',
-  padding: '0.7em 1.7em',
-  margin: '0 0.3em 0.3em 0',
-  minWidth: '60px',
-  borderStyle: 'hidden',
-  borderRadius: '0.5em',
-  textDecoration: 'none',
-  fontWeight: '400',
-  color: '#ffffff',
-  backgroundColor: '#3369ff'
-};
-
 export const UserRegistry = () => {
   const { user } = useContext(AuthContext);
   const [userRegistry, setUserRegistry] = useState<UserRegistryData[]>([]);
-  const [isLoading, setIsLoading] = useState(true);
+  const [userRegistryCounter, setUserRegistryCounter] = useState(0);
+  const { onLoadingHandler } = useContext(LoadingContext);
 
-  const getUserRegistry = useCallback(() => {
-    app
-      .collection('user_registry')
-      .where('userId', '==', user.userId)
-      .onSnapshot((onSnapshot) => {
-        if (onSnapshot.empty) return;
+  const getUserRegistry = useCallback(
+    (page: number, fromPagination: boolean) => {
+      onLoadingHandler(true);
+      const currentLimit = (page - 1) * 10;
+      app
+        .collection('user_registry')
+        .orderBy('entryDate', 'desc')
+        .limit(currentLimit || 10)
+        .get()
+        .then((documentSnapshots) => {
+          let lastVisible;
 
-        const userRegistryData: UserRegistryData[] = [];
+          if (fromPagination && page !== 1) {
+            lastVisible =
+              documentSnapshots.docs[documentSnapshots.docs.length - 1];
+          } else {
+            lastVisible = documentSnapshots.docs[0];
+          }
 
-        onSnapshot.forEach((doc) => {
-          const entry = secondsToDate(doc.data().entryDate?.seconds);
-          const leave = secondsToDate(doc.data().leaveDate?.seconds);
-          const date = formattedDate(entry);
-          const entryTime = formattedTime(entry);
-          const leaveTime = formattedTime(leave);
-          userRegistryData.push({
-            id: doc.id,
-            data: date ?? '-',
-            entrada: entryTime ?? '-',
-            saida: leaveTime ?? '-'
-          });
+          app
+            .collection('user_registry')
+            .where('userId', '==', user.userId)
+            .orderBy('entryDate', 'desc')
+            .startAt(lastVisible)
+            .limit(10)
+            .get()
+            .then((docs) => {
+              if (docs.empty) return;
+
+              const userRegistryData: UserRegistryData[] = [];
+
+              docs.forEach((doc) => {
+                const entry = secondsToDate(doc.data().entryDate?.seconds);
+                const leave = secondsToDate(doc.data().leaveDate?.seconds);
+                const date = formattedDate(entry);
+                const entryTime = formattedTime(entry);
+                const leaveTime = formattedTime(leave);
+                userRegistryData.push({
+                  id: doc.id,
+                  data: date ?? '-',
+                  entrada: entryTime ?? '-',
+                  saida: leaveTime ?? '-'
+                });
+              });
+
+              app
+                .collection('users')
+                .doc(user.userId!)
+                .get()
+                .then((docs) => {
+                  onLoadingHandler(false);
+                  if (!docs.exists) return;
+
+                  setUserRegistryCounter(docs.data()?.user_registry_count);
+                  setUserRegistry(userRegistryData);
+                })
+                .catch(() => {
+                  onLoadingHandler(false);
+                  toast.error(
+                    'Ocorreu um erro inesperado. Tente mais tarde por favor.'
+                  );
+                });
+            })
+            .catch(() => {
+              onLoadingHandler(false);
+              toast.error(
+                'Ocorreu um erro inesperado. Tente mais tarde por favor.'
+              );
+            });
+        })
+        .catch(() => {
+          onLoadingHandler(false);
+          toast.error(
+            'Ocorreu um erro inesperado. Tente mais tarde por favor.'
+          );
         });
+    },
+    [onLoadingHandler, user.userId]
+  );
 
-        setUserRegistry(userRegistryData);
-        setIsLoading(false);
-      });
-  }, [user.userId]);
+  const onPageChangeHandler = useCallback<
+    ITable<UserRegistryData>['onTableRenderCallback']
+  >(
+    ({ page, filter, filterValue }) => {
+      getUserRegistry(page, true);
+    },
+    [getUserRegistry]
+  );
 
-  const onDeleteRegistryHandler = (rowData: UserRegistryData) => {
-    app
-      .collection('user_registry')
-      .doc(rowData.id)
-      .delete()
-      .then(() => {
-        const stateCopy = [...userRegistry];
-        const itemIndex = stateCopy.findIndex(
-          (registry) => registry.id === rowData.id
-        );
-        stateCopy.splice(itemIndex, 1);
+  const onDeleteRegistryHandler = useCallback<
+    ITableAction<UserRegistryData>['callback']
+  >(
+    (rowData, currentPage) => {
+      app
+        .collection('user_registry')
+        .doc(rowData.id)
+        .delete()
+        .then(() => {
+          app
+            .collection('counters')
+            .doc('user_registry')
+            .get()
+            .then((doc) => {
+              let count = (doc?.data()?.count || 0) - 1;
 
-        setUserRegistry(stateCopy);
-      })
-      .catch((e) => console.log('Error removind registry'));
-  };
+              app
+                .collection('counters')
+                .doc('user_registry')
+                .set({ count })
+                .catch(() => {
+                  toast.error('Ocorreu um erro ao registar a picagem');
+                })
+                .then(() => {
+                  app
+                    .collection('users')
+                    .doc(user.userId!)
+                    .get()
+                    .then((doc) => {
+                      let count = (doc?.data()?.user_registry_count || 0) - 1;
+
+                      app
+                        .collection('users')
+                        .doc(user.userId!)
+                        .update({ user_registry_count: count })
+                        .then(() => {
+                          console.log(
+                            'userRegistry.length',
+                            userRegistry.length
+                          );
+                          if (userRegistry.length === 1) {
+                            getUserRegistry(currentPage - 1, true);
+                          } else {
+                            getUserRegistry(currentPage, true);
+                          }
+                        });
+                    });
+                });
+            });
+        })
+        .catch(() => console.log('Error removind registry'));
+    },
+    [getUserRegistry, user.userId, userRegistry]
+  );
 
   useEffect(() => {
-    getUserRegistry();
+    getUserRegistry(1, false);
   }, [getUserRegistry]);
 
   return (
-    <>
-      <MenuItem>
-        <Link style={LinkComponent} to="/home">
-          Go Back
-        </Link>
-      </MenuItem>
-      <PageContainer>
-        <h1>Registos de Picagem</h1>
-        {isLoading || !userRegistry.length ? (
-          <p>Loading...</p>
-        ) : (
-          <Table
-            count={0}
-            data={userRegistry}
-            onTableRenderCallback={() => {}}
-            onSearchCallback={() => {}}
-            filterOptions={[]}
-            tableActions={[
-              { callback: onDeleteRegistryHandler, icon: <FaRegTrashAlt /> }
-            ]}
-          />
-        )}
-      </PageContainer>
-    </>
+    <PageContainer>
+      <h1>Registos de Picagem</h1>
+      <Table
+        count={userRegistryCounter}
+        data={userRegistry}
+        onTableRenderCallback={onPageChangeHandler}
+        onSearchCallback={() => {}}
+        filterOptions={[]}
+        tableActions={[
+          { callback: onDeleteRegistryHandler, icon: <FaRegTrashAlt /> }
+        ]}
+      />
+    </PageContainer>
   );
 };

@@ -1,5 +1,6 @@
 import { createContext, FC, useContext, useEffect, useReducer } from 'react';
 import { useNavigate } from 'react-router-dom';
+import { toast } from 'react-toastify';
 import { app, appAuth } from '../../config/firebase';
 import { LoadingContext } from '../Loading';
 
@@ -119,32 +120,38 @@ export const AuthProvider: FC = ({ children }) => {
 
   const onLoginHandler = async ({ email, password }: ILoginData) => {
     onLoadingHandler(true);
-    const res = await appAuth.signInWithEmailAndPassword(email, password);
+    appAuth
+      .signInWithEmailAndPassword(email, password)
+      .then(async (res) => {
+        if (!res.user) {
+          throw new Error('Impossivel fazer login');
+        }
 
-    if (!res.user) {
-      throw new Error('Impossivel fazer login');
-    }
+        const userData = (
+          await app.collection('users').doc(res.user.uid).get()
+        ).data();
 
-    const userData = (
-      await app.collection('users').doc(res.user.uid).get()
-    ).data();
+        dispatch({
+          type: AuthTypeActions.LOGIN,
+          payload: {
+            displayName: res.user.displayName!,
+            userId: res.user.uid,
+            isAdmin: userData?.admistrador ?? false
+          }
+        });
 
-    dispatch({
-      type: AuthTypeActions.LOGIN,
-      payload: {
-        displayName: res.user.displayName!,
-        userId: res.user.uid,
-        isAdmin: userData?.admistrador ?? false
-      }
-    });
+        if (userData?.admistrador) {
+          navigate('/admin', { replace: true });
+        } else {
+          navigate('/home', { replace: true });
+        }
 
-    if (userData?.admistrador) {
-      navigate('/admin', { replace: true });
-    } else {
-      navigate('/home', { replace: true });
-    }
-
-    onLoadingHandler(false);
+        onLoadingHandler(false);
+      })
+      .catch((e) => {
+        onLoadingHandler(false);
+        toast.error('Credenciais inválidas');
+      });
   };
 
   useEffect(() => {

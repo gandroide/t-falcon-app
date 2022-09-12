@@ -24,6 +24,7 @@ import { ServicesReport } from '../ServicesReport';
 import { LoadingContext } from '../../context/Loading';
 import { currentPosition } from '../../components/Map';
 import { Table } from '../../components/Table';
+import { toast } from 'react-toastify';
 
 const secondsToDate = (seconds?: number) => {
   if (seconds) {
@@ -52,6 +53,46 @@ export const Home = () => {
           leaveDate: appTimestamp.fromDate(new Date()),
           latitude_out: coords.latitude,
           longitude_out: coords.longitude
+        })
+        .then(() => {
+          app
+            .collection('counters')
+            .doc('user_registry')
+            .get()
+            .then((doc) => {
+              let count = (doc?.data()?.count || 0) + 1;
+
+              app
+                .collection('counters')
+                .doc('user_registry')
+                .set({ count })
+                .catch(() => {
+                  toast.error('Ocorreu um erro ao registar a picagem');
+                })
+                .then(() => {
+                  app
+                    .collection('users')
+                    .doc(user.userId!)
+                    .get()
+                    .then((doc) => {
+                      let count = (doc?.data()?.user_registry_count || 0) + 1;
+
+                      app
+                        .collection('users')
+                        .doc(user.userId!)
+                        .update({ user_registry_count: count });
+                    });
+                })
+                .catch((e) => {
+                  toast.error('Ocorreu um erro ao registar a picagem');
+                });
+            })
+            .catch(() => {
+              toast.error('Ocorreu um erro ao registar a picagem');
+            });
+        })
+        .catch(() => {
+          toast.error('Ocorreu um erro ao registar a picagem');
         });
     } else {
       app.collection('user_registry').add({
@@ -114,6 +155,10 @@ export const Home = () => {
             onCloseCallback: null
           });
         }
+      })
+      .catch((e) => {
+        onLoadingHandler(false);
+        toast.error('Ocorreu um erro ao registar a picagem');
       });
   };
 
@@ -267,12 +312,7 @@ export const Home = () => {
         </MenuItem>
         <MenuItem>
           <Button onClick={onServicesReportHanlder}>Registar Relatorio</Button>
-          {/* <Button onClick={onServicesReportHanlder}>
-            Relatorio de Serviço
-          </Button> */}
         </MenuItem>
-
-        {/* <Select selected={selectValue} onChangeHandler={setSelectClient} options={clientes}></Select> */}
       </MenuContainer>
       <FooterBar></FooterBar>
     </Container>

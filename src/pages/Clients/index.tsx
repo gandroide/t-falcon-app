@@ -223,7 +223,7 @@ export const Clients = () => {
 
     app
       .collection('clients')
-      .orderBy('date', 'desc')
+      // .orderBy('date', 'desc')
       .limit(10)
       .get()
       .then((docs) => {
@@ -237,6 +237,8 @@ export const Clients = () => {
             nome: doc.data().name
           });
         });
+
+        console.log(clientsData);
 
         app
           .collection('counters')
