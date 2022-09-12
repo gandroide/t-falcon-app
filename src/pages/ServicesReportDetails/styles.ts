@@ -38,7 +38,7 @@ export const ObservacoesContainer = styled.div`
   justify-content: center;
   align-items: center;
   flex-direction: column;
-  width: 80%;
+  width: 100%;
   font-size: 2rem;
 `;
 

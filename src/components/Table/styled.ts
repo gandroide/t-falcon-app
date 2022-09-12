@@ -5,15 +5,21 @@ interface ITablePagination {
 }
 
 export const TableContainer = styled.table`
-  width: 100%;
+  width: 1150px;
   margin-bottom: 1rem;
   border-collapse: collapse;
   text-align: left;
+  overflow-y: hidden;
+  overflow-x: auto;
+  -webkit-overflow-scrolling: touch;
+  background-color: white;
 `;
 
 export const TableHeaderContainer = styled.thead``;
 
-export const TableHeaderRow = styled.tr``;
+export const TableHeaderRow = styled.tr`
+  background-color: white;
+`;
 
 export const TableHeaderColumn = styled.th`
   padding: 8px;

@@ -1,6 +1,11 @@
 import styled from 'styled-components';
 
-export const AdminContainer = styled.div``;
+export const AdminContainer = styled.div`
+  background-color: white;
+  overflow-y: hidden;
+  overflow-x: auto;
+  -webkit-overflow-scrolling: touch;
+`;
 
 export const AdminTitle = styled.h1`
   margin-bottom: 20px;
