@@ -165,7 +165,7 @@ export const Clients = () => {
       if (page === 1) {
         app
           .collection('clients')
-          .orderBy('date', 'desc')
+          .orderBy('data', 'desc')
           .limit(10)
           .onSnapshot((onSnapshot) => {
             if (onSnapshot.empty) return;
@@ -185,7 +185,7 @@ export const Clients = () => {
 
         app
           .collection('clients')
-          .orderBy('date', 'desc')
+          .orderBy('data', 'desc')
           .limit(currentLimit)
           .get()
           .then((documentSnapshots) => {
@@ -194,7 +194,7 @@ export const Clients = () => {
 
             app
               .collection('clients')
-              .orderBy('name')
+              .orderBy('data', 'desc')
               .startAfter(lastVisible)
               .limit(10)
               .get()
@@ -223,7 +223,7 @@ export const Clients = () => {
 
     app
       .collection('clients')
-      // .orderBy('date', 'desc')
+      .orderBy('data', 'desc')
       .limit(10)
       .get()
       .then((docs) => {
@@ -237,8 +237,6 @@ export const Clients = () => {
             nome: doc.data().name
           });
         });
-
-        console.log(clientsData);
 
         app
           .collection('counters')
