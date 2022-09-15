@@ -3,11 +3,12 @@ import { useState, useCallback, useEffect, useContext } from 'react';
 import { Table } from '../../components/Table';
 import { app } from '../../config/firebase';
 // import { useFilter } from '../../hooks/useFilter';
-import { FullUserRegistryData, ITableAction } from '../../interfaces';
+import { FullUserRegistryData, ITable, ITableAction } from '../../interfaces';
 import { RiMapPinUserFill } from 'react-icons/ri';
 import { Map } from '../../components/Map';
 import { AdminContainer, AdminHeaderContainer } from '../../styles';
 import { SidepanelContext } from '../../context/Sidepanel';
+import { LoadingContext } from '../../context/Loading';
 
 const secondsToDate = (seconds?: number) => {
   if (seconds) {
@@ -32,7 +33,9 @@ export const UsersRegistry = () => {
   const [usersRegistry, setUsersRegistry] = useState<FullUserRegistryData[]>(
     []
   );
+  const [userRegistryCounter, setUserRegistryCounter] = useState(0);
   const { onOpenSidepanelHandler } = useContext(SidepanelContext);
+  const { onLoadingHandler } = useContext(LoadingContext);
   // const onSearchCallback = useCallback(() => {
   //   if (!filter || !value) return;
 
@@ -67,15 +70,20 @@ export const UsersRegistry = () => {
   // }, [filter, value]);
 
   useEffect(() => {
+    onLoadingHandler(true);
+    const userRegistryData: FullUserRegistryData[] = [];
+
     app
       .collection('user_registry')
       .orderBy('entryDate', 'desc')
-      .onSnapshot((onSnapshot) => {
-        if (onSnapshot.empty) return;
+      .limit(10)
+      .get()
+      .then((docs) => {
+        if (docs.empty) {
+          return;
+        }
 
-        const userRegistryData: FullUserRegistryData[] = [];
-
-        onSnapshot.forEach((doc) => {
+        docs.forEach((doc) => {
           const entry = secondsToDate(doc.data().entryDate?.seconds);
           const leave = secondsToDate(doc.data().leaveDate?.seconds);
           const date = formattedDate(entry);
@@ -94,9 +102,19 @@ export const UsersRegistry = () => {
           });
         });
 
-        setUsersRegistry(userRegistryData);
+        app
+          .collection('counters')
+          .doc('user_registry')
+          .get()
+          .then((docs) => {
+            if (!docs.exists) return;
+
+            setUserRegistryCounter(docs.data()?.count);
+            setUsersRegistry(userRegistryData);
+            onLoadingHandler(false);
+          });
       });
-  }, []);
+  }, [onLoadingHandler]);
 
   const openMap = useCallback<ITableAction<FullUserRegistryData>['callback']>(
     (rowData) => {
@@ -116,14 +134,100 @@ export const UsersRegistry = () => {
     [onOpenSidepanelHandler]
   );
 
+  const onPageChangeHandler = useCallback<
+    ITable<FullUserRegistryData>['onTableRenderCallback']
+  >(
+    ({ page, filter, filterValue }) => {
+      onLoadingHandler(true);
+      const registryData: FullUserRegistryData[] = [];
+
+      if (page === 1) {
+        app
+          .collection('user_registry')
+          .orderBy('entryDate', 'desc')
+          .limit(10)
+          .onSnapshot((onSnapshot) => {
+            if (onSnapshot.empty) return;
+
+            onSnapshot.forEach((doc) => {
+              const entry = secondsToDate(doc.data().entryDate?.seconds);
+              const leave = secondsToDate(doc.data().leaveDate?.seconds);
+              const date = formattedDate(entry);
+              const entryTime = formattedTime(entry);
+              const leaveTime = formattedTime(leave);
+              registryData.push({
+                id: doc.id,
+                nome: doc.data().displayName,
+                data: date ?? '-',
+                entrada: entryTime ?? '-',
+                saida: leaveTime ?? '-',
+                latitude_entry: doc.data().latitude_entry,
+                longitude_entry: doc.data().longitude_entry,
+                latitude_out: doc.data().latitude_out,
+                longitude_out: doc.data().longitude_out
+              });
+            });
+
+            setUsersRegistry(registryData);
+            onLoadingHandler(false);
+          });
+      } else {
+        const currentLimit = (page - 1) * 10;
+
+        app
+          .collection('user_registry')
+          .orderBy('entryDate', 'desc')
+          .limit(currentLimit)
+          .get()
+          .then((documentSnapshots) => {
+            const lastVisible =
+              documentSnapshots.docs[documentSnapshots.docs.length - 1];
+
+            app
+              .collection('user_registry')
+              .orderBy('entryDate', 'desc')
+              .startAfter(lastVisible)
+              .limit(10)
+              .get()
+              .then((data) => {
+                if (data.empty) return;
+
+                data.forEach((doc) => {
+                  const entry = secondsToDate(doc.data().entryDate?.seconds);
+                  const leave = secondsToDate(doc.data().leaveDate?.seconds);
+                  const date = formattedDate(entry);
+                  const entryTime = formattedTime(entry);
+                  const leaveTime = formattedTime(leave);
+                  registryData.push({
+                    id: doc.id,
+                    nome: doc.data().displayName,
+                    data: date ?? '-',
+                    entrada: entryTime ?? '-',
+                    saida: leaveTime ?? '-',
+                    latitude_entry: doc.data().latitude_entry,
+                    longitude_entry: doc.data().longitude_entry,
+                    latitude_out: doc.data().latitude_out,
+                    longitude_out: doc.data().longitude_out
+                  });
+                });
+
+                setUsersRegistry(registryData);
+                onLoadingHandler(false);
+              });
+          });
+      }
+    },
+    [onLoadingHandler]
+  );
+
   return (
     <AdminContainer>
       <AdminHeaderContainer>
         <h1>Registo picagens dos utilizadores</h1>
       </AdminHeaderContainer>
       <Table
-        count={0}
-        onTableRenderCallback={() => {}}
+        count={userRegistryCounter}
+        onTableRenderCallback={onPageChangeHandler}
         onSearchCallback={() => {}}
         filterOptions={[
           { label: 'Utilizador', value: 'displayName', name: 'displayName' }
