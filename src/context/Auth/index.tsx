@@ -131,6 +131,11 @@ export const AuthProvider: FC = ({ children }) => {
           await app.collection('users').doc(res.user.uid).get()
         ).data();
 
+        if (!userData?.isActive) {
+          appAuth.signOut();
+          return;
+        }
+
         dispatch({
           type: AuthTypeActions.LOGIN,
           payload: {

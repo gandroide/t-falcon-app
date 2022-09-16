@@ -1,8 +1,10 @@
 import { useState, useContext, useEffect, useCallback } from 'react';
+import { FaTrash } from 'react-icons/fa';
 import { Form } from '../../components/Form';
 import { Table } from '../../components/Table';
 import { app, app2 } from '../../config/firebase';
 import { LoadingContext } from '../../context/Loading';
+import { ModalContext } from '../../context/Modal';
 import { SidepanelContext } from '../../context/Sidepanel';
 import { IForm, IDefaultInput, IUserData, ITable } from '../../interfaces';
 import { SidePanelContainer, SidePanelTitle } from './styled';
@@ -39,7 +41,6 @@ const addUserFields: IDefaultInput[] = [
 
 const AddUserForm = () => {
   const { onCloseSidepanelHandler } = useContext(SidepanelContext);
-  const { onLoadingHandler } = useContext(LoadingContext);
 
   const onAddUserHandler = useCallback<IForm['onSubmitCallback']>(
     async (data) => {
@@ -82,6 +83,7 @@ export const Users = () => {
   const [usersCounter, setUsersCounter] = useState(0);
   const { onOpenSidepanelHandler } = useContext(SidepanelContext);
   const { onLoadingHandler } = useContext(LoadingContext);
+  const { onSetModalHandler, onResetModalHandler } = useContext(ModalContext);
   const onOpenUserFormHandler = () => {
     onOpenSidepanelHandler({
       isOpen: true,
@@ -169,6 +171,7 @@ export const Users = () => {
             app
               .collection('users')
               .orderBy('date', 'desc')
+              .where('isActive', '==', true)
               .startAfter(lastVisible)
               .limit(10)
               .get()
@@ -193,6 +196,33 @@ export const Users = () => {
     [onLoadingHandler]
   );
 
+  const onDeleteUser = useCallback(
+    (userId: string) => {
+      app
+        .collection('users')
+        .doc(userId)
+        .set({ isActive: false })
+        .then(() => {
+          onResetModalHandler();
+        });
+    },
+    [onResetModalHandler]
+  );
+
+  const onConfirmDeleteHandler = useCallback(
+    (rowData) => {
+      onSetModalHandler({
+        isOpen: true,
+        type: 'info',
+        title: 'Eliminar utilizadfor',
+        description: 'Tem a certeza que pretende eliminar o utilizador?',
+        onConfirmCallback: () => onDeleteUser(rowData.id),
+        onCloseCallback: null
+      });
+    },
+    [onDeleteUser, onSetModalHandler]
+  );
+
   return (
     <>
       <button onClick={onOpenUserFormHandler}>Adicionar Utilizador</button>
@@ -202,7 +232,12 @@ export const Users = () => {
         onTableRenderCallback={onPageChangeHandler}
         onSearchCallback={() => {}}
         filterOptions={[]}
-        tableActions={[]}
+        tableActions={[
+          {
+            icon: <FaTrash />,
+            callback: onConfirmDeleteHandler
+          }
+        ]}
       />
     </>
   );
