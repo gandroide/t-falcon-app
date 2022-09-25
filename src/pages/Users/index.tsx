@@ -1,5 +1,6 @@
 import { useState, useContext, useEffect, useCallback } from 'react';
 import { FaTrash } from 'react-icons/fa';
+import { toast } from 'react-toastify';
 import { Form } from '../../components/Form';
 import { Table } from '../../components/Table';
 import { app, app2 } from '../../config/firebase';
@@ -99,6 +100,7 @@ export const Users = () => {
     app
       .collection('users')
       .orderBy('date', 'desc')
+      .where('isActive', '==', true)
       .limit(10)
       .get()
       .then((docs) => {
@@ -196,27 +198,74 @@ export const Users = () => {
     [onLoadingHandler]
   );
 
+  const getUsersByPage = useCallback(
+    (page: number) => {
+      const usersData: IUserData[] = [];
+      const currentLimit = (page - 1) * 10;
+
+      let query = app
+        .collection('users')
+        .orderBy('date', 'desc')
+        .where('isActive', '==', true);
+
+      if (page !== 1) {
+        query = query.limit(currentLimit);
+      }
+
+      query.get().then((documentSnapshots) => {
+        const lastVisible =
+          documentSnapshots.docs[documentSnapshots.docs.length - 1];
+
+        app
+          .collection('users')
+          .orderBy('date', 'desc')
+          .where('isActive', '==', true)
+          .startAfter(lastVisible)
+          .limit(10)
+          .get()
+          .then((data) => {
+            if (data.empty) return;
+
+            data.forEach((doc) => {
+              usersData.push({
+                id: doc.id,
+                nome: doc.data().nome,
+                email: doc.data().email,
+                admistrador: doc.data().admistrador ? 'Sim' : 'Não'
+              });
+            });
+
+            setUsers(usersData);
+            onLoadingHandler(false);
+          });
+      });
+    },
+    [onLoadingHandler]
+  );
+
   const onDeleteUser = useCallback(
-    (userId: string) => {
+    (userId: string, currentPage: number) => {
       app
         .collection('users')
         .doc(userId)
-        .set({ isActive: false })
+        .update({ isActive: false })
         .then(() => {
           onResetModalHandler();
+          toast.success('Utilizador eliminado com sucesso!');
+          getUsersByPage(currentPage);
         });
     },
-    [onResetModalHandler]
+    [onResetModalHandler, getUsersByPage]
   );
 
   const onConfirmDeleteHandler = useCallback(
-    (rowData) => {
+    (rowData, currentPage) => {
       onSetModalHandler({
         isOpen: true,
         type: 'info',
         title: 'Eliminar utilizadfor',
         description: 'Tem a certeza que pretende eliminar o utilizador?',
-        onConfirmCallback: () => onDeleteUser(rowData.id),
+        onConfirmCallback: () => onDeleteUser(rowData.id, currentPage),
         onCloseCallback: null
       });
     },

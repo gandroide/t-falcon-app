@@ -21,5 +21,9 @@ export const ProtectedRoute: FC<IProtectedRoute> = ({
     return <Navigate to="/home" />;
   }
 
+  // if (isAdminRoute && user.isAdmin) {
+  //   return <Navigate to="/admin" />;
+  // }
+
   return <Outlet />;
 };
