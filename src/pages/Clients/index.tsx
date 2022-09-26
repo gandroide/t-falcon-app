@@ -107,31 +107,31 @@ export const Clients = () => {
       });
   };
 
-  const onAddClientsCallback = (count: number) => {
-    const clientsData: ClientsData[] = [];
+  // const onAddClientsCallback = (count: number) => {
+  //   const clientsData: ClientsData[] = [];
 
-    app
-      .collection('clients')
-      .orderBy('date', 'desc')
-      .limit(10)
-      .get()
-      .then((docs) => {
-        if (docs.empty) {
-          return;
-        }
+  //   app
+  //     .collection('clients')
+  //     .orderBy('date', 'desc')
+  //     .limit(10)
+  //     .get()
+  //     .then((docs) => {
+  //       if (docs.empty) {
+  //         return;
+  //       }
 
-        docs.forEach((doc) => {
-          clientsData.push({
-            id: doc.id,
-            nome: doc.data().name
-          });
-        });
+  //       docs.forEach((doc) => {
+  //         clientsData.push({
+  //           id: doc.id,
+  //           nome: doc.data().name
+  //         });
+  //       });
 
-        setClientsCounter(count);
-        setClients(clientsData);
-        onLoadingHandler(false);
-      });
-  };
+  //       setClientsCounter(count);
+  //       setClients(clientsData);
+  //       onLoadingHandler(false);
+  //     });
+  // };
 
   const onRemoveClientHandler = useCallback<
     ITableAction<ClientsData>['callback']
