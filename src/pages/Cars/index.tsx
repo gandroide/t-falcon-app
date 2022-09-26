@@ -2,7 +2,7 @@ import React, { FC, useCallback, useContext, useEffect, useState } from 'react';
 import { FaRegTrashAlt } from 'react-icons/fa';
 import { Form } from '../../components/Form';
 import { Table } from '../../components/Table';
-import { app } from '../../config/firebase';
+import { app, appTimestamp } from '../../config/firebase';
 import { LoadingContext } from '../../context/Loading';
 import { SidepanelContext } from '../../context/Sidepanel';
 import { useFirebase } from '../../hooks/useFirebase';
@@ -33,14 +33,14 @@ const addCarsForm: IInput[] = [
   }
 ];
 
-const AddCarsFrom = () => {
+const AddCarsFrom = ({ callback }: { callback: () => void }) => {
   const { onCloseSidepanelHandler } = useContext(SidepanelContext);
 
   const onAddCartHandler = useCallback<IForm['onSubmitCallback']>(
     async (data) => {
       await app
         .collection('cars')
-        .add(data)
+        .add({ ...data, date: appTimestamp.fromDate(new Date()) })
         .then(() => {
           app
             .collection('counters')
@@ -50,12 +50,14 @@ const AddCarsFrom = () => {
               let count = (doc?.data()?.count || 0) + 1;
 
               await app.collection('counters').doc('cars').set({ count });
+
+              callback();
             });
         });
 
       onCloseSidepanelHandler();
     },
-    [onCloseSidepanelHandler]
+    [callback, onCloseSidepanelHandler]
   );
 
   return (
@@ -79,21 +81,143 @@ export const Cars: FC = () => {
   const [carsCounter, setCarsCounter] = useState(0);
   const { onOpenSidepanelHandler } = useContext(SidepanelContext);
   const { onLoadingHandler } = useContext(LoadingContext);
-  const { data, count, getInitialData } = useFirebase({ dataResolver });
+  const { data } = useFirebase({ dataResolver });
 
   console.log('data', data);
+
+  const callback = () => {
+    onLoadingHandler(true);
+    const carsData: CarsData[] = [];
+
+    app
+      .collection('cars')
+      .orderBy('date', 'desc')
+      .limit(10)
+      .get()
+      .then((docs) => {
+        docs.forEach((doc) => {
+          carsData.push({
+            id: doc.id,
+            matricula: doc.data().matricula,
+            viatura: doc.data().viatura
+          });
+          app
+            .collection('counters')
+            .doc('cars')
+            .get()
+            .then((docs) => {
+              if (!docs.exists) {
+                onLoadingHandler(false);
+                return;
+              }
+
+              setCarsCounter(docs.data()?.count);
+              setCars(carsData);
+              onLoadingHandler(false);
+            });
+        });
+      });
+  };
 
   const onOpenCarsFormHandler = () => {
     onOpenSidepanelHandler({
       isOpen: true,
-      SidepanelChildren: <AddCarsFrom />,
+      SidepanelChildren: <AddCarsFrom callback={callback} />,
       sidepanelWidth: '500px'
     });
   };
 
   const onRemoveCarsHandler = useCallback<ITableAction<CarsData>['callback']>(
-    (rowData) => {},
-    []
+    (rowData, currentPage) => {
+      onLoadingHandler(true);
+      const carsData: CarsData[] = [];
+
+      app
+        .collection('cars')
+        .doc(rowData.id)
+        .delete()
+        .then(() => {
+          app
+            .collection('counters')
+            .doc('cars')
+            .get()
+            .then(async (doc) => {
+              let count = (doc?.data()?.count || 0) - 1;
+
+              await app.collection('counters').doc('cars').set({ count });
+
+              let page = currentPage;
+
+              if (currentPage > 1) {
+                page = page - 1;
+              }
+              if (carsData.length === 1) {
+                page = page - 1;
+              }
+
+              if (currentPage === 1) {
+                app
+                  .collection('cars')
+                  .orderBy('date', 'desc')
+                  .limit(10)
+                  .get()
+                  .then((docs) => {
+                    if (docs.empty) {
+                      onLoadingHandler(false);
+                      return;
+                    }
+
+                    docs.forEach((doc) => {
+                      carsData.push({
+                        id: doc.id,
+                        matricula: doc.data().matricula,
+                        viatura: doc.data().viatura
+                      });
+                    });
+
+                    setCarsCounter((prevData) => prevData - 1);
+                    setCars(carsData);
+                    onLoadingHandler(false);
+                  });
+              } else {
+                const currentLimit = page * 10;
+
+                app
+                  .collection('cars')
+                  .orderBy('date', 'desc')
+                  .limit(currentLimit)
+                  .get()
+                  .then((documentSnapshots) => {
+                    const lastVisible =
+                      documentSnapshots.docs[documentSnapshots.docs.length - 1];
+
+                    app
+                      .collection('cars')
+                      .orderBy('date', 'desc')
+                      .startAfter(lastVisible)
+                      .limit(10)
+                      .get()
+                      .then((data) => {
+                        if (data.empty) return;
+
+                        data.forEach((doc) => {
+                          carsData.push({
+                            id: doc.id,
+                            matricula: doc.data().matricula,
+                            viatura: doc.data().viatura
+                          });
+                        });
+
+                        setCarsCounter((prev) => prev - 1);
+                        setCars(carsData);
+                        onLoadingHandler(false);
+                      });
+                  });
+              }
+            });
+        });
+    },
+    [onLoadingHandler]
   );
 
   const onPageChangeHandler = useCallback<
@@ -105,15 +229,12 @@ export const Cars: FC = () => {
 
       if (page === 1) {
         app
-          .collection('carros')
-          .orderBy('name')
+          .collection('cars')
+          .orderBy('date', 'desc')
           .limit(10)
-          .onSnapshot((onSnapshot) => {
-            onLoadingHandler(false);
-
-            if (onSnapshot.empty) return;
-
-            onSnapshot.forEach((doc) => {
+          .get()
+          .then((docs) => {
+            docs.forEach((doc) => {
               carsData.push({
                 id: doc.id,
                 matricula: doc.data().matricula,
@@ -122,13 +243,14 @@ export const Cars: FC = () => {
             });
 
             setCars(carsData);
+            onLoadingHandler(false);
           });
       } else {
         const currentLimit = (page - 1) * 10;
 
         app
           .collection('cars')
-          .orderBy('name')
+          .orderBy('date', 'desc')
           .limit(currentLimit)
           .get()
           .then((documentSnapshots) => {
@@ -137,7 +259,7 @@ export const Cars: FC = () => {
 
             app
               .collection('cars')
-              .orderBy('name')
+              .orderBy('date', 'desc')
               .startAfter(lastVisible)
               .limit(10)
               .get()
@@ -164,55 +286,35 @@ export const Cars: FC = () => {
   useEffect(() => {
     onLoadingHandler(true);
     const carsData: CarsData[] = [];
-    getInitialData({
-      collection: 'cars',
-      orderClause: {
-        value: 'date',
-        direction: 'desc'
-      },
-      limit: 10,
-      pagination: {
-        doc: 'cars'
-      }
-    });
-    console.log('build faile');
 
-    // app
-    //   .collection('cars')
-    //   .orderBy('matricula')
-    //   .limit(10)
-    //   .onSnapshot((onSnapshot) => {
-    //     if (onSnapshot.empty) {
-    //       onLoadingHandler(false);
-    //       return;
-    //     }
+    app
+      .collection('cars')
+      .orderBy('date', 'desc')
+      .limit(10)
+      .get()
+      .then((docs) => {
+        docs.forEach((doc) => {
+          carsData.push({
+            id: doc.id,
+            matricula: doc.data().matricula,
+            viatura: doc.data().viatura
+          });
+          app
+            .collection('counters')
+            .doc('cars')
+            .onSnapshot((onSnapshot) => {
+              if (!onSnapshot.exists) {
+                onLoadingHandler(false);
+                return;
+              }
 
-    //     onSnapshot.forEach((doc) => {
-    //       carsData.push({
-    //         id: doc.id,
-    //         matricula: doc.data().matricula,
-    //         viatura: doc.data().viatura
-    //       });
-    //     });
-
-    //     app
-    //       .collection('counters')
-    //       .doc('cars')
-    //       .onSnapshot((onSnapshot) => {
-    //         if (!onSnapshot.exists) {
-    //           onLoadingHandler(false);
-    //           return;
-    //         }
-
-    //         setCarsCounter(onSnapshot.data()?.count);
-    //         setCars(carsData);
-    //         onLoadingHandler(false);
-    //       });
-    //   });
+              setCarsCounter(onSnapshot.data()?.count);
+              setCars(carsData);
+              onLoadingHandler(false);
+            });
+        });
+      });
   }, [onLoadingHandler]);
-
-  console.log(data, 'data');
-  console.log(count, 'count');
 
   return (
     <AdminContainer>
@@ -221,10 +323,10 @@ export const Cars: FC = () => {
         <button onClick={onOpenCarsFormHandler}>Adicionar carro</button>
       </AdminHeaderContainer>
       <Table
-        count={count}
+        count={carsCounter}
         onTableRenderCallback={onPageChangeHandler}
         onSearchCallback={onPageChangeHandler}
-        data={data as CarsData[]}
+        data={cars}
         filterOptions={[]}
         tableActions={[
           { callback: onRemoveCarsHandler, icon: <FaRegTrashAlt /> }

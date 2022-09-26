@@ -25,11 +25,7 @@ const addClientForm: IDefaultInput[] = [
   }
 ];
 
-const AddClientsFrom = ({
-  onAddClientsCallback
-}: {
-  onAddClientsCallback: (count: number) => void;
-}) => {
+const AddClientsFrom = ({ callback }: { callback: () => void }) => {
   const { onLoadingHandler } = useContext(LoadingContext);
   const { onCloseSidepanelHandler } = useContext(SidepanelContext);
 
@@ -48,12 +44,12 @@ const AddClientsFrom = ({
               let count = (doc?.data()?.count || 0) + 1;
 
               await app.collection('counters').doc('clients').set({ count });
-              onAddClientsCallback(count);
               onCloseSidepanelHandler();
+              callback();
             });
         });
     },
-    [onCloseSidepanelHandler, onAddClientsCallback, onLoadingHandler]
+    [onLoadingHandler, onCloseSidepanelHandler, callback]
   );
 
   return (
@@ -73,11 +69,42 @@ export const Clients = () => {
   const onOpenClientFormHandler = () => {
     onOpenSidepanelHandler({
       isOpen: true,
-      SidepanelChildren: (
-        <AddClientsFrom onAddClientsCallback={onAddClientsCallback} />
-      ),
+      SidepanelChildren: <AddClientsFrom callback={callback} />,
       sidepanelWidth: '500px'
     });
+  };
+
+  const callback = () => {
+    onLoadingHandler(true);
+    const clientsData: ClientsData[] = [];
+
+    app
+      .collection('clients')
+      .orderBy('date', 'desc')
+      .limit(10)
+      .get()
+      .then((docs) => {
+        docs.forEach((doc) => {
+          clientsData.push({
+            id: doc.id,
+            nome: doc.data().name
+          });
+          app
+            .collection('counters')
+            .doc('clients')
+            .get()
+            .then((docs) => {
+              if (!docs.exists) {
+                onLoadingHandler(false);
+                return;
+              }
+
+              setClientsCounter(docs.data()?.count);
+              setClients(clientsData);
+              onLoadingHandler(false);
+            });
+        });
+      });
   };
 
   const onAddClientsCallback = (count: number) => {
@@ -165,12 +192,13 @@ export const Clients = () => {
       if (page === 1) {
         app
           .collection('clients')
-          .orderBy('data', 'desc')
+          .orderBy('date', 'desc')
           .limit(10)
-          .onSnapshot((onSnapshot) => {
-            if (onSnapshot.empty) return;
+          .get()
+          .then((docs) => {
+            if (docs.empty) return;
 
-            onSnapshot.forEach((doc) => {
+            docs.forEach((doc) => {
               clientsData.push({
                 id: doc.id,
                 nome: doc.data().name
@@ -185,7 +213,7 @@ export const Clients = () => {
 
         app
           .collection('clients')
-          .orderBy('data', 'desc')
+          .orderBy('date', 'desc')
           .limit(currentLimit)
           .get()
           .then((documentSnapshots) => {
@@ -194,7 +222,7 @@ export const Clients = () => {
 
             app
               .collection('clients')
-              .orderBy('data', 'desc')
+              .orderBy('date', 'desc')
               .startAfter(lastVisible)
               .limit(10)
               .get()
@@ -223,7 +251,7 @@ export const Clients = () => {
 
     app
       .collection('clients')
-      .orderBy('data', 'desc')
+      .orderBy('date', 'desc')
       .limit(10)
       .get()
       .then((docs) => {
