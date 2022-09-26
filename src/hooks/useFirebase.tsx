@@ -1,4 +1,4 @@
-import React, { useContext, useState } from 'react';
+import { useContext, useState } from 'react';
 import { app } from '../config/firebase';
 import { LoadingContext } from '../context/Loading';
 
