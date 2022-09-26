@@ -1,4 +1,5 @@
 import { useCallback, useContext } from 'react';
+import { Navigate } from 'react-router-dom';
 import { Form } from '../../components/Form';
 import { AuthContext } from '../../context/Auth';
 import { IForm, IInput } from '../../interfaces';
@@ -22,7 +23,7 @@ const loginUserFields: IInput[] = [
 ];
 
 export const Login = () => {
-  const { onLoginHandler } = useContext(AuthContext);
+  const { onLoginHandler, user } = useContext(AuthContext);
 
   const onSubmitLoginHandler = useCallback<IForm['onSubmitCallback']>(
     (fields) => {
@@ -30,6 +31,13 @@ export const Login = () => {
     },
     [onLoginHandler]
   );
+
+  if (user.isLoggedIn) {
+    if (user.isAdmin) {
+      return <Navigate to="/admin" />;
+    }
+    return <Navigate to="/home" />;
+  }
 
   return (
     <Container>
