@@ -220,6 +220,8 @@ export const UsersRegistry = () => {
     [onLoadingHandler]
   );
 
+  console.log(userRegistryCounter);
+
   return (
     <AdminContainer>
       <AdminHeaderContainer>
