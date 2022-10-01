@@ -2,6 +2,7 @@ import styled from 'styled-components';
 
 interface ITablePagination {
   isSelected?: boolean;
+  rotate?: boolean;
 }
 
 export const TableContainer = styled.table`
@@ -64,4 +65,5 @@ export const TablePaginationBtn = styled.button<ITablePagination>`
   height: 30px;
   background: none;
   border: 1px solid ${({ isSelected }) => (isSelected ? 'red' : '#eee')};
+  transform: ${({ rotate }) => rotate && 'rotate(180deg)'};
 `;

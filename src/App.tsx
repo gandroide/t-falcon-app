@@ -1,4 +1,4 @@
-import { useContext } from 'react';
+import { useContext, useEffect } from 'react';
 import GlobalStyles, { AppContainer } from './styles';
 import { ThemeProvider } from 'styled-components';
 import { defaultTheme } from './styles/theme';
@@ -12,6 +12,7 @@ import { AppRoutes } from './routes';
 import { LoadingContext } from './context/Loading';
 import { Loading } from './components/Loading';
 import { ToastContainer } from 'react-toastify';
+import { app } from './config/firebase';
 
 const App = () => {
   const { isLoading } = useContext(LoadingContext);
@@ -21,6 +22,19 @@ const App = () => {
   const {
     user: { isAuthReady }
   } = useContext(AuthContext);
+
+  // useEffect(() => {
+  //   app
+  //     .collection('reports')
+  //     .where('utilizador', '==', 'João Sousa')
+  //     .get()
+  //     .then((docs) => {
+  //       console.log('-------------------------------------------------');
+  //       docs.forEach((doc) => {
+  //         console.log(doc.data());
+  //       });
+  //     });
+  // }, []);
 
   if (!isAuthReady) {
     return <Loading />;

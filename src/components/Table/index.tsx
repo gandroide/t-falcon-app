@@ -1,5 +1,9 @@
-import { useEffect, useMemo, useRef, useState } from 'react';
-import { MdKeyboardArrowLeft, MdKeyboardArrowRight } from 'react-icons/md';
+import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
+import {
+  MdKeyboardArrowLeft,
+  MdKeyboardArrowRight,
+  MdDoubleArrow
+} from 'react-icons/md';
 import { useFilter } from '../../hooks/useFilter';
 
 import { ITable } from '../../interfaces';
@@ -61,9 +65,14 @@ export const Table = <T,>({
     });
   }
 
-  const onPageChangeHandler = (page: number) => {
-    setCurrentPage(page);
-  };
+  const onPageChangeHandler = useCallback(
+    (page: number) => {
+      if (page === 0 || Math.ceil(count / PAGE_SIZE) < page) return;
+
+      setCurrentPage(page);
+    },
+    [count]
+  );
 
   const TableHeader = () => {
     return (
@@ -107,12 +116,15 @@ export const Table = <T,>({
     if (count <= PAGE_SIZE) return;
 
     const paginationArr = [
+      <TablePaginationBtn rotate onClick={() => onPageChangeHandler(1)}>
+        <MdDoubleArrow />
+      </TablePaginationBtn>,
       <TablePaginationBtn onClick={() => onPageChangeHandler(currentPage - 1)}>
         <MdKeyboardArrowLeft />
       </TablePaginationBtn>
     ];
 
-    for (let page = 1; page <= Math.ceil(count / PAGE_SIZE); page++) {
+    for (let page = currentPage; page < currentPage + 5; page++) {
       paginationArr.push(
         <TablePaginationBtn
           isSelected={currentPage === page}
@@ -129,10 +141,18 @@ export const Table = <T,>({
       </TablePaginationBtn>
     );
 
+    paginationArr.push(
+      <TablePaginationBtn
+        onClick={() => onPageChangeHandler(Math.ceil(count / PAGE_SIZE))}
+      >
+        <MdDoubleArrow />
+      </TablePaginationBtn>
+    );
+
     return (
       <TablePaginationContainer>{[...paginationArr]}</TablePaginationContainer>
     );
-  }, [currentPage, count]);
+  }, [count, onPageChangeHandler, currentPage]);
 
   const onSearchHandler = () => {
     onSearchCallback({ page: currentPage, filter, filterValue: value });
