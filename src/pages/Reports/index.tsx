@@ -1,4 +1,5 @@
 import { useCallback, useContext, useEffect, useState } from 'react';
+import { FaRegTrashAlt } from 'react-icons/fa';
 import { RiArticleLine } from 'react-icons/ri';
 import { Table } from '../../components/Table';
 import { app } from '../../config/firebase';
@@ -31,6 +32,113 @@ export const Reports = () => {
       });
     },
     [reports, onOpenSidepanelHandler]
+  );
+
+  const onRemoveReportHandler = useCallback<
+    ITableAction<IServiceReportData>['callback']
+  >(
+    (rowData, currentPage) => {
+      onLoadingHandler(true);
+      const reportsData: IServiceReportFull[] = [];
+
+      app
+        .collection('reports')
+        .doc(rowData.id)
+        .delete()
+        .then(() => {
+          app
+            .collection('counters')
+            .doc('reports')
+            .get()
+            .then(async (doc) => {
+              let count = (doc?.data()?.count || 0) - 1;
+
+              await app.collection('counters').doc('reports').set({ count });
+
+              let page = currentPage;
+
+              if (currentPage > 1) {
+                page = page - 1;
+              }
+              if (reportsData.length === 1) {
+                page = page - 1;
+              }
+
+              if (currentPage === 1) {
+                app
+                  .collection('reports')
+                  .orderBy('data', 'desc')
+                  .limit(10)
+                  .get()
+                  .then((docs) => {
+                    if (docs.empty) {
+                      onLoadingHandler(false);
+                      return;
+                    }
+
+                    docs.forEach((doc) => {
+                      reportsData.push({
+                        id: doc.id,
+                        colaborador: doc.data().utilizador,
+                        cliente: doc.data()['localização'],
+                        data: doc.data().data,
+                        ave: doc.data().ave,
+                        viatura: doc.data().carro,
+                        'hora-fim': doc.data()['hora-fim'],
+                        'hora-inicio': doc.data()['hora-inicio'],
+                        observacoes: doc.data()['observações']
+                      });
+                    });
+
+                    setReportsCounter((prevData) => prevData - 1);
+                    setReports(reportsData);
+                    onLoadingHandler(false);
+                  });
+              } else {
+                const currentLimit = page * 10;
+
+                app
+                  .collection('reports')
+                  .orderBy('data', 'desc')
+                  .limit(currentLimit)
+                  .get()
+                  .then((documentSnapshots) => {
+                    const lastVisible =
+                      documentSnapshots.docs[documentSnapshots.docs.length - 1];
+
+                    app
+                      .collection('reports')
+                      .orderBy('data', 'desc')
+                      .startAfter(lastVisible)
+                      .limit(10)
+                      .get()
+                      .then((data) => {
+                        if (data.empty) return;
+
+                        data.forEach((doc) => {
+                          reportsData.push({
+                            id: doc.id,
+                            colaborador: doc.data().utilizador,
+                            cliente: doc.data()['localização'],
+                            data: doc.data().data,
+                            ave: doc.data().ave,
+                            viatura: doc.data().carro,
+                            'hora-fim': doc.data()['hora-fim'],
+                            'hora-inicio': doc.data()['hora-inicio'],
+                            observacoes: doc.data()['observações']
+                          });
+                        });
+
+                        setReportsCounter((prev) => prev - 1);
+                        setReports(reportsData);
+                        onLoadingHandler(false);
+                      });
+                  });
+              }
+            });
+        });
+    },
+    [onLoadingHandler]
   );
 
   useEffect(() => {
@@ -89,7 +197,10 @@ export const Reports = () => {
         onSearchCallback={() => {}}
         filterOptions={[]}
         data={data}
-        tableActions={[{ callback: onReportHandler, icon: <RiArticleLine /> }]}
+        tableActions={[
+          { callback: onReportHandler, icon: <RiArticleLine /> },
+          { callback: onRemoveReportHandler, icon: <FaRegTrashAlt /> }
+        ]}
       />
     </AdminContainer>
   );
