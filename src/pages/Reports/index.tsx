@@ -8,6 +8,7 @@ import { SidepanelContext } from '../../context/Sidepanel';
 import {
   IServiceReportData,
   IServiceReportFull,
+  ITable,
   ITableAction
 } from '../../interfaces';
 import { AdminContainer, AdminHeaderContainer } from '../../styles';
@@ -32,6 +33,83 @@ export const Reports = () => {
       });
     },
     [reports, onOpenSidepanelHandler]
+  );
+
+  const onPageChangeHandler = useCallback<
+    ITable<IServiceReportFull>['onTableRenderCallback']
+  >(
+    ({ page, filter, filterValue }) => {
+      onLoadingHandler(true);
+      const reportsData: IServiceReportFull[] = [];
+
+      if (page === 1) {
+        app
+          .collection('reports')
+          .orderBy('data', 'desc')
+          .limit(10)
+          .get()
+          .then((docs) => {
+            if (docs.empty) return;
+
+            docs.forEach((doc) => {
+              reportsData.push({
+                id: doc.id,
+                colaborador: doc.data().utilizador,
+                cliente: doc.data()['localização'],
+                data: doc.data().data,
+                ave: doc.data().ave,
+                viatura: doc.data().carro,
+                'hora-fim': doc.data()['hora-fim'],
+                'hora-inicio': doc.data()['hora-inicio'],
+                observacoes: doc.data()['observações']
+              });
+            });
+
+            setReports(reportsData);
+            onLoadingHandler(false);
+          });
+      } else {
+        const currentLimit = (page - 1) * 10;
+
+        app
+          .collection('reports')
+          .orderBy('data', 'desc')
+          .limit(currentLimit)
+          .get()
+          .then((documentSnapshots) => {
+            const lastVisible =
+              documentSnapshots.docs[documentSnapshots.docs.length - 1];
+
+            app
+              .collection('reports')
+              .orderBy('data', 'desc')
+              .startAfter(lastVisible)
+              .limit(10)
+              .get()
+              .then((docs) => {
+                if (docs.empty) return;
+
+                docs.forEach((doc) => {
+                  reportsData.push({
+                    id: doc.id,
+                    colaborador: doc.data().utilizador,
+                    cliente: doc.data()['localização'],
+                    data: doc.data().data,
+                    ave: doc.data().ave,
+                    viatura: doc.data().carro,
+                    'hora-fim': doc.data()['hora-fim'],
+                    'hora-inicio': doc.data()['hora-inicio'],
+                    observacoes: doc.data()['observações']
+                  });
+                });
+
+                setReports(reportsData);
+                onLoadingHandler(false);
+              });
+          });
+      }
+    },
+    [onLoadingHandler]
   );
 
   const onRemoveReportHandler = useCallback<
@@ -147,12 +225,13 @@ export const Reports = () => {
 
     app
       .collection('reports')
-      //   .orderBy('data')
+      .orderBy('data', 'desc')
       .limit(10)
-      .onSnapshot((onSnapshot) => {
-        if (onSnapshot.empty) return;
+      .get()
+      .then((docs) => {
+        if (docs.empty) return;
 
-        onSnapshot.forEach((doc) => {
+        docs.forEach((doc) => {
           reportsData.push({
             id: doc.id,
             colaborador: doc.data().utilizador,
@@ -169,10 +248,11 @@ export const Reports = () => {
         app
           .collection('counters')
           .doc('reports')
-          .onSnapshot((onSnapshot) => {
-            if (!onSnapshot.exists) return;
+          .get()
+          .then((docs) => {
+            if (!docs.exists) return;
 
-            setReportsCounter(onSnapshot.data()?.count);
+            setReportsCounter(docs.data()?.count);
             setReports(reportsData);
             onLoadingHandler(false);
           });
@@ -193,7 +273,7 @@ export const Reports = () => {
       </AdminHeaderContainer>
       <Table
         count={reportsCounter}
-        onTableRenderCallback={() => {}}
+        onTableRenderCallback={onPageChangeHandler}
         onSearchCallback={() => {}}
         filterOptions={[]}
         data={data}

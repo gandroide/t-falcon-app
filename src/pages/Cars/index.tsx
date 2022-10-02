@@ -5,7 +5,6 @@ import { Table } from '../../components/Table';
 import { app, appTimestamp } from '../../config/firebase';
 import { LoadingContext } from '../../context/Loading';
 import { SidepanelContext } from '../../context/Sidepanel';
-import { useFirebase } from '../../hooks/useFirebase';
 import {
   CarsData,
   IForm,
@@ -68,22 +67,13 @@ const AddCarsFrom = ({ callback }: { callback: () => void }) => {
   );
 };
 
-const dataResolver = (data: any) => {
-  return {
-    id: data.id,
-    matricula: data.data().matricula,
-    viatura: data.data().viatura
-  };
-};
-
 export const Cars: FC = () => {
   const [cars, setCars] = useState<CarsData[]>([]);
   const [carsCounter, setCarsCounter] = useState(0);
   const { onOpenSidepanelHandler } = useContext(SidepanelContext);
   const { onLoadingHandler } = useContext(LoadingContext);
-  const { data } = useFirebase({ dataResolver });
 
-  console.log('data', data);
+  // console.log('data', data);
 
   const callback = () => {
     onLoadingHandler(true);

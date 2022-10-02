@@ -1,4 +1,4 @@
-import { useContext, useEffect } from 'react';
+import { useContext } from 'react';
 import GlobalStyles, { AppContainer } from './styles';
 import { ThemeProvider } from 'styled-components';
 import { defaultTheme } from './styles/theme';
@@ -12,7 +12,6 @@ import { AppRoutes } from './routes';
 import { LoadingContext } from './context/Loading';
 import { Loading } from './components/Loading';
 import { ToastContainer } from 'react-toastify';
-import { app } from './config/firebase';
 
 const App = () => {
   const { isLoading } = useContext(LoadingContext);
