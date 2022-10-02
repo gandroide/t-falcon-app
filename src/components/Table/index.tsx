@@ -25,6 +25,7 @@ import {
 } from './styled';
 
 const PAGE_SIZE = 10;
+const PAGINATION_SIZE = 5;
 
 export const Table = <T,>({
   data,
@@ -124,7 +125,36 @@ export const Table = <T,>({
       </TablePaginationBtn>
     ];
 
-    for (let page = currentPage; page < currentPage + 5; page++) {
+    let paginationStart = 0;
+    let paginationEnd = 0;
+    let paginationCount = Math.ceil(count / PAGE_SIZE);
+
+    if (paginationCount <= PAGINATION_SIZE) {
+      paginationStart = 1;
+      paginationEnd = paginationCount;
+    } else {
+      if (currentPage - 2 <= 1) {
+        paginationStart = 1;
+        paginationEnd = paginationStart + PAGINATION_SIZE - 1;
+      } else if (
+        currentPage - 2 > 1 &&
+        currentPage + PAGINATION_SIZE >= paginationCount
+      ) {
+        paginationEnd = paginationCount;
+        paginationStart = paginationCount - PAGINATION_SIZE + 1;
+      } else if (
+        currentPage - 2 > 1 &&
+        currentPage + PAGINATION_SIZE < paginationCount
+      ) {
+        paginationStart = currentPage - Math.floor(PAGINATION_SIZE / 2);
+        paginationEnd = currentPage + Math.floor(PAGINATION_SIZE / 2);
+      }
+    }
+
+    console.log('paginationStart', paginationStart);
+    console.log('paginationEnd', paginationEnd);
+
+    for (let page = paginationStart; page <= paginationEnd; page++) {
       paginationArr.push(
         <TablePaginationBtn
           isSelected={currentPage === page}
