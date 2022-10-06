@@ -27,7 +27,7 @@ import {
 const PAGE_SIZE = 10;
 const PAGINATION_SIZE = 5;
 
-export const Table = <T,>({
+export const Table = <T extends {}>({
   data,
   tableActions,
   count,
