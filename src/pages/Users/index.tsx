@@ -62,7 +62,8 @@ const AddUserForm = () => {
         .set({
           email: data['email'],
           nome: data['displayName'],
-          admistrador: data['admistrador'] === 'true'
+          admistrador: data['admistrador'] === 'true',
+          isActive: true
         });
 
       app2.signOut();

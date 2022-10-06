@@ -9,6 +9,7 @@ import { Map } from '../../components/Map';
 import { AdminContainer, AdminHeaderContainer } from '../../styles';
 import { SidepanelContext } from '../../context/Sidepanel';
 import { LoadingContext } from '../../context/Loading';
+import * as xlsx from 'xlsx';
 
 const secondsToDate = (seconds?: number) => {
   if (seconds) {
@@ -222,10 +223,47 @@ export const UsersRegistry = () => {
 
   // console.log(userRegistryCounter);
 
+  const onExportHandler = () => {
+    const registryData: FullUserRegistryData[] = [];
+
+    app
+      .collection('user_registry')
+      .orderBy('entryDate', 'desc')
+      .get()
+      .then((docs) => {
+        docs.forEach((doc) => {
+          const entry = secondsToDate(doc.data().entryDate?.seconds);
+          const leave = secondsToDate(doc.data().leaveDate?.seconds);
+          const date = formattedDate(entry);
+          const entryTime = formattedTime(entry);
+          const leaveTime = formattedTime(leave);
+          registryData.push({
+            id: doc.id,
+            nome: doc.data().displayName,
+            data: date ?? '-',
+            entrada: entryTime ?? '-',
+            saida: leaveTime ?? '-',
+            latitude_entry: doc.data().latitude_entry,
+            longitude_entry: doc.data().longitude_entry,
+            latitude_out: doc.data().latitude_out,
+            longitude_out: doc.data().longitude_out
+          });
+        });
+
+        const initialsPicagem = registryData[0].data;
+
+        const newBook = xlsx.utils.book_new();
+        const ws = xlsx.utils.json_to_sheet(registryData);
+        xlsx.utils.book_append_sheet(newBook, ws, `pacagens${initialsPicagem}`);
+        xlsx.writeFile(newBook, `picages${initialsPicagem}.xlsx`);
+      });
+  };
+
   return (
     <AdminContainer>
       <AdminHeaderContainer>
         <h1>Registo picagens dos utilizadores</h1>
+        <button onClick={onExportHandler}>Exportar</button>
       </AdminHeaderContainer>
       <Table
         count={userRegistryCounter}
