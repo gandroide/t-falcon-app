@@ -26,8 +26,10 @@ export const falcoeiros = [
   'Roberto Barreto',
   'Sofia Sousa',
   'Uvis Peleja',
-  'Vando Freitas',
+  'Vando Freitas'
 ].map((value) => ({ value, label: value, name: 'falcoeiros' }));
+
+// console.log()
 
 export const aves = [
   'Dupond',
@@ -49,7 +51,7 @@ export const aves = [
   'Jimmy',
   'Duna',
   'Bubu',
-  'Honey',
+  'Honey'
 ].map((value) => ({ value, label: value, name: 'birds' }));
 
 export const clientes = [
@@ -60,8 +62,8 @@ export const clientes = [
   'Pestana Grand',
   'The Cliff Bay',
   'Porto Mare',
-  'Porto Santa Maria', 
-  'Meliá', 
+  'Porto Santa Maria',
+  'Meliá',
   'Royal Savoy',
   'Savoy Palace',
   'Saccharum',
@@ -92,5 +94,5 @@ export const clientes = [
   "McDonald's - Parque das Nações",
   "McDonald's - Belém",
   'Allegro',
-  'Galo Resort',
+  'Galo Resort'
 ].map((value) => ({ value, label: value, name: 'clients' }));
