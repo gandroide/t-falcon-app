@@ -1,4 +1,5 @@
 import { useCallback, useContext, useEffect, useState } from 'react';
+import * as xlsx from 'xlsx';
 import { FaRegTrashAlt } from 'react-icons/fa';
 import { RiArticleLine } from 'react-icons/ri';
 import { Table } from '../../components/Table';
@@ -266,10 +267,46 @@ export const Reports = () => {
     data: report.data
   }));
 
+  const onExportHandler = () => {
+    const reportsData: IServiceReportFull[] = [];
+
+    app
+      .collection('reports')
+      .orderBy('data', 'desc')
+      .get()
+      .then((docs) => {
+        docs.forEach((doc) => {
+          reportsData.push({
+            id: doc.id,
+            colaborador: doc.data().utilizador,
+            cliente: doc.data()['localização'],
+            data: doc.data().data,
+            ave: doc.data().ave,
+            viatura: doc.data().carro,
+            'hora-fim': doc.data()['hora-fim'],
+            'hora-inicio': doc.data()['hora-inicio'],
+            observacoes: doc.data()['observações']
+          });
+        });
+
+        const initialsReports = reportsData[0].data;
+
+        const newBook = xlsx.utils.book_new();
+        const ws = xlsx.utils.json_to_sheet(reportsData);
+        xlsx.utils.book_append_sheet(
+          newBook,
+          ws,
+          `relatorio_${initialsReports}`
+        );
+        xlsx.writeFile(newBook, `relatorio_${initialsReports}.xlsx`);
+      });
+  };
+
   return (
     <AdminContainer>
       <AdminHeaderContainer>
         <h1>Relatorios de Serviço</h1>
+        <button onClick={onExportHandler}>Exportar</button>
       </AdminHeaderContainer>
       <Table
         count={reportsCounter}

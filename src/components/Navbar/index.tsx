@@ -8,7 +8,7 @@ import {
   NavbarDropdownButtonIcon,
   NavbarDropdownContainer,
   NavbarDropdownItem,
-  NavbarDropdownLink,
+  // NavbarDropdownLink,
   NavbarDropdownMenu,
   NavbarLogo
 } from './styled';
@@ -33,7 +33,7 @@ export const Navbar = () => {
             </NavbarDropdownButtonIcon>
             {isOpen && !user.isAdmin ? (
               <NavbarDropdownMenu>
-                <NavbarDropdownItem>
+                {/* <NavbarDropdownItem>
                   <NavbarDropdownLink to="/user_registry">
                     Minhas picagens
                   </NavbarDropdownLink>
@@ -42,7 +42,7 @@ export const Navbar = () => {
                   <NavbarDropdownLink to="">
                     Trabalhos submetidos
                   </NavbarDropdownLink>
-                </NavbarDropdownItem>
+                </NavbarDropdownItem> */}
 
                 <NavbarDropdownItem>
                   <Button onClick={onLogoutHandler}>Logout</Button>
