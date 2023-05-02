@@ -266,8 +266,10 @@ export const Clients = () => {
 
             setClientsCounter(docs.data()?.count);
             setClients(clientsData);
-            onLoadingHandler(false);
           });
+      })
+      .finally(() => {
+        onLoadingHandler(false);
       });
   }, [onLoadingHandler]);
 

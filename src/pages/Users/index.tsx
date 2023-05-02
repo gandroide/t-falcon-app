@@ -127,7 +127,7 @@ export const Users = () => {
         if (docs.empty) {
           return;
         }
-
+        console.log(docs);
         docs.forEach((doc) => {
           usersData.push({
             id: doc.id,
