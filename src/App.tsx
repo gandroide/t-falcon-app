@@ -1,6 +1,6 @@
 import { useContext } from 'react';
 import GlobalStyles, { AppContainer } from './styles';
-import { ThemeProvider } from 'styled-components';
+import styled, { ThemeProvider } from 'styled-components';
 import { defaultTheme } from './styles/theme';
 import { Modal } from './components/Modal';
 import { ModalContext } from './context/Modal';
@@ -12,6 +12,7 @@ import { AppRoutes } from './routes';
 import { LoadingContext } from './context/Loading';
 import { Loading } from './components/Loading';
 import { ToastContainer } from 'react-toastify';
+import { Player } from '@lottiefiles/react-lottie-player';
 
 const App = () => {
   const { isLoading } = useContext(LoadingContext);
@@ -38,6 +39,24 @@ const App = () => {
   if (!isAuthReady) {
     return <Loading />;
   }
+
+  const ContainerLottie = styled('div')`
+    display: flex;
+    width: 100%;
+    height: 100vh;
+    justify-content: center;
+    align-items: center;
+  `;
+
+  return (
+    <ContainerLottie>
+      <Player
+        src="https://assets1.lottiefiles.com/packages/lf20_xjhwr9wv.json"
+        autoplay
+        loop
+      />
+    </ContainerLottie>
+  );
 
   return (
     <ThemeProvider theme={defaultTheme}>
