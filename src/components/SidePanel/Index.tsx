@@ -9,7 +9,7 @@ import {
 } from './style';
 import { CSSTransition } from 'react-transition-group';
 import { SidepanelContext } from '../../context/Sidepanel';
-import { BsFillBackspaceFill } from 'react-icons/bs';
+import { HiOutlineArrowNarrowLeft } from 'react-icons/hi';
 
 interface ISidepanel {
   openPanel: boolean;
@@ -25,13 +25,13 @@ export const SidePanel: FC<ISidepanel> = ({
   const { onCloseSidepanelHandler } = useContext(SidepanelContext);
 
   const handleClose = () => {
-    onCloseSidepanelHandler();
+    onCloseSidepanelHandler(sidepanelWidth);
   };
 
   return (
     <CSSTransition
       in={openPanel}
-      timeout={300}
+      timeout={750}
       classNames="sidepanel"
       unmountOnExit
       mountOnEnter
@@ -43,8 +43,9 @@ export const SidePanel: FC<ISidepanel> = ({
           className="sidepanel-panel"
         >
           <ChildrenContainer>
-            <CloseButton>
-              <BsFillBackspaceFill size="2em" onClick={handleClose} />
+            <CloseButton onClick={handleClose}>
+              <HiOutlineArrowNarrowLeft />
+              Sair
             </CloseButton>
             <ContentComponent>{children}</ContentComponent>
           </ChildrenContainer>

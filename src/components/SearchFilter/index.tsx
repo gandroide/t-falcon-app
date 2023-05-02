@@ -19,6 +19,7 @@ export const SearchFilter: FC<ISearchFilter> = ({
         options={options}
         onChangeHandler={onChangeFilterCallback}
         selected
+        placeholder=""
       />
       <SearchInput value={filterValue} onChange={onChangeFilterCallback} />
       <SearchButton onClick={onFilterHandler}>Pesquisar</SearchButton>

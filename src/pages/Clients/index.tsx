@@ -10,10 +10,21 @@ import {
   ITableAction,
   ClientsData
 } from '../../interfaces';
-import { AdminContainer, AdminHeaderContainer } from '../../styles';
-import { SidePanelContainer, SidePanelTitle } from '../Users/styled';
-import { FaRegTrashAlt } from 'react-icons/fa';
+import {
+  AdminHeaderContainer,
+  AdminTitleContainer,
+  BurgerIconButton
+} from '../../styles';
+import { SidePanelContainer } from '../Users/styled';
+import { FaTrash } from 'react-icons/fa';
 import { LoadingContext } from '../../context/Loading';
+import { Button } from '../../components/Button';
+import { GiHamburgerMenu } from 'react-icons/gi';
+import { useOutletContext } from 'react-router-dom';
+
+type AdminOutletContext = {
+  toggleAdminNavbar: () => void;
+};
 
 const addClientForm: IDefaultInput[] = [
   {
@@ -24,6 +35,8 @@ const addClientForm: IDefaultInput[] = [
     value: ''
   }
 ];
+
+const SIDEPANEL_WIDTH = '500px';
 
 const AddClientsFrom = ({ callback }: { callback: () => void }) => {
   const { onLoadingHandler } = useContext(LoadingContext);
@@ -44,7 +57,7 @@ const AddClientsFrom = ({ callback }: { callback: () => void }) => {
               let count = (doc?.data()?.count || 0) + 1;
 
               await app.collection('counters').doc('clients').set({ count });
-              onCloseSidepanelHandler();
+              onCloseSidepanelHandler(SIDEPANEL_WIDTH);
               callback();
             });
         });
@@ -54,13 +67,17 @@ const AddClientsFrom = ({ callback }: { callback: () => void }) => {
 
   return (
     <SidePanelContainer>
-      <SidePanelTitle>Adicionar cliente</SidePanelTitle>
-      <Form fields={addClientForm} onSubmitCallback={onAddClientHandler} />
+      <Form
+        title="Adicionar cliente"
+        fields={addClientForm}
+        onSubmitCallback={onAddClientHandler}
+      />
     </SidePanelContainer>
   );
 };
 
 export const Clients = () => {
+  const { toggleAdminNavbar } = useOutletContext<AdminOutletContext>();
   const [clients, setClients] = useState<ClientsData[]>([]);
   const [clientsCounter, setClientsCounter] = useState(0);
   const { onOpenSidepanelHandler } = useContext(SidepanelContext);
@@ -70,7 +87,7 @@ export const Clients = () => {
     onOpenSidepanelHandler({
       isOpen: true,
       SidepanelChildren: <AddClientsFrom callback={callback} />,
-      sidepanelWidth: '500px'
+      sidepanelWidth: SIDEPANEL_WIDTH
     });
   };
 
@@ -106,32 +123,6 @@ export const Clients = () => {
         });
       });
   };
-
-  // const onAddClientsCallback = (count: number) => {
-  //   const clientsData: ClientsData[] = [];
-
-  //   app
-  //     .collection('clients')
-  //     .orderBy('date', 'desc')
-  //     .limit(10)
-  //     .get()
-  //     .then((docs) => {
-  //       if (docs.empty) {
-  //         return;
-  //       }
-
-  //       docs.forEach((doc) => {
-  //         clientsData.push({
-  //           id: doc.id,
-  //           nome: doc.data().name
-  //         });
-  //       });
-
-  //       setClientsCounter(count);
-  //       setClients(clientsData);
-  //       onLoadingHandler(false);
-  //     });
-  // };
 
   const onRemoveClientHandler = useCallback<
     ITableAction<ClientsData>['callback']
@@ -281,10 +272,17 @@ export const Clients = () => {
   }, [onLoadingHandler]);
 
   return (
-    <AdminContainer>
+    <>
       <AdminHeaderContainer>
-        <h1>Registo dos clientes</h1>
-        <button onClick={onOpenClientFormHandler}>Adicionar cliente</button>
+        <AdminTitleContainer>
+          <BurgerIconButton onClick={toggleAdminNavbar}>
+            <GiHamburgerMenu size={26} color="#157416" />
+          </BurgerIconButton>
+          <h1>Clientes</h1>
+        </AdminTitleContainer>
+        <Button type="primary" onClick={onOpenClientFormHandler}>
+          Adicionar cliente
+        </Button>
       </AdminHeaderContainer>
       <Table
         count={clientsCounter}
@@ -292,10 +290,8 @@ export const Clients = () => {
         onSearchCallback={onPageChangeHandler}
         filterOptions={[]}
         data={clients}
-        tableActions={[
-          { callback: onRemoveClientHandler, icon: <FaRegTrashAlt /> }
-        ]}
+        tableActions={[{ callback: onRemoveClientHandler, icon: <FaTrash /> }]}
       />
-    </AdminContainer>
+    </>
   );
 };

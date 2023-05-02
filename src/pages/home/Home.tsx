@@ -8,6 +8,7 @@ import { ModalContext } from '../../context/Modal';
 import { SidepanelContext } from '../../context/Sidepanel';
 import {
   Container,
+  HomeImage,
   MenuContainer,
   MenuItem,
   TopBar,
@@ -25,6 +26,9 @@ import { LoadingContext } from '../../context/Loading';
 import { currentPosition } from '../../components/Map';
 import { Table } from '../../components/Table';
 import { toast } from 'react-toastify';
+import { FaBalanceScale, FaUserEdit, FaWeight } from 'react-icons/fa';
+import { IoDocument } from 'react-icons/io5';
+import { SidepanelTitle } from '../../components/SidePanel/style';
 
 const secondsToDate = (seconds?: number) => {
   if (seconds) {
@@ -37,6 +41,8 @@ const formattedDate = (date?: Date) => {
     return moment(date).format('DD-MM-YYYY');
   }
 };
+
+const SIDEPANEL_WIDTH = '700px';
 
 export const Home = () => {
   const { onOpenSidepanelHandler } = useContext(SidepanelContext);
@@ -185,7 +191,7 @@ export const Home = () => {
         onOpenSidepanelHandler({
           isOpen: true,
           SidepanelChildren: <BirdWeightForm birdsData={birdsData} />,
-          sidepanelWidth: '700px'
+          sidepanelWidth: SIDEPANEL_WIDTH
         });
       });
   };
@@ -203,7 +209,7 @@ export const Home = () => {
 
         docs.forEach((doc) => {
           birdsData.push({
-            id: doc.id,
+            // id: doc.id,
             nome: doc.data().nome,
             peso: doc.data().peso.toString() + ' gr',
             data: formattedDate(secondsToDate(doc.data()?.data.seconds))!
@@ -214,16 +220,19 @@ export const Home = () => {
         onOpenSidepanelHandler({
           isOpen: true,
           SidepanelChildren: (
-            <Table
-              count={0}
-              onTableRenderCallback={() => {}}
-              onSearchCallback={() => {}}
-              filterOptions={[]}
-              data={birdsData}
-              tableActions={[]}
-            />
+            <>
+              <SidepanelTitle>Últimas pesagens</SidepanelTitle>
+              <Table
+                count={0}
+                onTableRenderCallback={() => {}}
+                onSearchCallback={() => {}}
+                filterOptions={[]}
+                data={birdsData}
+                tableActions={[]}
+              />
+            </>
           ),
-          sidepanelWidth: '700px'
+          sidepanelWidth: SIDEPANEL_WIDTH
         });
       });
   };
@@ -287,7 +296,7 @@ export const Home = () => {
                       carsData={carsData}
                     />
                   ),
-                  sidepanelWidth: '700px'
+                  sidepanelWidth: SIDEPANEL_WIDTH
                 });
               });
           });
@@ -297,21 +306,40 @@ export const Home = () => {
   return (
     <Container>
       <TopBar>
-        <h2>Home</h2>
-        <TopBarInfo>{/* <h2>T-Falcon</h2> */}</TopBarInfo>
+        <h1>Bem-vindo, {user.displayName}</h1>
       </TopBar>
       <MenuContainer>
         <MenuItem>
-          <Button onClick={onConfirmPicagemHandler}>Registrar Picagem</Button>
+          <Button
+            onClick={onConfirmPicagemHandler}
+            icon={FaUserEdit}
+            type="home"
+          >
+            Registrar Picagem
+          </Button>
         </MenuItem>
         <MenuItem>
-          <Button onClick={onWeightRegisterHandler}>Registar Pesagem</Button>
+          <Button onClick={onWeightRegisterHandler} icon={FaWeight} type="home">
+            Registar Pesagem
+          </Button>
         </MenuItem>
         <MenuItem>
-          <Button onClick={onSeeWeightHandler}>Pesagens</Button>
+          <Button
+            onClick={onSeeWeightHandler}
+            type="home"
+            icon={FaBalanceScale}
+          >
+            Pesagens
+          </Button>
         </MenuItem>
         <MenuItem>
-          <Button onClick={onServicesReportHanlder}>Registar Relatorio</Button>
+          <Button
+            onClick={onServicesReportHanlder}
+            type="home"
+            icon={IoDocument}
+          >
+            Registar Relatorio
+          </Button>
         </MenuItem>
       </MenuContainer>
       <FooterBar></FooterBar>

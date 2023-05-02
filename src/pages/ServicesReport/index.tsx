@@ -13,7 +13,7 @@ import {
 const inputStepper: IDefaultInput[] = [
   {
     name: 'data',
-    label: 'data',
+    label: 'Data',
     type: 'date',
     value: '',
     placeholder: 'data de serviço',
@@ -21,47 +21,52 @@ const inputStepper: IDefaultInput[] = [
   },
   {
     name: 'hora-inicio',
-    label: 'hora inicio',
+    label: 'Hora inicio',
     type: 'time',
     value: '',
     required: true
   },
   {
     name: 'hora-fim',
-    label: 'hora fim',
+    label: 'Hora fim',
     type: 'time',
     value: '',
     required: true
   },
   {
     name: 'localização',
-    label: 'localização',
+    label: 'Localização',
     type: 'select',
     value: '',
-    data: []
+    data: [],
+    placeholder: 'Selecione uma localização'
   },
   {
     name: 'ave',
-    label: 'ave',
+    label: 'Ave',
     type: 'select',
     value: '',
-    data: []
+    data: [],
+    placeholder: 'Selecione uma ave'
   },
   {
     name: 'carro',
-    label: 'carro',
+    label: 'Carro',
     type: 'select',
     value: '',
-    data: []
+    data: [],
+    placeholder: 'Selecione um carro'
   },
   {
     name: 'observações',
-    label: 'observações',
+    label: 'Observações',
     type: 'textarea',
     value: '',
     placeholder: 'eventualidade / observações'
   }
 ];
+
+const SIDEPANEL_WIDTH = '700px';
 
 export const ServicesReport: FC<IServiceReport> = ({
   clientsData,
@@ -112,7 +117,7 @@ export const ServicesReport: FC<IServiceReport> = ({
                 let count = (doc?.data()?.count || 0) + 1;
 
                 await app.collection('counters').doc('reports').set({ count });
-                onCloseSidepanelHandler();
+                onCloseSidepanelHandler(SIDEPANEL_WIDTH);
               });
           });
       } catch (e) {}

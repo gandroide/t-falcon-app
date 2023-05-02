@@ -5,8 +5,12 @@ export const FooterContainer = styled.div`
   left: 0;
   bottom: 0;
   width: 100%;
-  background-color: ${({ theme }) => theme.palette.common.black};
-  color: white;
-  text-align: center;
-  height: 20px;
+  background-color: #fff;
+  color: #157416;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: 40px;
+  border-top: 1px solid #157416;
+  font-size: 14px;
 `;

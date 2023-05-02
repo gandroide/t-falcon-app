@@ -9,27 +9,43 @@ export const Container = styled.div`
   justify-content: space-between;
   align-items: center;
   flex-direction: column;
-  height: 100vh;
-  background-color: ${({ theme }) => theme.palette.common.white};
+  /* background-color: ${({ theme }) => theme.palette.common.white}; */
+`;
+
+export const HomeImage = styled.span`
+  width: 200px;
+
+  & img {
+    width: 100%;
+    display: block;
+  }
 `;
 
 export const MenuContainer = styled.div`
-  display: flex;
-  flex-direction: column;
-  justify-content: start;
-  align-items: center;
-  width: 100%;
-  height: 100%;
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 20px;
 `;
 
 export const TopBar = styled.div`
-  width: 80%;
   display: flex;
   justify-content: space-around;
   flex-direction: column;
   align-items: center;
-  padding: 20px 0 20px 0;
-  height: 30vh;
+  /* align-items: center; */
+  /* padding: 20px 0 20px 0; */
+  overflow: hidden;
+  width: 100%;
+
+  & h1 {
+    color: #157416;
+    font-size: 20px;
+    margin-bottom: 40px;
+    max-width: 100%;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
 `;
 
 export const TopBarInfo = styled.div`
@@ -43,5 +59,5 @@ export const TopBarInfo = styled.div`
 `;
 
 export const MenuItem = styled.div`
-  margin: 20px;
+  /* margin: 20px; */
 `;

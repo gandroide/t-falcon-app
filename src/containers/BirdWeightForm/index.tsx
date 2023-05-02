@@ -18,7 +18,8 @@ const birdWeightData: IDefaultInput[] = [
     value: '',
     data: [],
     isRequired: true,
-    hasError: false
+    hasError: false,
+    placeholder: 'Selecione uma ave'
   },
   {
     label: 'Peso (gr)',
@@ -30,6 +31,8 @@ const birdWeightData: IDefaultInput[] = [
     hasError: false
   }
 ];
+
+const SIDEPANEL_WIDTH = '500px';
 
 export const BirdWeightForm: FC<IBirdWeightForm> = ({ birdsData }) => {
   const { onCloseSidepanelHandler } = useContext(SidepanelContext);
@@ -89,7 +92,7 @@ export const BirdWeightForm: FC<IBirdWeightForm> = ({ birdsData }) => {
                     .set({ count });
                 });
               onLoadingHandler(false);
-              onCloseSidepanelHandler();
+              onCloseSidepanelHandler(SIDEPANEL_WIDTH);
             });
         });
     },

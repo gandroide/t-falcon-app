@@ -57,10 +57,10 @@ export const Table = <T extends {}>({
   let tableHeader: (keyof T)[] = [];
 
   if (data.length) {
-    tableHeader.push('id' as keyof T);
+    // tableHeader.push('id' as keyof T);
 
     Object.keys(data[0]).forEach((key) => {
-      if (key === 'id') return;
+      // if (key === 'id') return;
 
       tableHeader.push(key as keyof T);
     });
@@ -83,7 +83,9 @@ export const Table = <T extends {}>({
             <TableHeaderColumn key={value as string}>{value}</TableHeaderColumn>
           ))}
           {tableActions.length > 0 && (
-            <TableHeaderColumn key="actions">Accões</TableHeaderColumn>
+            <TableHeaderColumn className="table-actions" key="actions">
+              Accões
+            </TableHeaderColumn>
           )}
         </TableHeaderRow>
       </TableHeaderContainer>
@@ -102,11 +104,15 @@ export const Table = <T extends {}>({
                 {row[column]}
               </TableBodyColumn>
             ))}
-            {tableActions.map(({ icon, callback }) => (
-              <TableAction onClick={() => callback(row, currentPage)}>
-                <TableActionIcon>{icon}</TableActionIcon>
-              </TableAction>
-            ))}
+            {tableActions.length > 0 && (
+              <TableBodyColumn className="table-actions">
+                {tableActions.map(({ icon, callback }) => (
+                  <TableAction onClick={() => callback(row, currentPage)}>
+                    <TableActionIcon>{icon}</TableActionIcon>
+                  </TableAction>
+                ))}
+              </TableBodyColumn>
+            )}
           </TableBodyRow>
         ))}
       </TableBodyContainer>

@@ -23,7 +23,7 @@ export const LoadingProvider: FC = ({ children }) => {
       else {
         setTimeout(() => {
           setIsLoading(loading);
-        }, 750);
+        }, 150);
       }
     },
     []

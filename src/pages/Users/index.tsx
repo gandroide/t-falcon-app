@@ -1,6 +1,9 @@
 import { useState, useContext, useEffect, useCallback } from 'react';
 import { FaTrash } from 'react-icons/fa';
+import { GiHamburgerMenu } from 'react-icons/gi';
+import { useOutletContext } from 'react-router-dom';
 import { toast } from 'react-toastify';
+import { Button } from '../../components/Button';
 import { Form } from '../../components/Form';
 import { Table } from '../../components/Table';
 import { app, app2 } from '../../config/firebase';
@@ -8,7 +11,16 @@ import { LoadingContext } from '../../context/Loading';
 import { ModalContext } from '../../context/Modal';
 import { SidepanelContext } from '../../context/Sidepanel';
 import { IForm, IDefaultInput, IUserData, ITable } from '../../interfaces';
-import { SidePanelContainer, SidePanelTitle } from './styled';
+import {
+  AdminHeaderContainer,
+  AdminTitleContainer,
+  BurgerIconButton
+} from '../../styles';
+import { SidePanelContainer } from './styled';
+
+type AdminOutletContext = {
+  toggleAdminNavbar: () => void;
+};
 
 const addUserFields: IDefaultInput[] = [
   {
@@ -40,6 +52,8 @@ const addUserFields: IDefaultInput[] = [
   }
 ];
 
+const SIDEPANEL_WIDTH = '500px';
+
 const AddUserForm = () => {
   const { onCloseSidepanelHandler } = useContext(SidepanelContext);
 
@@ -63,24 +77,29 @@ const AddUserForm = () => {
           email: data['email'],
           nome: data['displayName'],
           admistrador: data['admistrador'] === 'true',
-          isActive: true
+          isActive: true,
+          date: new Date()
         });
 
       app2.signOut();
-      onCloseSidepanelHandler();
+      onCloseSidepanelHandler(SIDEPANEL_WIDTH);
     },
     [onCloseSidepanelHandler]
   );
 
   return (
     <SidePanelContainer>
-      <SidePanelTitle>Adicionar utilizador</SidePanelTitle>
-      <Form fields={addUserFields} onSubmitCallback={onAddUserHandler} />
+      <Form
+        title="Adicionar utilizador"
+        fields={addUserFields}
+        onSubmitCallback={onAddUserHandler}
+      />
     </SidePanelContainer>
   );
 };
 
 export const Users = () => {
+  const { toggleAdminNavbar } = useOutletContext<AdminOutletContext>();
   const [users, setUsers] = useState<IUserData[]>([]);
   const [usersCounter, setUsersCounter] = useState(0);
   const { onOpenSidepanelHandler } = useContext(SidepanelContext);
@@ -90,7 +109,7 @@ export const Users = () => {
     onOpenSidepanelHandler({
       isOpen: true,
       SidepanelChildren: <AddUserForm />,
-      sidepanelWidth: '500px'
+      sidepanelWidth: SIDEPANEL_WIDTH
     });
   };
 
@@ -275,7 +294,17 @@ export const Users = () => {
 
   return (
     <>
-      <button onClick={onOpenUserFormHandler}>Adicionar Utilizador</button>
+      <AdminHeaderContainer>
+        <AdminTitleContainer>
+          <BurgerIconButton onClick={toggleAdminNavbar}>
+            <GiHamburgerMenu size={26} color="#157416" />
+          </BurgerIconButton>
+          <h1>Utilizadores</h1>
+        </AdminTitleContainer>
+        <Button type="primary" onClick={onOpenUserFormHandler}>
+          Adicionar Utilizador
+        </Button>
+      </AdminHeaderContainer>
       <Table
         count={usersCounter}
         data={users}

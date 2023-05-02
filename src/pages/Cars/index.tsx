@@ -1,5 +1,8 @@
 import React, { FC, useCallback, useContext, useEffect, useState } from 'react';
-import { FaRegTrashAlt } from 'react-icons/fa';
+import { FaTrash } from 'react-icons/fa';
+import { GiHamburgerMenu } from 'react-icons/gi';
+import { useOutletContext } from 'react-router-dom';
+import { Button } from '../../components/Button';
 import { Form } from '../../components/Form';
 import { Table } from '../../components/Table';
 import { app, appTimestamp } from '../../config/firebase';
@@ -12,8 +15,16 @@ import {
   ITable,
   ITableAction
 } from '../../interfaces';
-import { AdminContainer, AdminHeaderContainer } from '../../styles';
-import { SidePanelContainer, SidePanelTitle } from '../Users/styled';
+import {
+  AdminHeaderContainer,
+  AdminTitleContainer,
+  BurgerIconButton
+} from '../../styles';
+import { SidePanelContainer } from '../Users/styled';
+
+type AdminOutletContext = {
+  toggleAdminNavbar: () => void;
+};
 
 const addCarsForm: IInput[] = [
   {
@@ -31,6 +42,8 @@ const addCarsForm: IInput[] = [
     value: ''
   }
 ];
+
+const SIDEPANEL_WIDTH = '500px';
 
 const AddCarsFrom = ({ callback }: { callback: () => void }) => {
   const { onCloseSidepanelHandler } = useContext(SidepanelContext);
@@ -54,26 +67,28 @@ const AddCarsFrom = ({ callback }: { callback: () => void }) => {
             });
         });
 
-      onCloseSidepanelHandler();
+      onCloseSidepanelHandler(SIDEPANEL_WIDTH);
     },
     [callback, onCloseSidepanelHandler]
   );
 
   return (
     <SidePanelContainer>
-      <SidePanelTitle>Adicionar carro</SidePanelTitle>
-      <Form fields={addCarsForm} onSubmitCallback={onAddCartHandler} />
+      <Form
+        title="Adicionar carro"
+        fields={addCarsForm}
+        onSubmitCallback={onAddCartHandler}
+      />
     </SidePanelContainer>
   );
 };
 
 export const Cars: FC = () => {
+  const { toggleAdminNavbar } = useOutletContext<AdminOutletContext>();
   const [cars, setCars] = useState<CarsData[]>([]);
   const [carsCounter, setCarsCounter] = useState(0);
   const { onOpenSidepanelHandler } = useContext(SidepanelContext);
   const { onLoadingHandler } = useContext(LoadingContext);
-
-  // console.log('data', data);
 
   const callback = () => {
     onLoadingHandler(true);
@@ -113,7 +128,7 @@ export const Cars: FC = () => {
     onOpenSidepanelHandler({
       isOpen: true,
       SidepanelChildren: <AddCarsFrom callback={callback} />,
-      sidepanelWidth: '500px'
+      sidepanelWidth: SIDEPANEL_WIDTH
     });
   };
 
@@ -307,10 +322,17 @@ export const Cars: FC = () => {
   }, [onLoadingHandler]);
 
   return (
-    <AdminContainer>
+    <>
       <AdminHeaderContainer>
-        <h1>Registo dos carros</h1>
-        <button onClick={onOpenCarsFormHandler}>Adicionar carro</button>
+        <AdminTitleContainer>
+          <BurgerIconButton onClick={toggleAdminNavbar}>
+            <GiHamburgerMenu size={26} color="#157416" />
+          </BurgerIconButton>
+          <h1>Carros</h1>
+        </AdminTitleContainer>
+        <Button type="primary" onClick={onOpenCarsFormHandler}>
+          Adicionar carro
+        </Button>
       </AdminHeaderContainer>
       <Table
         count={carsCounter}
@@ -318,10 +340,8 @@ export const Cars: FC = () => {
         onSearchCallback={onPageChangeHandler}
         data={cars}
         filterOptions={[]}
-        tableActions={[
-          { callback: onRemoveCarsHandler, icon: <FaRegTrashAlt /> }
-        ]}
+        tableActions={[{ callback: onRemoveCarsHandler, icon: <FaTrash /> }]}
       />
-    </AdminContainer>
+    </>
   );
 };

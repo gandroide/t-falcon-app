@@ -13,9 +13,10 @@ import {
   DialogContent,
   DialogCta,
   DialogTitle,
-  DialogDescription,
+  DialogDescription
 } from './styled';
 import { ModalContext } from '../../context/Modal';
+import { Button } from '../Button';
 
 interface IModal {
   isOpen: boolean;
@@ -28,13 +29,13 @@ interface IModal {
 
 const modalTypes = {
   info: {
-    color: '#42b6f5',
-    icon: <IoMdInformationCircleOutline />,
+    color: '#157416',
+    icon: <IoMdInformationCircleOutline />
   },
   warning: {
     color: '#f22c36',
-    icon: <IoWarningOutline />,
-  },
+    icon: <IoWarningOutline />
+  }
 };
 
 export const Modal: FC<IModal> = ({
@@ -43,7 +44,7 @@ export const Modal: FC<IModal> = ({
   onConfirmCallback,
   title,
   description,
-  type,
+  type
 }) => {
   const { onResetModalHandler } = useContext(ModalContext);
 
@@ -75,8 +76,12 @@ export const Modal: FC<IModal> = ({
             </DialogContent>
           </DialogContentWrapper>
           <DialogCta>
-            <button onClick={onCloseHandler}>Cancel</button>
-            <button onClick={onConfirmHandler}>Confirmar</button>
+            <Button type="secondary" onClick={onCloseHandler}>
+              Cancel
+            </Button>
+            <Button type="primary" onClick={onConfirmHandler}>
+              Confirmar
+            </Button>
           </DialogCta>
         </DialogContainer>
       </DialogWrapper>

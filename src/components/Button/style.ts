@@ -1,5 +1,9 @@
 import styled from 'styled-components';
 
+interface StyledButtonProps {
+  hasIcon: boolean;
+}
+
 export const StyledButton = styled.button`
   background-color: #085e3b;
   border-color: white;
@@ -21,25 +25,54 @@ export const StyledButton = styled.button`
   transition: 0.3s;
 `;
 
-export const NewButton = styled.button`
-  display: inline-block;
-  padding: 0.7em 1.7em;
-  margin: 0 0.3em 0.3em 0;
-  min-width: 160px;
-  border-style: hidden;
-  border-radius: 0.5em;
+export const PrimaryButton = styled.button`
+  background: #157416;
+  color: #fff;
+  padding: 8px 20px;
+  border-radius: 4px;
+  border: 1px solid #157416;
+`;
+
+export const SecondaryButton = styled.button`
+  background: #fff;
+  color: #157416;
+  padding: 8px 20px;
+  border-radius: 4px;
+  border: 1px solid #157416;
+`;
+
+export const NewButton = styled.button<StyledButtonProps>`
+  display: ${({ hasIcon }) => (hasIcon ? 'flex' : 'inline-flex')};
   box-sizing: border-box;
   text-decoration: none;
   font-weight: 400;
-  color: #ffffff;
-  background-color: #3369ff;
+  color: #157416;
+  background-color: #fff;
   text-align: center;
   position: relative;
+  border: 1px solid #157416;
+  border-radius: 4px;
+  padding: ${({ hasIcon }) => (hasIcon ? '10px' : '8px 16px')};
+  flex-direction: ${({ hasIcon }) => (hasIcon ? 'column' : 'row')};
+  font-size: 16px;
 
-  @media all and (max-width: 30em) {
-    a.button7 {
-      display: block;
-      margin: 0.4em auto;
+  ${({ hasIcon }) =>
+    hasIcon &&
+    `
+    height: 150px;
+    align-items: center;
+    justify-content: center;
+    width: 150px;
+
+    & span {
+      width: 50px;
+      height: 50px;
+      margin-bottom: 20px;
     }
-  }
+
+    & svg {
+      width: 100%;
+      height: 100%;
+    }
+  `}
 `;

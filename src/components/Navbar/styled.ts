@@ -6,14 +6,34 @@ interface IDropdown {
 }
 
 export const NavbarContainer = styled.div`
-  height: 40px;
+  height: 65px;
   display: flex;
   align-items: center;
   justify-content: space-between;
-  padding: 0 1rem;
+  padding: 0 10px;
+  border-bottom: 1px solid #157416;
+  background: #fff;
+  /* border-radius: 4px; */
+
+  @media screen and (min-width: 992px) {
+    padding: 0 30px;
+  }
 `;
 
-export const NavbarLogo = styled.div``;
+export const NavbarLogo = styled.span`
+  color: #065b34;
+  text-transform: uppercase;
+  font-size: 18px;
+  font-weight: bold;
+  display: flex;
+  align-items: center;
+
+  & img {
+    width: 60px;
+    display: block;
+    margin-right: -10px;
+  }
+`;
 
 export const NavbarDropdownContainer = styled.div`
   position: relative;

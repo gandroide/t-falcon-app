@@ -2,14 +2,27 @@ import moment from 'moment';
 import { useState, useCallback, useEffect, useContext } from 'react';
 import { Table } from '../../components/Table';
 import { app } from '../../config/firebase';
-// import { useFilter } from '../../hooks/useFilter';
 import { FullUserRegistryData, ITable, ITableAction } from '../../interfaces';
 import { RiMapPinUserFill } from 'react-icons/ri';
 import { Map } from '../../components/Map';
-import { AdminContainer, AdminHeaderContainer } from '../../styles';
+import {
+  AdminHeaderButtonsContainer,
+  AdminHeaderContainer,
+  AdminTitleContainer,
+  BurgerIconButton
+} from '../../styles';
 import { SidepanelContext } from '../../context/Sidepanel';
 import { LoadingContext } from '../../context/Loading';
 import * as xlsx from 'xlsx';
+import { Button } from '../../components/Button';
+import { ModalContext } from '../../context/Modal';
+import _ from 'lodash';
+import { GiHamburgerMenu } from 'react-icons/gi';
+import { useOutletContext } from 'react-router-dom';
+
+type AdminOutletContext = {
+  toggleAdminNavbar: () => void;
+};
 
 const secondsToDate = (seconds?: number) => {
   if (seconds) {
@@ -30,45 +43,14 @@ const formattedTime = (date?: Date) => {
 };
 
 export const UsersRegistry = () => {
-  // const { filter, value } = useFilter();
+  const { toggleAdminNavbar } = useOutletContext<AdminOutletContext>();
   const [usersRegistry, setUsersRegistry] = useState<FullUserRegistryData[]>(
     []
   );
   const [userRegistryCounter, setUserRegistryCounter] = useState(0);
   const { onOpenSidepanelHandler } = useContext(SidepanelContext);
   const { onLoadingHandler } = useContext(LoadingContext);
-  // const onSearchCallback = useCallback(() => {
-  //   if (!filter || !value) return;
-
-  //   app
-  //     .collection('user_registry')
-  //     .where(filter, '==', value)
-  //     .get()
-  //     .then((docs) => {
-  //       const userRegistryData: FullUserRegistryData[] = [];
-
-  //       docs.forEach((doc) => {
-  //         const entry = secondsToDate(doc.data().entryDate?.seconds);
-  //         const leave = secondsToDate(doc.data().leaveDate?.seconds);
-  //         const date = formattedDate(entry);
-  //         const entryTime = formattedTime(entry);
-  //         const leaveTime = formattedTime(leave);
-  //         userRegistryData.push({
-  //           id: doc.id,
-  //           nome: doc.data().displayName,
-  //           data: date ?? '-',
-  //           entrada: entryTime ?? '-',
-  //           saida: leaveTime ?? '-',
-  //           latitude_entry: doc.data().latitude_entry,
-  //           longitude_entry: doc.data().longitude_entry,
-  //           latitude_out: doc.data().latitude_out,
-  //           longitude_out: doc.data().longitude_out
-  //         });
-  //       });
-
-  //       setUsersRegistry(userRegistryData);
-  //     });
-  // }, [filter, value]);
+  const { onSetModalHandler } = useContext(ModalContext);
 
   useEffect(() => {
     onLoadingHandler(true);
@@ -259,11 +241,52 @@ export const UsersRegistry = () => {
       });
   };
 
+  const deletePicagensHandler = async () => {
+    const snapshot = await app.collection('reports').get();
+    const MAX_WRITES_PER_BATCH = 500;
+
+    const batches = _.chunk(snapshot.docs, MAX_WRITES_PER_BATCH);
+
+    const commitBatchPromises: any[] = [];
+
+    batches.forEach((batch) => {
+      const writeBatch = app.batch();
+      batch.forEach((doc) => writeBatch.delete(doc.ref));
+      commitBatchPromises.push(writeBatch.commit());
+    });
+
+    await Promise.all(commitBatchPromises);
+  };
+
+  const onConfirmDeleteHandler = () => {
+    onSetModalHandler({
+      isOpen: true,
+      type: 'info',
+      title: 'Eliminar picagens',
+      description:
+        'Clique no botão confirmar que pretende eliminar as picagens. Se não exportou os dados, deverá fazê-lo pois esta acção é irreversível.',
+      onConfirmCallback: () => deletePicagensHandler(),
+      onCloseCallback: null
+    });
+  };
+
   return (
-    <AdminContainer>
-      <AdminHeaderContainer>
-        <h1>Registo picagens dos utilizadores</h1>
-        <button onClick={onExportHandler}>Exportar</button>
+    <>
+      <AdminHeaderContainer column={true}>
+        <AdminTitleContainer>
+          <BurgerIconButton onClick={toggleAdminNavbar}>
+            <GiHamburgerMenu size={26} color="#157416" />
+          </BurgerIconButton>
+          <h1>Picagens</h1>
+        </AdminTitleContainer>
+        <AdminHeaderButtonsContainer>
+          <Button type="secondary" onClick={onConfirmDeleteHandler}>
+            Eliminar picagens
+          </Button>
+          <Button type="primary" onClick={onExportHandler}>
+            Exportar
+          </Button>
+        </AdminHeaderButtonsContainer>
       </AdminHeaderContainer>
       <Table
         count={userRegistryCounter}
@@ -275,6 +298,6 @@ export const UsersRegistry = () => {
         data={usersRegistry}
         tableActions={[{ icon: <RiMapPinUserFill />, callback: openMap }]}
       />
-    </AdminContainer>
+    </>
   );
 };

@@ -18,7 +18,7 @@ export const DialogWrapper = styled.div`
 
 export const DialogBackdrop = styled.div`
   position: absolute;
-  background: rgba(0, 0, 0, 0.5);
+  background: rgba(0, 0, 0, 0.7);
   top: 0;
   left: 0;
   height: 100%;
@@ -31,7 +31,7 @@ export const DialogContainer = styled.div<IDialogColor>`
   border-radius: 4px;
   z-index: 0;
   transform-style: preserve-3d;
-  border-top: 4px solid ${({ color }) => color};
+  border-top: 8px solid ${({ color }) => color};
 `;
 
 export const DialogContentWrapper = styled.div`
@@ -39,7 +39,7 @@ export const DialogContentWrapper = styled.div`
   padding: 16px;
   width: 100%;
   max-width: 450px;
-  border-bottom: 1px solid #ccc;
+  border-bottom: 1px solid #157416;
 `;
 
 export const DialogIcon = styled.span<IDialogColor>`
@@ -59,7 +59,7 @@ export const DialogContent = styled.div`
 `;
 
 export const DialogTitle = styled.h2`
-  margin-bottom: 8px;
+  margin-bottom: 10px;
 `;
 
 export const DialogCta = styled.div`
@@ -72,4 +72,6 @@ export const DialogCta = styled.div`
   }
 `;
 
-export const DialogDescription = styled.p``;
+export const DialogDescription = styled.p`
+  font-size: 14px;
+`;

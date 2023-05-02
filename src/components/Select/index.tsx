@@ -5,7 +5,8 @@ import { ISelectOption, ISelectProps } from '../../interfaces';
 export const Select: FC<ISelectProps> = ({
   options,
   onChangeHandler,
-  selected
+  selected,
+  placeholder
 }) => {
   return (
     <CustomSelect
@@ -13,6 +14,7 @@ export const Select: FC<ISelectProps> = ({
       options={options}
       classNamePrefix="Select"
       defaultValue={selected}
+      placeholder={placeholder}
     />
   );
 };

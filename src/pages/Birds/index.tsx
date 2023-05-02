@@ -1,12 +1,19 @@
 import { FC, useContext, useCallback, useEffect, useState } from 'react';
 import { FaEdit, FaTrash } from 'react-icons/fa';
+import { GiHamburgerMenu } from 'react-icons/gi';
+import { useOutletContext } from 'react-router-dom';
+import { Button } from '../../components/Button';
 import { Form } from '../../components/Form';
 import { Table } from '../../components/Table';
 import { app } from '../../config/firebase';
 import { LoadingContext } from '../../context/Loading';
 import { SidepanelContext } from '../../context/Sidepanel';
 import { IBirdData, IInput, IForm, ITable } from '../../interfaces';
-import { AdminContainer, AdminHeaderContainer } from '../../styles';
+import {
+  AdminHeaderContainer,
+  AdminTitleContainer,
+  BurgerIconButton
+} from '../../styles';
 
 interface IFormAddBird {
   id?: string;
@@ -30,6 +37,12 @@ let birdRegisterInputs: IInput[] = [
   }
 ];
 
+const SIDEPANEL_WIDTH = '500px';
+
+type AdminOutletContext = {
+  toggleAdminNavbar: () => void;
+};
+
 const FormAddBird: FC<IFormAddBird> = ({ id, updateData }) => {
   let formData = [...birdRegisterInputs];
 
@@ -51,7 +64,7 @@ const FormAddBird: FC<IFormAddBird> = ({ id, updateData }) => {
                 let count = (doc?.data()?.count || 0) + 1;
 
                 await app.collection('counters').doc('birds').set({ count });
-                onCloseSidepanelHandler();
+                onCloseSidepanelHandler(SIDEPANEL_WIDTH);
               });
           });
       } catch (e) {
@@ -67,7 +80,7 @@ const FormAddBird: FC<IFormAddBird> = ({ id, updateData }) => {
       try {
         await app.collection('birds').doc(id).update(data);
         onLoadingHandler(false);
-        onCloseSidepanelHandler();
+        onCloseSidepanelHandler(SIDEPANEL_WIDTH);
       } catch (e) {
         console.log(e);
       }
@@ -91,8 +104,15 @@ const FormAddBird: FC<IFormAddBird> = ({ id, updateData }) => {
     });
   }
 
+  let title = 'Adicionar ave';
+
+  if (id && updateData) {
+    title = 'Editar ave';
+  }
+
   return (
     <Form
+      title={title}
       fields={formData}
       onSubmitCallback={id ? onBirdEditHandler : onBirdRegisterHandler}
     />
@@ -100,6 +120,7 @@ const FormAddBird: FC<IFormAddBird> = ({ id, updateData }) => {
 };
 
 export const Birds = () => {
+  const { toggleAdminNavbar } = useOutletContext<AdminOutletContext>();
   const { onLoadingHandler } = useContext(LoadingContext);
   const { onOpenSidepanelHandler } = useContext(SidepanelContext);
   const [birds, setBirds] = useState<IBirdData[]>([]);
@@ -109,7 +130,7 @@ export const Birds = () => {
     onOpenSidepanelHandler({
       isOpen: true,
       SidepanelChildren: <FormAddBird />,
-      sidepanelWidth: '500px'
+      sidepanelWidth: SIDEPANEL_WIDTH
     });
   };
 
@@ -117,7 +138,7 @@ export const Birds = () => {
     onOpenSidepanelHandler({
       isOpen: true,
       SidepanelChildren: <FormAddBird id={rowData.id} updateData={rowData} />,
-      sidepanelWidth: '500px'
+      sidepanelWidth: SIDEPANEL_WIDTH
     });
   };
 
@@ -247,10 +268,17 @@ export const Birds = () => {
   }, [onLoadingHandler]);
 
   return (
-    <AdminContainer>
+    <>
       <AdminHeaderContainer>
-        <h1>Registo das aves</h1>
-        <button onClick={onBirdRegisterHandler}>Adicionar ave</button>
+        <AdminTitleContainer>
+          <BurgerIconButton onClick={toggleAdminNavbar}>
+            <GiHamburgerMenu size={26} color="#157416" />
+          </BurgerIconButton>
+          <h1>Aves</h1>
+        </AdminTitleContainer>
+        <Button type="primary" onClick={onBirdRegisterHandler}>
+          Adicionar ave
+        </Button>
       </AdminHeaderContainer>
       <Table
         count={birdsCounter}
@@ -269,6 +297,6 @@ export const Birds = () => {
           }
         ]}
       />
-    </AdminContainer>
+    </>
   );
 };

@@ -1,4 +1,4 @@
-import { useContext } from 'react';
+import { useContext, useEffect } from 'react';
 import GlobalStyles, { AppContainer } from './styles';
 import { ThemeProvider } from 'styled-components';
 import { defaultTheme } from './styles/theme';
@@ -21,19 +21,6 @@ const App = () => {
   const {
     user: { isAuthReady }
   } = useContext(AuthContext);
-
-  // useEffect(() => {
-  //   app
-  //     .collection('reports')
-  //     .where('utilizador', '==', 'João Sousa')
-  //     .get()
-  //     .then((docs) => {
-  //       console.log('-------------------------------------------------');
-  //       docs.forEach((doc) => {
-  //         console.log(doc.data());
-  //       });
-  //     });
-  // }, []);
 
   if (!isAuthReady) {
     return <Loading />;

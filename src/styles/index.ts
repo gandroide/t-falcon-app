@@ -7,6 +7,7 @@ export default createGlobalStyle<{ isLoading: boolean }>`
    padding: 0;
    box-sizing: border-box;
    overflow: ${({ isLoading }) => (isLoading ? 'hidden' : 'unset')};
+   outline: none;
   }
 
   .Toastify__toast-theme--colored.Toastify__toast--info {
@@ -26,6 +27,7 @@ export default createGlobalStyle<{ isLoading: boolean }>`
   body {
     background: #eee;
     color: ${({ theme }) => theme.palette.common.black};
+    font-family: 'Open Sans', sans-serif;
   }
 
   ul {
@@ -67,42 +69,6 @@ export default createGlobalStyle<{ isLoading: boolean }>`
     transform: translateY(-20px);
     transition: transform 0.5s;
   }
-  
-  & .sidepanel-enter .sidepanel-panel{
-    right: -100%;
-  }
-
-  & .sidepanel-enter-active .sidepanel-panel{
-    right: 0;
-    transition: right 0.5s;
-  }
-
-  & .sidepanel-exit .sidepanel-panel{
-    right: 0;
-  }
-
-  & .sidepanel-exit-active .sidepanel-panel{
-    right: -100%;
-    transition: right 0.5s;
-  }
-
-  & .sidepanel-enter .sidepanel-backdrop{
-    opacity: 0;
-  }
-
-  & .sidepanel-enter-active .sidepanel-backdrop{
-    opacity: 1;
-    transition: opacity 0.5s;
-  }
-
-  & .sidepanel-exit .sidepanel-backdrop{
-    opacity: 1;
-  }
-
-  & .sidepanel-exit-active .sidepanel-backdrop{
-    opacity: 0;
-    transition: opacity 0.5s;
-  }
 
   & .fade-enter {
     opacity: 0;
@@ -131,20 +97,64 @@ export default createGlobalStyle<{ isLoading: boolean }>`
 
 export const AppContainer = styled.main`
   width: 100%;
-  max-width: 1200px;
+  max-width: 1500px;
   margin: 50px auto 0;
-  background: #fff;
+  /* background: #fff; */
   padding: 20px;
   border-radius: 4px;
-  box-shadow: 0px 2px 5px 5px #ddd;
+  /* box-shadow: 0px 2px 5px 5px #ddd; */
 `;
 
 export const AdminContainer = styled.div`
   padding: 2rem;
 `;
 
-export const AdminHeaderContainer = styled.div`
+export const AdminTitleContainer = styled.div`
+  display: flex;
+  align-items: center;
+  margin-bottom: 15px;
+
+  @media screen and (min-width: 576px) {
+    margin-bottom: 0;
+  }
+`;
+
+export const AdminHeaderContainer = styled.div<{ column?: boolean }>`
   display: flex;
   justify-content: space-between;
-  align-items: center;
+  margin-bottom: 20px;
+  flex-direction: ${({ column }) => (column ? 'column' : 'row')};
+
+  @media screen and (min-width: 576px) {
+    & {
+      flex-direction: row;
+    }
+  }
+`;
+
+export const PrimaryButton = styled.button`
+  background: none;
+  padding: 5px 16px;
+  background-color: green;
+  border-radius: 3px;
+  color: #fff;
+  border: none;
+  cursor: pointer;
+`;
+
+export const AdminHeaderButtonsContainer = styled.div`
+  & > *:not(:last-child) {
+    margin-right: 15px;
+  }
+`;
+
+export const BurgerIconButton = styled.button`
+  border: none;
+  background: none;
+  display: flex;
+  margin-right: 10px;
+
+  @media screen and (min-width: 992px) {
+    display: none;
+  }
 `;

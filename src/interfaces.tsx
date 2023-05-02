@@ -18,6 +18,7 @@ export interface IInputSelect extends IInputError {
   type: 'select';
   data: ISelectOption[];
   value: string;
+  placeholder: string;
 }
 
 export interface IInputCheckbox extends IInputError {
@@ -57,6 +58,8 @@ export type IChangeEvent =
   | ChangeEvent<HTMLTextAreaElement>;
 
 export type InputChangeHandler = (e: IChangeEvent, index: number) => void;
+
+export type InputFocusHandler = (inputName: string) => void;
 
 export function isInputSelect(input: IDefaultInput): input is IInputSelect {
   return input.type === 'select';
@@ -109,7 +112,7 @@ export interface IBirdData {
 }
 
 export interface IBirdWeight {
-  id: string;
+  // id: string;
   nome: string;
   peso: string;
   data: string;
@@ -147,6 +150,7 @@ export interface ISelectProps {
   options: ISelectOption[];
   onChangeHandler: (option: ISelectOption) => void;
   selected: any;
+  placeholder: string;
 }
 
 export interface ISearchFilter {

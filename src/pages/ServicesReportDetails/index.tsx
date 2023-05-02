@@ -4,6 +4,7 @@ import { IServiceReportDataFull } from '../../interfaces';
 import {
   Container,
   Details,
+  GridContainer,
   ItemContainer,
   ItemDetail,
   ItemLabel,
@@ -15,53 +16,57 @@ import {
 export const ServicesReportDetail: FC<IServiceReportDataFull> = ({
   report
 }) => {
+  console.log(report);
   return (
     <Container>
       <TitleContainer>
-        <h1>Relatorio de Serviço</h1>
+        <h2>Relatorio de Serviço</h2>
       </TitleContainer>
-      <ItemContainer>
-        <ItemLabel>Data:</ItemLabel>
-        <ItemDetail>{report.data}</ItemDetail>
-      </ItemContainer>
-      <SectionContainer>
-        <ItemContainer>
-          <ItemLabel>Hora Inicio:</ItemLabel>
-          <ItemDetail>{report['hora-inicio']}</ItemDetail>
-        </ItemContainer>
-        <ItemContainer>
-          <ItemLabel>Hora Fim:</ItemLabel>
-          <ItemDetail>{report['hora-fim']}</ItemDetail>
-        </ItemContainer>
-      </SectionContainer>
-      <SectionContainer>
+      <GridContainer>
         <ItemContainer>
           <ItemLabel>Colaborador:</ItemLabel>
           <ItemDetail>{report.colaborador}</ItemDetail>
         </ItemContainer>
         <ItemContainer>
-          <ItemLabel>Viatura:</ItemLabel>
-          <ItemDetail>{report.viatura}</ItemDetail>
+          <ItemLabel>Data:</ItemLabel>
+          <ItemDetail>{report.data}</ItemDetail>
         </ItemContainer>
-      </SectionContainer>
-      <ItemContainer>
-        <ItemLabel>Ave:</ItemLabel>
-        <ItemDetail>{report.ave}</ItemDetail>
-      </ItemContainer>
-      <ItemContainer>
-        <ObservacoesContainer>
-          <ItemLabel>Observações:</ItemLabel>
-          <ItemContainer>
-            <Details>
-              {report.observacoes ? (
-                report.observacoes
-              ) : (
-                <span>Não existem observações</span>
-              )}
-            </Details>
-          </ItemContainer>
-        </ObservacoesContainer>
-      </ItemContainer>
+        <ItemContainer>
+          <ItemLabel>Viatura:</ItemLabel>
+          <ItemDetail>
+            {report.viatura.length ? report.viatura : '-'}
+          </ItemDetail>
+        </ItemContainer>
+        <ItemContainer>
+          <ItemLabel>Hora Inicio:</ItemLabel>
+          <ItemDetail>{report['hora-inicio']}</ItemDetail>
+        </ItemContainer>
+        <ItemContainer>
+          <ItemLabel>Ave:</ItemLabel>
+          <ItemDetail>{report.ave.length ? report.ave : '-'}</ItemDetail>
+        </ItemContainer>
+        <ItemContainer>
+          <ItemLabel>Hora Fim:</ItemLabel>
+          <ItemDetail>{report['hora-fim']}</ItemDetail>
+        </ItemContainer>
+        <ItemContainer>
+          <ItemLabel>Cliente:</ItemLabel>
+          <ItemDetail>{report.cliente}</ItemDetail>
+        </ItemContainer>
+      </GridContainer>
+
+      <ObservacoesContainer>
+        <ItemLabel>Observações:</ItemLabel>
+        <ItemContainer>
+          <ItemDetail>
+            {report.observacoes ? (
+              report.observacoes
+            ) : (
+              <span>Não existem observações</span>
+            )}
+          </ItemDetail>
+        </ItemContainer>
+      </ObservacoesContainer>
     </Container>
   );
 };

@@ -3,7 +3,7 @@ import { createContext, FC, ReactNode, useCallback, useState } from 'react';
 interface ISidepanelContext {
   isSidepanelOpen: boolean;
   SidepanelChildren: ReactNode;
-  onCloseSidepanelHandler: () => void;
+  onCloseSidepanelHandler: (sidepanelWidth: string) => void;
   onOpenSidepanelHandler: (sidepanelValues: ISidepanelContextState) => void;
   sidepanelWidth: string;
 }
@@ -42,8 +42,8 @@ export const SidepanelProvider: FC = ({ children }) => {
     [setSidepanel]
   );
 
-  const onCloseSidepanelHandler = () => {
-    onOpenSidepanelHandler({ ...defaultSidepanelState });
+  const onCloseSidepanelHandler = (sidepanelWidth: string) => {
+    onOpenSidepanelHandler({ ...defaultSidepanelState, sidepanelWidth });
   };
 
   return (

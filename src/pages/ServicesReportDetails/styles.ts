@@ -9,7 +9,8 @@ export const Container = styled.div`
 `;
 
 export const TitleContainer = styled.h2`
-  margin-bottom: 20px;
+  margin-bottom: 40px;
+  color: #157416;
 `;
 
 export const SectionContainer = styled.div`
@@ -22,26 +23,36 @@ export const SectionContainer = styled.div`
 export const ItemContainer = styled.div`
   display: flex;
   justify-content: center;
-  align-items: center;
-  padding: 10px;
-  width: 90%;
+  flex-direction: column;
 `;
 
-export const ItemLabel = styled.h3`
-  margin: 5px;
+export const ItemLabel = styled.p`
+  font-size: 16px;
 `;
 
-export const ItemDetail = styled.h2``;
+export const ItemDetail = styled.p`
+  font-size: 16px;
+  font-weight: bold;
+`;
 
 export const ObservacoesContainer = styled.div`
   display: flex;
   justify-content: center;
-  align-items: center;
   flex-direction: column;
   width: 100%;
   font-size: 2rem;
+  margin-top: 40px;
+  padding: 0 40px;
 `;
 
 export const Details = styled.span`
-  width: 60%;
+  /* width: 60%; */
+`;
+
+export const GridContainer = styled.div`
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  width: 100%;
+  padding: 0 40px;
+  gap: 20px;
 `;

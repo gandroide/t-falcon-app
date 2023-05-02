@@ -1,7 +1,7 @@
 import { useCallback, useContext, useEffect, useState } from 'react';
 import * as xlsx from 'xlsx';
-import { FaRegTrashAlt } from 'react-icons/fa';
-import { RiArticleLine } from 'react-icons/ri';
+import { FaTrash } from 'react-icons/fa';
+import { IoDocument } from 'react-icons/io5';
 import { Table } from '../../components/Table';
 import { app } from '../../config/firebase';
 import { LoadingContext } from '../../context/Loading';
@@ -12,14 +12,31 @@ import {
   ITable,
   ITableAction
 } from '../../interfaces';
-import { AdminContainer, AdminHeaderContainer } from '../../styles';
+import {
+  AdminHeaderButtonsContainer,
+  AdminHeaderContainer,
+  AdminTitleContainer,
+  BurgerIconButton
+} from '../../styles';
 import { ServicesReportDetail } from '../ServicesReportDetails';
+import { Button } from '../../components/Button';
+import { ModalContext } from '../../context/Modal';
+import _ from 'lodash';
+import { useOutletContext } from 'react-router-dom';
+
+import { GiHamburgerMenu } from 'react-icons/gi';
+
+type AdminOutletContext = {
+  toggleAdminNavbar: () => void;
+};
 
 export const Reports = () => {
+  const { toggleAdminNavbar } = useOutletContext<AdminOutletContext>();
   const [reports, setReports] = useState<IServiceReportFull[]>([]);
   const [reportsCounter, setReportsCounter] = useState(0);
   const { onLoadingHandler } = useContext(LoadingContext);
   const { onOpenSidepanelHandler } = useContext(SidepanelContext);
+  const { onSetModalHandler } = useContext(ModalContext);
 
   const onReportHandler = useCallback<
     ITableAction<IServiceReportData>['callback']
@@ -302,11 +319,52 @@ export const Reports = () => {
       });
   };
 
+  const deleteReportsHandler = async () => {
+    const snapshot = await app.collection('reports').get();
+    const MAX_WRITES_PER_BATCH = 500;
+
+    const batches = _.chunk(snapshot.docs, MAX_WRITES_PER_BATCH);
+
+    const commitBatchPromises: any[] = [];
+
+    batches.forEach((batch) => {
+      const writeBatch = app.batch();
+      batch.forEach((doc) => writeBatch.delete(doc.ref));
+      commitBatchPromises.push(writeBatch.commit());
+    });
+
+    await Promise.all(commitBatchPromises);
+  };
+
+  const onConfirmDeleteHandler = () => {
+    onSetModalHandler({
+      isOpen: true,
+      type: 'info',
+      title: 'Eliminar relatórios',
+      description:
+        'Clique no botão confirmar para confirmar que pretende eliminar os relatórios. Se não exportou os dados, deverá fazê-lo pois esta acção é irreversível.',
+      onConfirmCallback: () => deleteReportsHandler(),
+      onCloseCallback: null
+    });
+  };
+
   return (
-    <AdminContainer>
-      <AdminHeaderContainer>
-        <h1>Relatorios de Serviço</h1>
-        <button onClick={onExportHandler}>Exportar</button>
+    <>
+      <AdminHeaderContainer column>
+        <AdminTitleContainer>
+          <BurgerIconButton onClick={toggleAdminNavbar}>
+            <GiHamburgerMenu size={26} color="#157416" />
+          </BurgerIconButton>
+          <h1>Relatórios</h1>
+        </AdminTitleContainer>
+        <AdminHeaderButtonsContainer>
+          <Button type="secondary" onClick={onConfirmDeleteHandler}>
+            Eliminar relatórios
+          </Button>
+          <Button type="primary" onClick={onExportHandler}>
+            Exportar
+          </Button>
+        </AdminHeaderButtonsContainer>
       </AdminHeaderContainer>
       <Table
         count={reportsCounter}
@@ -315,10 +373,10 @@ export const Reports = () => {
         filterOptions={[]}
         data={data}
         tableActions={[
-          { callback: onReportHandler, icon: <RiArticleLine /> },
-          { callback: onRemoveReportHandler, icon: <FaRegTrashAlt /> }
+          { callback: onReportHandler, icon: <IoDocument /> },
+          { callback: onRemoveReportHandler, icon: <FaTrash /> }
         ]}
       />
-    </AdminContainer>
+    </>
   );
 };
