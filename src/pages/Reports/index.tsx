@@ -351,7 +351,7 @@ export const Reports = () => {
   return (
     <>
       <AdminHeaderContainer column>
-        <AdminTitleContainer>
+        <AdminTitleContainer column>
           <BurgerIconButton onClick={toggleAdminNavbar}>
             <GiHamburgerMenu size={26} color="#157416" />
           </BurgerIconButton>

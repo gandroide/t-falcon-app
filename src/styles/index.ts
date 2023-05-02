@@ -109,10 +109,10 @@ export const AdminContainer = styled.div`
   padding: 2rem;
 `;
 
-export const AdminTitleContainer = styled.div`
+export const AdminTitleContainer = styled.div<{ column?: boolean }>`
   display: flex;
   align-items: center;
-  margin-bottom: 15px;
+  margin-bottom: ${({ column }) => (column ? '15px' : '0')};
 
   @media screen and (min-width: 576px) {
     margin-bottom: 0;
@@ -124,10 +124,12 @@ export const AdminHeaderContainer = styled.div<{ column?: boolean }>`
   justify-content: space-between;
   margin-bottom: 20px;
   flex-direction: ${({ column }) => (column ? 'column' : 'row')};
+  align-items: ${({ column }) => (column ? 'flex-start' : 'center')};
 
   @media screen and (min-width: 576px) {
     & {
       flex-direction: row;
+      align-items: center;
     }
   }
 `;
