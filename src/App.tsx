@@ -58,21 +58,21 @@ const App = () => {
     </ContainerLottie>
   );
 
-  return (
-    <ThemeProvider theme={defaultTheme}>
-      <GlobalStyles isLoading={isLoading} />
-      {isLoading && <Loading />}
-      <Modal {...modal} />
-      <SidePanel sidepanelWidth={sidepanelWidth} openPanel={isSidepanelOpen}>
-        {SidepanelChildren}
-      </SidePanel>
-      <Navbar />
-      <AppContainer>
-        <AppRoutes />
-      </AppContainer>
-      <ToastContainer />
-    </ThemeProvider>
-  );
+  // return (
+  //   <ThemeProvider theme={defaultTheme}>
+  //     <GlobalStyles isLoading={isLoading} />
+  //     {isLoading && <Loading />}
+  //     <Modal {...modal} />
+  //     <SidePanel sidepanelWidth={sidepanelWidth} openPanel={isSidepanelOpen}>
+  //       {SidepanelChildren}
+  //     </SidePanel>
+  //     <Navbar />
+  //     <AppContainer>
+  //       <AppRoutes />
+  //     </AppContainer>
+  //     <ToastContainer />
+  //   </ThemeProvider>
+  // );
 };
 
 export default App;
