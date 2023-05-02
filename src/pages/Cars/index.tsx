@@ -298,6 +298,7 @@ export const Cars: FC = () => {
       .limit(10)
       .get()
       .then((docs) => {
+        console.log(docs.empty);
         docs.forEach((doc) => {
           carsData.push({
             id: doc.id,
@@ -309,15 +310,16 @@ export const Cars: FC = () => {
             .doc('cars')
             .onSnapshot((onSnapshot) => {
               if (!onSnapshot.exists) {
-                onLoadingHandler(false);
                 return;
               }
 
               setCarsCounter(onSnapshot.data()?.count);
               setCars(carsData);
-              onLoadingHandler(false);
             });
         });
+      })
+      .finally(() => {
+        onLoadingHandler(false);
       });
   }, [onLoadingHandler]);
 
