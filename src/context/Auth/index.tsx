@@ -132,6 +132,8 @@ export const AuthProvider: FC = ({ children }) => {
         ).data();
 
         if (!userData?.isActive) {
+          onLoadingHandler(false);
+          toast.error('A conta inserida não existe');
           appAuth.signOut();
           return;
         }
@@ -162,10 +164,23 @@ export const AuthProvider: FC = ({ children }) => {
   useEffect(() => {
     onLoadingHandler(true);
     const unsub = appAuth.onAuthStateChanged(async (user) => {
+      console.log(user);
       if (user) {
         const userData = (
           await app.collection('users').doc(user.uid).get()
         ).data();
+
+        if (!userData?.isActive) {
+          debugger;
+          onLoadingHandler(false);
+          toast.error('A sua sessão expirou.');
+
+          dispatch({
+            type: AuthTypeActions.AUTH_CHANGED,
+            payload: null
+          });
+          return;
+        }
 
         dispatch({
           type: AuthTypeActions.AUTH_CHANGED,
