@@ -18,6 +18,7 @@ import {
 interface IFormAddBird {
   id?: string;
   updateData?: IBirdData;
+  callback: () => void;
 }
 
 let birdRegisterInputs: IInput[] = [
@@ -43,7 +44,7 @@ type AdminOutletContext = {
   toggleAdminNavbar: () => void;
 };
 
-const FormAddBird: FC<IFormAddBird> = ({ id, updateData }) => {
+const FormAddBird: FC<IFormAddBird> = ({ id, updateData, callback }) => {
   let formData = [...birdRegisterInputs];
 
   const { onLoadingHandler } = useContext(LoadingContext);
@@ -51,6 +52,7 @@ const FormAddBird: FC<IFormAddBird> = ({ id, updateData }) => {
 
   const onBirdRegisterHandler = useCallback<IForm['onSubmitCallback']>(
     async (data) => {
+      onLoadingHandler(true);
       try {
         app
           .collection('birds')
@@ -65,13 +67,14 @@ const FormAddBird: FC<IFormAddBird> = ({ id, updateData }) => {
 
                 await app.collection('counters').doc('birds').set({ count });
                 onCloseSidepanelHandler(SIDEPANEL_WIDTH);
+                callback();
               });
           });
       } catch (e) {
-        console.log(e);
+        onLoadingHandler(false);
       }
     },
-    [onCloseSidepanelHandler]
+    [onCloseSidepanelHandler, onLoadingHandler, callback]
   );
 
   const onBirdEditHandler = useCallback<IForm['onSubmitCallback']>(
@@ -79,13 +82,14 @@ const FormAddBird: FC<IFormAddBird> = ({ id, updateData }) => {
       onLoadingHandler(true);
       try {
         await app.collection('birds').doc(id).update(data);
-        onLoadingHandler(false);
         onCloseSidepanelHandler(SIDEPANEL_WIDTH);
+        callback();
       } catch (e) {
         console.log(e);
+        onLoadingHandler(false);
       }
     },
-    [onCloseSidepanelHandler, id, onLoadingHandler]
+    [onCloseSidepanelHandler, id, onLoadingHandler, callback]
   );
 
   if (id && updateData) {
@@ -129,7 +133,7 @@ export const Birds = () => {
   const onBirdRegisterHandler = () => {
     onOpenSidepanelHandler({
       isOpen: true,
-      SidepanelChildren: <FormAddBird />,
+      SidepanelChildren: <FormAddBird callback={callback} />,
       sidepanelWidth: SIDEPANEL_WIDTH
     });
   };
@@ -137,9 +141,45 @@ export const Birds = () => {
   const onBirdEditHandler = (rowData: IBirdData) => {
     onOpenSidepanelHandler({
       isOpen: true,
-      SidepanelChildren: <FormAddBird id={rowData.id} updateData={rowData} />,
+      SidepanelChildren: (
+        <FormAddBird id={rowData.id} updateData={rowData} callback={callback} />
+      ),
       sidepanelWidth: SIDEPANEL_WIDTH
     });
+  };
+
+  const callback = () => {
+    const birdrsData: IBirdData[] = [];
+
+    app
+      .collection('birds')
+      .orderBy('nome')
+      .limit(10)
+      .get()
+      .then((docs) => {
+        docs.forEach((doc) => {
+          birdrsData.push({
+            id: doc.id,
+            nome: doc.data().nome,
+            identificação: doc.data()['identificação']
+          });
+          app
+            .collection('counters')
+            .doc('birds')
+            .get()
+            .then((docs) => {
+              if (!docs.exists) {
+                return;
+              }
+
+              setBirdsCounter(docs.data()?.count);
+              setBirds(birdrsData);
+            });
+        });
+      })
+      .finally(() => {
+        onLoadingHandler(false);
+      });
   };
 
   const onBirdDeleteHandler = (rowData: IBirdData) => {
@@ -181,10 +221,11 @@ export const Birds = () => {
           .collection('birds')
           .orderBy('nome')
           .limit(10)
-          .onSnapshot((onSnapshot) => {
-            if (onSnapshot.empty) return;
+          .get()
+          .then((docs) => {
+            if (docs.empty) return;
 
-            onSnapshot.forEach((doc) => {
+            docs.forEach((doc) => {
               birds.push({
                 id: doc.id,
                 nome: doc.data().nome,
@@ -193,6 +234,8 @@ export const Birds = () => {
             });
 
             setBirds(birds);
+          })
+          .finally(() => {
             onLoadingHandler(false);
           });
       } else {
@@ -225,10 +268,11 @@ export const Birds = () => {
                 });
 
                 setBirds(birds);
-                onLoadingHandler(false);
               });
           })
-          .catch((e) => {});
+          .finally(() => {
+            onLoadingHandler(false);
+          });
       }
     },
     [onLoadingHandler]
@@ -240,8 +284,8 @@ export const Birds = () => {
       .collection('birds')
       .orderBy('nome')
       .limit(10)
-      .onSnapshot((doc) => {
-        onLoadingHandler(false);
+      .get()
+      .then((doc) => {
         if (doc.empty) return;
 
         const birds: IBirdData[] = [];
@@ -257,13 +301,16 @@ export const Birds = () => {
         app
           .collection('counters')
           .doc('birds')
-          .onSnapshot((onSnapshot) => {
-            onLoadingHandler(false);
-            if (!onSnapshot.exists) return;
+          .get()
+          .then((docs) => {
+            if (!docs.exists) return;
 
-            setBirdsCounter(onSnapshot.data()?.count);
+            setBirdsCounter(docs.data()?.count);
             setBirds(birds);
           });
+      })
+      .finally(() => {
+        onLoadingHandler(false);
       });
   }, [onLoadingHandler]);
 
