@@ -79,10 +79,23 @@ const AddUserForm = () => {
           admistrador: data['admistrador'] === 'true',
           isActive: true,
           date: new Date()
+        })
+        .then(() => {
+          app
+            .collection('counters')
+            .doc('users')
+            .get()
+            .then(async (doc) => {
+              let count = (doc?.data()?.count || 0) + 1;
+
+              await app.collection('counters').doc('users').set({ count });
+              onCloseSidepanelHandler(SIDEPANEL_WIDTH);
+              // callback();
+              app2.signOut();
+            });
         });
 
-      app2.signOut();
-      onCloseSidepanelHandler(SIDEPANEL_WIDTH);
+      // onCloseSidepanelHandler(SIDEPANEL_WIDTH);
     },
     [onCloseSidepanelHandler]
   );
