@@ -283,7 +283,7 @@ export const Clients = () => {
           <h1>Clientes</h1>
         </AdminTitleContainer>
         <Button type="primary" onClick={onOpenClientFormHandler}>
-          Adicionar cliente
+          Adicionar
         </Button>
       </AdminHeaderContainer>
       <Table

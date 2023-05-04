@@ -29,8 +29,6 @@ export const falcoeiros = [
   'Vando Freitas'
 ].map((value) => ({ value, label: value, name: 'falcoeiros' }));
 
-// console.log()
-
 export const aves = [
   'Dupond',
   'Dilius',

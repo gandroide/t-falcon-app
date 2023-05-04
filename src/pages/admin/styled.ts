@@ -4,7 +4,6 @@ export const AdminContainer = styled.div`
   overflow-y: hidden;
   overflow-x: auto;
   -webkit-overflow-scrolling: touch;
-  margin-top: -20px;
   border: 1px solid #157416;
 `;
 

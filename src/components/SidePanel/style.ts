@@ -1,11 +1,5 @@
 import styled from 'styled-components';
 
-// const widthValue = {
-//   small: '50%',
-//   medium: '75%',
-//   large: '100%'
-// };
-
 type SidePanelWidth = {
   sidepanelWidth: string;
 };
@@ -22,7 +16,6 @@ export const Panel = styled.div<SidePanelWidth>`
   overflow: auto;
   @media screen and (min-width: 700px) {
     width: ${({ sidepanelWidth }) => sidepanelWidth};
-    /* width: 50%; */
   }
 `;
 
@@ -86,13 +79,12 @@ export const Backdrop = styled.div`
 export const ChildrenContainer = styled.div`
   background-color: ${({ theme }) => theme.palette.common.white};
   display: flex;
-  /* align-items: center; */
   width: 100%;
   padding: 20px 40px;
   flex-direction: column;
 
   @media screen and (min-width: 700px) {
-    padding: 40px 80px;
+    padding: 40px 60px;
   }
 `;
 

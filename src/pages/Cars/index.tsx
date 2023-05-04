@@ -2,6 +2,7 @@ import React, { FC, useCallback, useContext, useEffect, useState } from 'react';
 import { FaTrash } from 'react-icons/fa';
 import { GiHamburgerMenu } from 'react-icons/gi';
 import { useOutletContext } from 'react-router-dom';
+import { toast } from 'react-toastify';
 import { Button } from '../../components/Button';
 import { Form } from '../../components/Form';
 import { Table } from '../../components/Table';
@@ -47,9 +48,11 @@ const SIDEPANEL_WIDTH = '500px';
 
 const AddCarsFrom = ({ callback }: { callback: () => void }) => {
   const { onCloseSidepanelHandler } = useContext(SidepanelContext);
+  const { onLoadingHandler } = useContext(LoadingContext);
 
   const onAddCartHandler = useCallback<IForm['onSubmitCallback']>(
     async (data) => {
+      onLoadingHandler(true);
       await app
         .collection('cars')
         .add({ ...data, date: appTimestamp.fromDate(new Date()) })
@@ -65,11 +68,15 @@ const AddCarsFrom = ({ callback }: { callback: () => void }) => {
 
               callback();
             });
+        })
+        .catch(() => {
+          onLoadingHandler(false);
+          toast.error('Ocorreu um erro ao adicionar o carro.');
         });
 
       onCloseSidepanelHandler(SIDEPANEL_WIDTH);
     },
-    [callback, onCloseSidepanelHandler]
+    [callback, onCloseSidepanelHandler, onLoadingHandler]
   );
 
   return (
@@ -119,8 +126,16 @@ export const Cars: FC = () => {
               setCarsCounter(docs.data()?.count);
               setCars(carsData);
               onLoadingHandler(false);
+            })
+            .catch(() => {
+              onLoadingHandler(false);
+              toast.error('Ocorreu um erro. Tente de novo mais tarde.');
             });
         });
+      })
+      .catch(() => {
+        onLoadingHandler(false);
+        toast.error('Ocorreu um erro. Tente de novo mais tarde.');
       });
   };
 
@@ -183,6 +198,10 @@ export const Cars: FC = () => {
                     setCarsCounter((prevData) => prevData - 1);
                     setCars(carsData);
                     onLoadingHandler(false);
+                  })
+                  .catch(() => {
+                    onLoadingHandler(false);
+                    toast.error('Ocorreu um erro. Tente de novo mais tarde.');
                   });
               } else {
                 const currentLimit = page * 10;
@@ -216,9 +235,19 @@ export const Cars: FC = () => {
                         setCarsCounter((prev) => prev - 1);
                         setCars(carsData);
                         onLoadingHandler(false);
+                      })
+                      .catch(() => {
+                        onLoadingHandler(false);
+                        toast.error(
+                          'Ocorreu um erro. Tente de novo mais tarde.'
+                        );
                       });
                   });
               }
+            })
+            .catch(() => {
+              onLoadingHandler(false);
+              toast.error('Ocorreu um erro. Tente de novo mais tarde.');
             });
         });
     },
@@ -249,6 +278,10 @@ export const Cars: FC = () => {
 
             setCars(carsData);
             onLoadingHandler(false);
+          })
+          .catch(() => {
+            onLoadingHandler(false);
+            toast.error('Ocorreu um erro. Tente de novo mais tarde.');
           });
       } else {
         const currentLimit = (page - 1) * 10;
@@ -281,7 +314,15 @@ export const Cars: FC = () => {
 
                 setCars(carsData);
                 onLoadingHandler(false);
+              })
+              .catch(() => {
+                onLoadingHandler(false);
+                toast.error('Ocorreu um erro. Tente de novo mais tarde.');
               });
+          })
+          .catch(() => {
+            onLoadingHandler(false);
+            toast.error('Ocorreu um erro. Tente de novo mais tarde.');
           });
       }
     },
@@ -298,7 +339,6 @@ export const Cars: FC = () => {
       .limit(10)
       .get()
       .then((docs) => {
-        console.log(docs.empty);
         docs.forEach((doc) => {
           carsData.push({
             id: doc.id,
@@ -308,18 +348,21 @@ export const Cars: FC = () => {
           app
             .collection('counters')
             .doc('cars')
-            .onSnapshot((onSnapshot) => {
-              if (!onSnapshot.exists) {
-                return;
-              }
-
+            .get()
+            .then((onSnapshot) => {
+              onLoadingHandler(false);
               setCarsCounter(onSnapshot.data()?.count);
               setCars(carsData);
+            })
+            .catch(() => {
+              onLoadingHandler(false);
+              toast.error('Ocorreu um erro. Tente de novo mais tarde.');
             });
         });
       })
-      .finally(() => {
+      .catch(() => {
         onLoadingHandler(false);
+        toast.error('Ocorreu um erro. Tente de novo mais tarde.');
       });
   }, [onLoadingHandler]);
 
@@ -333,7 +376,7 @@ export const Cars: FC = () => {
           <h1>Carros</h1>
         </AdminTitleContainer>
         <Button type="primary" onClick={onOpenCarsFormHandler}>
-          Adicionar carro
+          Adicionar
         </Button>
       </AdminHeaderContainer>
       <Table

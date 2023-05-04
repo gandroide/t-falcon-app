@@ -25,6 +25,7 @@ import _ from 'lodash';
 import { useOutletContext } from 'react-router-dom';
 
 import { GiHamburgerMenu } from 'react-icons/gi';
+import { toast } from 'react-toastify';
 
 type AdminOutletContext = {
   toggleAdminNavbar: () => void;
@@ -67,8 +68,6 @@ export const Reports = () => {
           .limit(10)
           .get()
           .then((docs) => {
-            if (docs.empty) return;
-
             docs.forEach((doc) => {
               reportsData.push({
                 id: doc.id,
@@ -85,6 +84,10 @@ export const Reports = () => {
 
             setReports(reportsData);
             onLoadingHandler(false);
+          })
+          .catch(() => {
+            onLoadingHandler(false);
+            toast.error('Ocorreu um erro. Tente novamente mais tarde.');
           });
       } else {
         const currentLimit = (page - 1) * 10;
@@ -123,7 +126,15 @@ export const Reports = () => {
 
                 setReports(reportsData);
                 onLoadingHandler(false);
+              })
+              .catch(() => {
+                onLoadingHandler(false);
+                toast.error('Ocorreu um erro. Tente novamente mais tarde.');
               });
+          })
+          .catch(() => {
+            onLoadingHandler(false);
+            toast.error('Ocorreu um erro. Tente novamente mais tarde.');
           });
       }
     },
@@ -167,11 +178,6 @@ export const Reports = () => {
                   .limit(10)
                   .get()
                   .then((docs) => {
-                    if (docs.empty) {
-                      onLoadingHandler(false);
-                      return;
-                    }
-
                     docs.forEach((doc) => {
                       reportsData.push({
                         id: doc.id,
@@ -189,6 +195,10 @@ export const Reports = () => {
                     setReportsCounter((prevData) => prevData - 1);
                     setReports(reportsData);
                     onLoadingHandler(false);
+                  })
+                  .catch(() => {
+                    onLoadingHandler(false);
+                    toast.error('Ocorreu um erro. Tente novamente mais tarde.');
                   });
               } else {
                 const currentLimit = page * 10;
@@ -209,8 +219,6 @@ export const Reports = () => {
                       .limit(10)
                       .get()
                       .then((data) => {
-                        if (data.empty) return;
-
                         data.forEach((doc) => {
                           reportsData.push({
                             id: doc.id,
@@ -224,11 +232,20 @@ export const Reports = () => {
                             observacoes: doc.data()['observações']
                           });
                         });
-
+                        onLoadingHandler(false);
                         setReportsCounter((prev) => prev - 1);
                         setReports(reportsData);
+                      })
+                      .catch(() => {
                         onLoadingHandler(false);
+                        toast.error(
+                          'Ocorreu um erro. Tente novamente mais tarde.'
+                        );
                       });
+                  })
+                  .catch(() => {
+                    onLoadingHandler(false);
+                    toast.error('Ocorreu um erro. Tente novamente mais tarde.');
                   });
               }
             });
@@ -247,8 +264,6 @@ export const Reports = () => {
       .limit(10)
       .get()
       .then((docs) => {
-        if (docs.empty) return;
-
         docs.forEach((doc) => {
           reportsData.push({
             id: doc.id,
@@ -268,12 +283,18 @@ export const Reports = () => {
           .doc('reports')
           .get()
           .then((docs) => {
-            if (!docs.exists) return;
+            const currentCount = docs.data()?.count ?? 0;
 
-            setReportsCounter(docs.data()?.count);
+            setReportsCounter(currentCount);
             setReports(reportsData);
             onLoadingHandler(false);
+          })
+          .catch(() => {
+            onLoadingHandler(false);
           });
+      })
+      .catch(() => {
+        onLoadingHandler(false);
       });
   }, [onLoadingHandler]);
 
@@ -320,6 +341,7 @@ export const Reports = () => {
   };
 
   const deleteReportsHandler = async () => {
+    onLoadingHandler(true);
     const snapshot = await app.collection('reports').get();
     const MAX_WRITES_PER_BATCH = 500;
 
@@ -334,6 +356,7 @@ export const Reports = () => {
     });
 
     await Promise.all(commitBatchPromises);
+    onPageChangeHandler({ page: 1, filter: '', filterValue: '' });
   };
 
   const onConfirmDeleteHandler = () => {

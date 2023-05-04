@@ -1,4 +1,4 @@
-import { useState, useContext, useEffect, useCallback } from 'react';
+import { useState, useContext, useEffect, useCallback, FC } from 'react';
 import { FaTrash } from 'react-icons/fa';
 import { GiHamburgerMenu } from 'react-icons/gi';
 import { useOutletContext } from 'react-router-dom';
@@ -52,20 +52,34 @@ const addUserFields: IDefaultInput[] = [
   }
 ];
 
+type IFormAddUser = {
+  callback: () => void;
+};
+
 const SIDEPANEL_WIDTH = '500px';
 
-const AddUserForm = () => {
+const AddUserForm: FC<IFormAddUser> = ({ callback }) => {
   const { onCloseSidepanelHandler } = useContext(SidepanelContext);
+  const { onLoadingHandler } = useContext(LoadingContext);
 
   const onAddUserHandler = useCallback<IForm['onSubmitCallback']>(
     async (data) => {
-      const res = await app2.createUserWithEmailAndPassword(
-        data['email'],
-        data['password']
-      );
+      onLoadingHandler(true);
+      const res = await app2
+        .createUserWithEmailAndPassword(data['email'], data['password'])
+        .catch((e) => {
+          if (e.code === 'auth/email-already-in-use') {
+            toast.error('Endereço de email já se encontra registado.');
+          }
+          onLoadingHandler(false);
+        });
 
       if (!res || !res.user) {
-        throw new Error('Could not complete signup');
+        toast.error(
+          'Não foi possível criar utilizador. Tente de novo mais tarde.'
+        );
+        onLoadingHandler(false);
+        return;
       }
 
       await res.user.updateProfile({ displayName: data['displayName'] });
@@ -90,14 +104,20 @@ const AddUserForm = () => {
 
               await app.collection('counters').doc('users').set({ count });
               onCloseSidepanelHandler(SIDEPANEL_WIDTH);
-              // callback();
+              callback();
               app2.signOut();
+            })
+            .catch(() => {
+              onLoadingHandler(false);
+              toast.error('Ocorreu um erro ao criar o utilizador.');
             });
+        })
+        .catch(() => {
+          onLoadingHandler(false);
+          toast.error('Ocorreu um erro ao criar o utilizador.');
         });
-
-      // onCloseSidepanelHandler(SIDEPANEL_WIDTH);
     },
-    [onCloseSidepanelHandler]
+    [onCloseSidepanelHandler, callback, onLoadingHandler]
   );
 
   return (
@@ -121,13 +141,12 @@ export const Users = () => {
   const onOpenUserFormHandler = () => {
     onOpenSidepanelHandler({
       isOpen: true,
-      SidepanelChildren: <AddUserForm />,
+      SidepanelChildren: <AddUserForm callback={callback} />,
       sidepanelWidth: SIDEPANEL_WIDTH
     });
   };
 
-  useEffect(() => {
-    onLoadingHandler(true);
+  const callback = useCallback(() => {
     const usersData: IUserData[] = [];
 
     app
@@ -137,10 +156,6 @@ export const Users = () => {
       .limit(10)
       .get()
       .then((docs) => {
-        if (docs.empty) {
-          return;
-        }
-        console.log(docs);
         docs.forEach((doc) => {
           usersData.push({
             id: doc.id,
@@ -155,12 +170,58 @@ export const Users = () => {
           .doc('users')
           .get()
           .then((docs) => {
-            if (!docs.exists) return;
+            onLoadingHandler(false);
+            setUsersCounter(docs.data()?.count);
+            setUsers(usersData);
+          })
+          .catch(() => {
+            onLoadingHandler(false);
+            toast.error('Ocorreu um erro. Tente novamente mais tarde');
+          });
+      })
+      .catch(() => {
+        onLoadingHandler(false);
+        toast.error('Ocorreu um erro. Tente novamente mais tarde');
+      });
+  }, [onLoadingHandler]);
 
+  useEffect(() => {
+    onLoadingHandler(true);
+    const usersData: IUserData[] = [];
+
+    app
+      .collection('users')
+      .orderBy('date', 'desc')
+      .where('isActive', '==', true)
+      .limit(10)
+      .get()
+      .then((docs) => {
+        docs.forEach((doc) => {
+          usersData.push({
+            id: doc.id,
+            nome: doc.data().nome,
+            email: doc.data().email,
+            admistrador: doc.data().admistrador ? 'Sim' : 'Não'
+          });
+        });
+
+        app
+          .collection('counters')
+          .doc('users')
+          .get()
+          .then((docs) => {
             setUsersCounter(docs.data()?.count);
             setUsers(usersData);
             onLoadingHandler(false);
+          })
+          .catch(() => {
+            onLoadingHandler(false);
+            toast.error('Ocorreu um erro. Tente novamente mais tarde');
           });
+      })
+      .catch(() => {
+        onLoadingHandler(false);
+        toast.error('Ocorreu um erro. Tente novamente mais tarde');
       });
   }, [onLoadingHandler]);
 
@@ -175,11 +236,13 @@ export const Users = () => {
         app
           .collection('users')
           .orderBy('date', 'desc')
+          .where('isActive', '==', true)
           .limit(10)
-          .onSnapshot((onSnapshot) => {
-            if (onSnapshot.empty) return;
+          .get()
+          .then((docs) => {
+            if (docs.empty) return;
 
-            onSnapshot.forEach((doc) => {
+            docs.forEach((doc) => {
               usersData.push({
                 id: doc.id,
                 nome: doc.data().nome,
@@ -190,6 +253,10 @@ export const Users = () => {
 
             setUsers(usersData);
             onLoadingHandler(false);
+          })
+          .catch(() => {
+            onLoadingHandler(false);
+            toast.error('Ocorreu um erro. Tente novamente mais tarde');
           });
       } else {
         const currentLimit = (page - 1) * 10;
@@ -211,8 +278,6 @@ export const Users = () => {
               .limit(10)
               .get()
               .then((data) => {
-                if (data.empty) return;
-
                 data.forEach((doc) => {
                   usersData.push({
                     id: doc.id,
@@ -224,54 +289,17 @@ export const Users = () => {
 
                 setUsers(usersData);
                 onLoadingHandler(false);
+              })
+              .catch(() => {
+                onLoadingHandler(false);
+                toast.error('Ocorreu um erro. Tente novamente mais tarde');
               });
-          });
-      }
-    },
-    [onLoadingHandler]
-  );
-
-  const getUsersByPage = useCallback(
-    (page: number) => {
-      const usersData: IUserData[] = [];
-      const currentLimit = (page - 1) * 10;
-
-      let query = app
-        .collection('users')
-        .orderBy('date', 'desc')
-        .where('isActive', '==', true);
-
-      if (page !== 1) {
-        query = query.limit(currentLimit);
-      }
-
-      query.get().then((documentSnapshots) => {
-        const lastVisible =
-          documentSnapshots.docs[documentSnapshots.docs.length - 1];
-
-        app
-          .collection('users')
-          .orderBy('date', 'desc')
-          .where('isActive', '==', true)
-          .startAfter(lastVisible)
-          .limit(10)
-          .get()
-          .then((data) => {
-            if (data.empty) return;
-
-            data.forEach((doc) => {
-              usersData.push({
-                id: doc.id,
-                nome: doc.data().nome,
-                email: doc.data().email,
-                admistrador: doc.data().admistrador ? 'Sim' : 'Não'
-              });
-            });
-
-            setUsers(usersData);
+          })
+          .catch(() => {
             onLoadingHandler(false);
+            toast.error('Ocorreu um erro. Tente novamente mais tarde');
           });
-      });
+      }
     },
     [onLoadingHandler]
   );
@@ -285,10 +313,13 @@ export const Users = () => {
         .then(() => {
           onResetModalHandler();
           toast.success('Utilizador eliminado com sucesso!');
-          getUsersByPage(currentPage);
+          callback();
+        })
+        .catch(() => {
+          toast.error('Ocorreu um erro ao eliminar o utilizador.');
         });
     },
-    [onResetModalHandler, getUsersByPage]
+    [onResetModalHandler, callback]
   );
 
   const onConfirmDeleteHandler = useCallback(
@@ -315,7 +346,7 @@ export const Users = () => {
           <h1>Utilizadores</h1>
         </AdminTitleContainer>
         <Button type="primary" onClick={onOpenUserFormHandler}>
-          Adicionar Utilizador
+          Adicionar
         </Button>
       </AdminHeaderContainer>
       <Table

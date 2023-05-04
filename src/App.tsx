@@ -1,4 +1,4 @@
-import { useContext, useEffect } from 'react';
+import { useContext } from 'react';
 import GlobalStyles, { AppContainer } from './styles';
 import { ThemeProvider } from 'styled-components';
 import { defaultTheme } from './styles/theme';
@@ -12,6 +12,7 @@ import { AppRoutes } from './routes';
 import { LoadingContext } from './context/Loading';
 import { Loading } from './components/Loading';
 import { ToastContainer } from 'react-toastify';
+import { useLocation } from 'react-router-dom';
 
 const App = () => {
   const { isLoading } = useContext(LoadingContext);
@@ -21,6 +22,7 @@ const App = () => {
   const {
     user: { isAuthReady }
   } = useContext(AuthContext);
+  const location = useLocation();
 
   if (!isAuthReady) {
     return <Loading />;
@@ -35,7 +37,7 @@ const App = () => {
         {SidepanelChildren}
       </SidePanel>
       <Navbar />
-      <AppContainer>
+      <AppContainer isAdmin={location.pathname.includes('admin')}>
         <AppRoutes />
       </AppContainer>
       <ToastContainer />

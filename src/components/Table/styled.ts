@@ -82,10 +82,14 @@ export const TableNoData = styled.p``;
 
 export const TablePaginationContainer = styled.div`
   display: flex;
-  justify-content: flex-end;
+  justify-content: flex-start;
 
   & > *:not(:last-child) {
     margin-right: 10px;
+  }
+
+  @media screen and (min-width: 768px) {
+    justify-content: flex-end;
   }
 `;
 

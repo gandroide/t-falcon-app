@@ -20,6 +20,34 @@ export default createGlobalStyle<{ isLoading: boolean }>`
   .Toastify__toast-theme--colored.Toastify__toast--error {
   }
 
+  & .Toastify__toast--error {
+    background: #f54242;
+  }
+
+  & .Toastify__toast--success {
+    background: #157416;
+  }
+
+  & .Toastify__progress-bar {
+    background: #fff;
+  }
+
+  & .Toastify__close-button {
+    opacity: 0.8;
+  }
+
+  & .Toastify__close-button svg,
+  & .Toastify__toast-icon svg  {
+    fill: #fff;
+  }
+
+  & .Toastify__toast-body {
+    color: #fff;
+    opacity: 1;
+    font-size: 14px;
+    font-family: 'Open Sans', sans-serif;
+  }
+
   html {
     font-size: 75%;
   }
@@ -95,14 +123,12 @@ export default createGlobalStyle<{ isLoading: boolean }>`
   }
 `;
 
-export const AppContainer = styled.main`
+export const AppContainer = styled.main<{ isAdmin: boolean }>`
   width: 100%;
   max-width: 1500px;
-  margin: 50px auto 0;
-  /* background: #fff; */
+  margin: ${({ isAdmin }) => (isAdmin ? '0px auto 30px' : '50px auto')};
   padding: 20px;
   border-radius: 4px;
-  /* box-shadow: 0px 2px 5px 5px #ddd; */
 `;
 
 export const AdminContainer = styled.div`

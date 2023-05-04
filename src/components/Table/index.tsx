@@ -34,7 +34,8 @@ export const Table = <T extends {}>({
   onTableRenderCallback,
   filterOptions,
   onSearchCallback,
-  hideSearch
+  hideSearch,
+  excludeRows
 }: ITable<T>) => {
   const firstRender = useRef(true);
   const [currentPage, setCurrentPage] = useState(1);
@@ -60,7 +61,7 @@ export const Table = <T extends {}>({
     // tableHeader.push('id' as keyof T);
 
     Object.keys(data[0]).forEach((key) => {
-      // if (key === 'id') return;
+      if (excludeRows?.includes(key as keyof T)) return;
 
       tableHeader.push(key as keyof T);
     });
@@ -157,9 +158,6 @@ export const Table = <T extends {}>({
       }
     }
 
-    // console.log('paginationStart', paginationStart);
-    // console.log('paginationEnd', paginationEnd);
-
     for (let page = paginationStart; page <= paginationEnd; page++) {
       paginationArr.push(
         <TablePaginationBtn
@@ -209,11 +207,13 @@ export const Table = <T extends {}>({
         />
       )}
 
-      <TableContainer>
-        <TableHeader />
-        <TableBody />
-      </TableContainer>
-      {tablePagination && tablePagination}
+      <div style={{ width: '100%', overflow: 'auto', paddingBottom: '5px' }}>
+        <TableContainer>
+          <TableHeader />
+          <TableBody />
+        </TableContainer>
+        {tablePagination && tablePagination}
+      </div>
     </>
   );
 };

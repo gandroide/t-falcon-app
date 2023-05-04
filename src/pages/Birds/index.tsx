@@ -2,6 +2,7 @@ import { FC, useContext, useCallback, useEffect, useState } from 'react';
 import { FaEdit, FaTrash } from 'react-icons/fa';
 import { GiHamburgerMenu } from 'react-icons/gi';
 import { useOutletContext } from 'react-router-dom';
+import { toast } from 'react-toastify';
 import { Button } from '../../components/Button';
 import { Form } from '../../components/Form';
 import { Table } from '../../components/Table';
@@ -68,7 +69,11 @@ const FormAddBird: FC<IFormAddBird> = ({ id, updateData, callback }) => {
                 await app.collection('counters').doc('birds').set({ count });
                 onCloseSidepanelHandler(SIDEPANEL_WIDTH);
                 callback();
+                toast.success('Ave criada com sucesso.');
               });
+          })
+          .catch(() => {
+            toast.error('Ocorreu um erro ao criar a ave.');
           });
       } catch (e) {
         onLoadingHandler(false);
@@ -84,8 +89,8 @@ const FormAddBird: FC<IFormAddBird> = ({ id, updateData, callback }) => {
         await app.collection('birds').doc(id).update(data);
         onCloseSidepanelHandler(SIDEPANEL_WIDTH);
         callback();
+        toast.success('Ave editada com sucesso');
       } catch (e) {
-        console.log(e);
         onLoadingHandler(false);
       }
     },
@@ -163,22 +168,24 @@ export const Birds = () => {
             nome: doc.data().nome,
             identificação: doc.data()['identificação']
           });
-          app
-            .collection('counters')
-            .doc('birds')
-            .get()
-            .then((docs) => {
-              if (!docs.exists) {
-                return;
-              }
-
-              setBirdsCounter(docs.data()?.count);
-              setBirds(birdrsData);
-            });
         });
+        app
+          .collection('counters')
+          .doc('birds')
+          .get()
+          .then((docs) => {
+            setBirdsCounter(docs.data()?.count ?? 0);
+            setBirds(birdrsData);
+            onLoadingHandler(false);
+          })
+          .catch(() => {
+            onLoadingHandler(false);
+            toast.error('Ocorreu um erro. Tente novamente mais tarde.');
+          });
       })
-      .finally(() => {
+      .catch(() => {
         onLoadingHandler(false);
+        toast.error('Ocorreu um erro. Tente novamente mais tarde.');
       });
   };
 
@@ -204,9 +211,17 @@ export const Birds = () => {
             setBirds(stateCopy);
             setBirdsCounter(count);
             onLoadingHandler(false);
+            toast.success('Ave eliminada com sucesso.');
+          })
+          .catch(() => {
+            onLoadingHandler(false);
+            toast.error('Ocorreu um erro ao eliminar uma ave.');
           });
       })
-      .catch((e) => console.log('Error removind bird'));
+      .catch(() => {
+        onLoadingHandler(false);
+        toast.error('Ocorreu um erro ao eliminar uma ave.');
+      });
   };
 
   const onPageChangeHandler = useCallback<
@@ -223,8 +238,6 @@ export const Birds = () => {
           .limit(10)
           .get()
           .then((docs) => {
-            if (docs.empty) return;
-
             docs.forEach((doc) => {
               birds.push({
                 id: doc.id,
@@ -233,10 +246,12 @@ export const Birds = () => {
               });
             });
 
+            onLoadingHandler(false);
             setBirds(birds);
           })
-          .finally(() => {
+          .catch(() => {
             onLoadingHandler(false);
+            toast.error('Ocorreu um erro. Tente novamente mais tarde.');
           });
       } else {
         const currentLimit = (page - 1) * 10;
@@ -257,8 +272,6 @@ export const Birds = () => {
               .limit(10)
               .get()
               .then((data) => {
-                if (data.empty) return;
-
                 data.forEach((doc) => {
                   birds.push({
                     id: doc.id,
@@ -267,11 +280,17 @@ export const Birds = () => {
                   });
                 });
 
+                onLoadingHandler(false);
                 setBirds(birds);
+              })
+              .catch(() => {
+                onLoadingHandler(false);
+                toast.error('Ocorreu um erro. Tente novamente mais tarde.');
               });
           })
-          .finally(() => {
+          .catch(() => {
             onLoadingHandler(false);
+            toast.error('Ocorreu um erro. Tente novamente mais tarde.');
           });
       }
     },
@@ -286,8 +305,6 @@ export const Birds = () => {
       .limit(10)
       .get()
       .then((doc) => {
-        if (doc.empty) return;
-
         const birds: IBirdData[] = [];
 
         doc.docs.forEach((doc) => {
@@ -303,14 +320,18 @@ export const Birds = () => {
           .doc('birds')
           .get()
           .then((docs) => {
-            if (!docs.exists) return;
-
+            onLoadingHandler(false);
             setBirdsCounter(docs.data()?.count);
             setBirds(birds);
+          })
+          .catch(() => {
+            onLoadingHandler(false);
+            toast.error('Ocorreu um erro. Tente novamente mais tarde.');
           });
       })
-      .finally(() => {
+      .catch(() => {
         onLoadingHandler(false);
+        toast.error('Ocorreu um erro. Tente novamente mais tarde.');
       });
   }, [onLoadingHandler]);
 
@@ -324,7 +345,7 @@ export const Birds = () => {
           <h1>Aves</h1>
         </AdminTitleContainer>
         <Button type="primary" onClick={onBirdRegisterHandler}>
-          Adicionar ave
+          Adicionar
         </Button>
       </AdminHeaderContainer>
       <Table

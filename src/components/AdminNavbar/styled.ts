@@ -20,6 +20,7 @@ export const AdminNav = styled.nav<{ isOpen: boolean }>`
     max-width: unset;
     z-index: unset;
     height: unset;
+    min-height: 585px;
   }
 `;
 

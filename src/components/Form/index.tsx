@@ -112,8 +112,6 @@ export const Form: FC<IForm> = ({ fields, onSubmitCallback, title }) => {
               onChangeHandler={(e) => onChange(e, index)}
               selected
               placeholder={input.placeholder}
-              // onFocus={() => onInputFocusHandler(input.name)}
-              // onBlur={onInputBlurHandler}
             />
             {input.hasError && (
               <InputError>Este campo é obrigatorio</InputError>

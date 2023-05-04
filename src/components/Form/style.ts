@@ -9,6 +9,7 @@ export const FormContainer = styled.form`
 export const FormTitle = styled.h2`
   margin-bottom: 40px;
   color: #157416;
+  text-align: center;
 `;
 
 export const InputsList = styled.div`

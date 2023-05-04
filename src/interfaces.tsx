@@ -134,10 +134,10 @@ export interface UserRegistryData {
 
 export interface FullUserRegistryData extends UserRegistryData {
   nome: string;
-  latitude_entry: number;
-  longitude_entry: number;
-  latitude_out: number;
-  longitude_out: number;
+  latitude_entry?: number;
+  longitude_entry?: number;
+  latitude_out?: number;
+  longitude_out?: number;
 }
 
 export interface ISelectOption {
@@ -189,6 +189,7 @@ export interface ITable<T> {
   filterOptions: ISelectOption[];
   onSearchCallback: ({ page, filter, filterValue }: ITableRender) => void;
   hideSearch?: boolean;
+  excludeRows?: (keyof T)[];
 }
 
 export type SidePanelWidth = 'small' | 'medium' | 'large' | null;

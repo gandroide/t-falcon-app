@@ -158,10 +158,6 @@ export const UserRegistry = () => {
                         .doc(user.userId!)
                         .update({ user_registry_count: count })
                         .then(() => {
-                          console.log(
-                            'userRegistry.length',
-                            userRegistry.length
-                          );
                           if (userRegistry.length === 1) {
                             getUserRegistry(currentPage - 1, true);
                           } else {
@@ -171,8 +167,7 @@ export const UserRegistry = () => {
                     });
                 });
             });
-        })
-        .catch(() => console.log('Error removind registry'));
+        });
     },
     [getUserRegistry, user.userId, userRegistry]
   );

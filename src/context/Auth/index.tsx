@@ -157,14 +157,13 @@ export const AuthProvider: FC = ({ children }) => {
       })
       .catch((e) => {
         onLoadingHandler(false);
-        toast.error('Credenciais inválidas');
+        toast.error('Credenciais inválidas', { autoClose: 15000 });
       });
   };
 
   useEffect(() => {
     onLoadingHandler(true);
     const unsub = appAuth.onAuthStateChanged(async (user) => {
-      console.log(user);
       if (user) {
         const userData = (
           await app.collection('users').doc(user.uid).get()

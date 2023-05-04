@@ -6,14 +6,7 @@ import { app, appTimestamp } from '../../config/firebase';
 import { AuthContext } from '../../context/Auth';
 import { ModalContext } from '../../context/Modal';
 import { SidepanelContext } from '../../context/Sidepanel';
-import {
-  Container,
-  HomeImage,
-  MenuContainer,
-  MenuItem,
-  TopBar,
-  TopBarInfo
-} from './Home.styles';
+import { Container, MenuContainer, MenuItem, TopBar } from './Home.styles';
 import { BirdWeightForm } from '../../containers/BirdWeightForm';
 import {
   CarsData,
@@ -42,7 +35,7 @@ const formattedDate = (date?: Date) => {
   }
 };
 
-const SIDEPANEL_WIDTH = '700px';
+const SIDEPANEL_WIDTH = '600px';
 
 export const Home = () => {
   const { onOpenSidepanelHandler } = useContext(SidepanelContext);
@@ -51,6 +44,8 @@ export const Home = () => {
   const { onLoadingHandler } = useContext(LoadingContext);
 
   const onRegisterPicagemHandler = (coords: currentPosition, id?: string) => {
+    onLoadingHandler(true);
+
     if (id) {
       app
         .collection('user_registry')
@@ -86,7 +81,11 @@ export const Home = () => {
                       app
                         .collection('users')
                         .doc(user.userId!)
-                        .update({ user_registry_count: count });
+                        .update({ user_registry_count: count })
+                        .then(() => {
+                          onLoadingHandler(false);
+                          toast.success('Saída registada com sucesso.');
+                        });
                     });
                 })
                 .catch((e) => {
@@ -101,13 +100,19 @@ export const Home = () => {
           toast.error('Ocorreu um erro ao registar a picagem');
         });
     } else {
-      app.collection('user_registry').add({
-        userId: user.userId,
-        displayName: user.displayName,
-        entryDate: appTimestamp.fromDate(new Date()),
-        latitude_entry: coords.latitude,
-        longitude_entry: coords.longitude
-      });
+      app
+        .collection('user_registry')
+        .add({
+          userId: user.userId,
+          displayName: user.displayName,
+          entryDate: appTimestamp.fromDate(new Date()),
+          latitude_entry: coords.latitude,
+          longitude_entry: coords.longitude
+        })
+        .then(() => {
+          onLoadingHandler(false);
+          toast.success('Entrada registada com sucesso.');
+        });
     }
   };
 
@@ -136,7 +141,6 @@ export const Home = () => {
       .limit(1)
       .get()
       .then((value) => {
-        onLoadingHandler(false);
         if (
           value.empty ||
           (!value.empty && 'leaveDate' in value.docs[0].data())
@@ -165,6 +169,9 @@ export const Home = () => {
       .catch((e) => {
         onLoadingHandler(false);
         toast.error('Ocorreu um erro ao registar a picagem');
+      })
+      .finally(() => {
+        onLoadingHandler(false);
       });
   };
 
@@ -174,9 +181,6 @@ export const Home = () => {
       .collection('birds')
       .get()
       .then((docs) => {
-        // mensagem de erro
-        if (docs.empty) return;
-
         const birdsData: IBirdData[] = [];
 
         docs.forEach((doc) => {
@@ -186,13 +190,17 @@ export const Home = () => {
             nome: doc.data().nome
           });
         });
-
-        onLoadingHandler(false);
         onOpenSidepanelHandler({
           isOpen: true,
           SidepanelChildren: <BirdWeightForm birdsData={birdsData} />,
           sidepanelWidth: SIDEPANEL_WIDTH
         });
+      })
+      .catch(() => {
+        toast.error('Ocorreu um erro ao registar a pesagem.');
+      })
+      .finally(() => {
+        onLoadingHandler(false);
       });
   };
 
@@ -202,21 +210,16 @@ export const Home = () => {
       .collection('last_weighin')
       .get()
       .then((docs) => {
-        // mensagem de erro
-        if (docs.empty) return;
-
         const birdsData: IBirdWeight[] = [];
 
         docs.forEach((doc) => {
           birdsData.push({
-            // id: doc.id,
             nome: doc.data().nome,
             peso: doc.data().peso.toString() + ' gr',
             data: formattedDate(secondsToDate(doc.data()?.data.seconds))!
           });
         });
 
-        onLoadingHandler(false);
         onOpenSidepanelHandler({
           isOpen: true,
           SidepanelChildren: (
@@ -234,6 +237,12 @@ export const Home = () => {
           ),
           sidepanelWidth: SIDEPANEL_WIDTH
         });
+      })
+      .catch(() => {
+        toast.error('Ocorreu um erro ao mostrar a listagem de pesagens.');
+      })
+      .finally(() => {
+        onLoadingHandler(false);
       });
   };
 
@@ -243,8 +252,6 @@ export const Home = () => {
       .collection('birds')
       .get()
       .then((docs) => {
-        // mensagem de erro
-        if (docs.empty) return;
         const birdsData: IBirdData[] = [];
 
         docs.forEach((doc) => {
@@ -259,9 +266,6 @@ export const Home = () => {
           .collection('clients')
           .get()
           .then((docs) => {
-            // mensagem de erro
-            if (docs.empty) return;
-
             const clientsData: ClientsData[] = [];
 
             docs.forEach((doc) => {
@@ -275,8 +279,6 @@ export const Home = () => {
               .collection('cars')
               .get()
               .then((docs) => {
-                if (docs.empty) return;
-
                 const carsData: CarsData[] = [];
 
                 docs.forEach((doc) => {
@@ -286,7 +288,7 @@ export const Home = () => {
                     viatura: doc.data().viatura
                   });
                 });
-                onLoadingHandler(false);
+
                 onOpenSidepanelHandler({
                   isOpen: true,
                   SidepanelChildren: (
@@ -298,15 +300,27 @@ export const Home = () => {
                   ),
                   sidepanelWidth: SIDEPANEL_WIDTH
                 });
+              })
+              .catch(() => {
+                toast.error('Ocorreu um erro. Tente novamente mais tarde.');
+              })
+              .finally(() => {
+                onLoadingHandler(false);
               });
+          })
+          .catch(() => {
+            toast.error('Ocorreu um erro. Tente novamente mais tarde.');
           });
+      })
+      .catch(() => {
+        toast.error('Ocorreu um erro. Tente novamente mais tarde.');
       });
   }, [onLoadingHandler, onOpenSidepanelHandler]);
 
   return (
     <Container>
       <TopBar>
-        <h1>Bem-vindo, {user.displayName}</h1>
+        <h1>Bem-vindo/a, {user.displayName}</h1>
       </TopBar>
       <MenuContainer>
         <MenuItem>

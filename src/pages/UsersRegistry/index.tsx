@@ -19,6 +19,7 @@ import { ModalContext } from '../../context/Modal';
 import _ from 'lodash';
 import { GiHamburgerMenu } from 'react-icons/gi';
 import { useOutletContext } from 'react-router-dom';
+import { toast } from 'react-toastify';
 
 type AdminOutletContext = {
   toggleAdminNavbar: () => void;
@@ -62,10 +63,6 @@ export const UsersRegistry = () => {
       .limit(10)
       .get()
       .then((docs) => {
-        if (docs.empty) {
-          return;
-        }
-
         docs.forEach((doc) => {
           const entry = secondsToDate(doc.data().entryDate?.seconds);
           const leave = secondsToDate(doc.data().leaveDate?.seconds);
@@ -90,12 +87,20 @@ export const UsersRegistry = () => {
           .doc('user_registry')
           .get()
           .then((docs) => {
-            if (!docs.exists) return;
+            const currentCount = docs.exists ? docs.data()?.count : 0;
 
-            setUserRegistryCounter(docs.data()?.count);
+            setUserRegistryCounter(currentCount);
             setUsersRegistry(userRegistryData);
             onLoadingHandler(false);
+          })
+          .catch(() => {
+            onLoadingHandler(false);
+            toast.error('Ocorreu um erro. Tente novamente mais tarde.');
           });
+      })
+      .catch(() => {
+        onLoadingHandler(false);
+        toast.error('Ocorreu um erro. Tente novamente mais tarde.');
       });
   }, [onLoadingHandler]);
 
@@ -106,8 +111,8 @@ export const UsersRegistry = () => {
         SidepanelChildren: (
           <Map
             position={{
-              latitude: rowData.latitude_entry,
-              longitude: rowData.longitude_entry
+              latitude: rowData.latitude_entry as number,
+              longitude: rowData.longitude_entry as number
             }}
           />
         ),
@@ -129,9 +134,8 @@ export const UsersRegistry = () => {
           .collection('user_registry')
           .orderBy('entryDate', 'desc')
           .limit(10)
-          .onSnapshot((onSnapshot) => {
-            if (onSnapshot.empty) return;
-
+          .get()
+          .then((onSnapshot) => {
             onSnapshot.forEach((doc) => {
               const entry = secondsToDate(doc.data().entryDate?.seconds);
               const leave = secondsToDate(doc.data().leaveDate?.seconds);
@@ -153,6 +157,10 @@ export const UsersRegistry = () => {
 
             setUsersRegistry(registryData);
             onLoadingHandler(false);
+          })
+          .catch(() => {
+            onLoadingHandler(false);
+            toast.error('Occorreu um erro. Tente novamente mais tarde.');
           });
       } else {
         const currentLimit = (page - 1) * 10;
@@ -173,8 +181,6 @@ export const UsersRegistry = () => {
               .limit(10)
               .get()
               .then((data) => {
-                if (data.empty) return;
-
                 data.forEach((doc) => {
                   const entry = secondsToDate(doc.data().entryDate?.seconds);
                   const leave = secondsToDate(doc.data().leaveDate?.seconds);
@@ -196,14 +202,20 @@ export const UsersRegistry = () => {
 
                 setUsersRegistry(registryData);
                 onLoadingHandler(false);
+              })
+              .catch(() => {
+                onLoadingHandler(false);
+                toast.error('Ocorreu um erro. Tente novamente mais tarde.');
               });
+          })
+          .catch(() => {
+            onLoadingHandler(false);
+            toast.error('Ocorreu um erro. Tente novamente mais tarde.');
           });
       }
     },
     [onLoadingHandler]
   );
-
-  // console.log(userRegistryCounter);
 
   const onExportHandler = () => {
     const registryData: FullUserRegistryData[] = [];
@@ -242,7 +254,8 @@ export const UsersRegistry = () => {
   };
 
   const deletePicagensHandler = async () => {
-    const snapshot = await app.collection('reports').get();
+    onLoadingHandler(true);
+    const snapshot = await app.collection('user_registry').get();
     const MAX_WRITES_PER_BATCH = 500;
 
     const batches = _.chunk(snapshot.docs, MAX_WRITES_PER_BATCH);
@@ -256,6 +269,14 @@ export const UsersRegistry = () => {
     });
 
     await Promise.all(commitBatchPromises);
+
+    app
+      .collection('counters')
+      .doc('user_registry')
+      .update({ count: 0 })
+      .then(() => {
+        onPageChangeHandler({ page: 1, filter: '', filterValue: '' });
+      });
   };
 
   const onConfirmDeleteHandler = () => {
@@ -296,6 +317,12 @@ export const UsersRegistry = () => {
           { label: 'Utilizador', value: 'displayName', name: 'displayName' }
         ]}
         data={usersRegistry}
+        excludeRows={[
+          'latitude_entry',
+          'latitude_out',
+          'longitude_entry',
+          'longitude_out'
+        ]}
         tableActions={[{ icon: <RiMapPinUserFill />, callback: openMap }]}
       />
     </>

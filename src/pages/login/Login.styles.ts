@@ -6,6 +6,9 @@ export const Container = styled.div`
   justify-content: center;
   flex-direction: column;
   padding: 10px 0 10px 0;
+  width: 100%;
+  max-width: 500px;
+  margin: 0 auto;
 `;
 
 export const CircularContainer = styled.div`

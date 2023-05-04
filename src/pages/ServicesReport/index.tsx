@@ -1,7 +1,9 @@
 import React, { FC, useCallback, useContext, useMemo } from 'react';
+import { toast } from 'react-toastify';
 import { Form } from '../../components/Form';
 import { app } from '../../config/firebase';
 import { AuthContext } from '../../context/Auth';
+import { LoadingContext } from '../../context/Loading';
 import { SidepanelContext } from '../../context/Sidepanel';
 import {
   IDefaultInput,
@@ -77,6 +79,7 @@ export const ServicesReport: FC<IServiceReport> = ({
     user: { displayName }
   } = useContext(AuthContext);
   const { onCloseSidepanelHandler } = useContext(SidepanelContext);
+  const { onLoadingHandler } = useContext(LoadingContext);
 
   const formInputs = useMemo(() => {
     const inputs = [...inputStepper];
@@ -104,6 +107,7 @@ export const ServicesReport: FC<IServiceReport> = ({
 
   const onServicesReportHandler = useCallback<IForm['onSubmitCallback']>(
     async (data) => {
+      onLoadingHandler(true);
       try {
         app
           .collection('reports')
@@ -118,11 +122,16 @@ export const ServicesReport: FC<IServiceReport> = ({
 
                 await app.collection('counters').doc('reports').set({ count });
                 onCloseSidepanelHandler(SIDEPANEL_WIDTH);
+                onLoadingHandler(false);
+                toast.success('Relatório registado com sucesso.');
               });
           });
-      } catch (e) {}
+      } catch (e) {
+        onLoadingHandler(false);
+        toast.error('Ocorreu um erro ao registar o relatório.');
+      }
     },
-    [displayName, onCloseSidepanelHandler]
+    [displayName, onCloseSidepanelHandler, onLoadingHandler]
   );
 
   return (

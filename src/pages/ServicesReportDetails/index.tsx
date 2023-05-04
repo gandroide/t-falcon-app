@@ -3,20 +3,17 @@ import { IServiceReportDataFull } from '../../interfaces';
 
 import {
   Container,
-  Details,
   GridContainer,
   ItemContainer,
   ItemDetail,
   ItemLabel,
   ObservacoesContainer,
-  SectionContainer,
   TitleContainer
 } from './styles';
 
 export const ServicesReportDetail: FC<IServiceReportDataFull> = ({
   report
 }) => {
-  console.log(report);
   return (
     <Container>
       <TitleContainer>
